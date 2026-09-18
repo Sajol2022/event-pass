@@ -265,15 +265,20 @@ let isAdmin=sessionStorage.getItem('eventpass_is_admin')==='true';
 let currentVolunteer=JSON.parse(sessionStorage.getItem('eventpass_volunteer_session')||'null');
 let isGateMode=!!currentVolunteer;
 let volunteers=load(VOLUNTEERS_KEY,defaultVolunteers);
+function getGuestCount(u){return Math.max(1,Number(u?.personCount)||(u?.guestType==='Couple'?2:u?.guestType==='Family'?3:1))}
+function buildQrValue(u){
+  const c=getGuestCount(u);
+  return `EVENTPASS|${u.guestId}|${encodeURIComponent(u.name||'')}|${encodeURIComponent(u.sscBatch||'')}|${c}|${u.code||''}|${encodeURIComponent(u.guestType||'Individual')}`;
+}
 let users=load(USERS_KEY,sampleUsers), settings=load(SETTINGS_KEY,defaults), tab='dashboard', search='', publicSearch='', guestFilter='all', scanResult=null, validResult=null, scanner=null, scannerMode='entry', lastScan='', gateScanner=null, gateLastScan='', gateScanResult=null, gateSoundEnabled=true;
-users=users.map(u=>({...u,idCardPassword:u.idCardPassword||'1234'}));
+users=users.map(u=>({...u,idCardPassword:u.idCardPassword||'1234',qrValue:buildQrValue(u)}));
 settings={...defaults,...settings,instituteName:settings.instituteName||settings.venue||defaults.instituteName,eventTime:settings.eventTime||defaults.eventTime,organizedBy:settings.organizedBy||defaults.organizedBy,eventSlogan:settings.eventSlogan||defaults.eventSlogan,eventQuote:settings.eventQuote||defaults.eventQuote,eventMotto:settings.eventMotto||defaults.eventMotto,adminPasswordHash:settings.adminPasswordHash||'5994471abb01112afcc18159f6cc74b4f511b99806da59b3caf5a9c173cacfc5',ownerName:settings.ownerName||'',ownerEmail:settings.ownerEmail||'',ownerPhone:settings.ownerPhone||'',emailPublicKey:settings.emailPublicKey||'',emailServiceId:settings.emailServiceId||'',emailTemplateId:settings.emailTemplateId||'',qrSize:settings.qrSize||'400'};
 function load(k,f){try{return JSON.parse(localStorage.getItem(k))??f}catch{return f}}
 function reloadUsersFromStorage(){
   try{
     const stored=JSON.parse(localStorage.getItem(USERS_KEY));
     if(Array.isArray(stored)){
-      users=stored.map(u=>({...u,idCardPassword:u.idCardPassword||'1234'}));
+      users=stored.map(u=>({...u,idCardPassword:u.idCardPassword||'1234',qrValue:u.qrValue||buildQrValue(u)}));
     }
   }catch(e){}
 }
@@ -282,7 +287,6 @@ function saveVolunteers(){localStorage.setItem(VOLUNTEERS_KEY,JSON.stringify(vol
 function esc(v){return String(v??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]))}
 function uid(){return 'EP-'+(crypto.randomUUID?.().replaceAll('-','').slice(0,10).toUpperCase()||Math.random().toString(36).slice(2,12).toUpperCase())}
 function nextSerial(){return users.reduce((m,u)=>Math.max(m,Number(u.serial)||0),0)+1}
-function getGuestCount(u){return Math.max(1,Number(u?.personCount)||(u?.guestType==='Couple'?2:u?.guestType==='Family'?3:1))}
 function getHeadcounts(){
   const totalProfiles=users.length;
   const totalPersons=users.reduce((s,u)=>s+getGuestCount(u),0);
@@ -693,6 +697,13 @@ function gateScannerHTML(){
           </div>
         </div>
 
+        <div style="display:flex;gap:8px;margin-top:10px;margin-bottom:14px;flex-wrap:wrap">
+          <button type="button" class="gateSoundBtn" style="flex:1;min-width:120px;justify-content:center" onclick="switchGateCamera()">🔄 Switch Lens / Camera</button>
+          <button type="button" class="gateSoundBtn" style="flex:1;min-width:120px;justify-content:center" onclick="document.getElementById('gateGalleryInput').click()">📁 Scan Photo / Gallery</button>
+          <input type="file" id="gateGalleryInput" accept="image/*" style="display:none" onchange="scanGateImage(this)">
+          <button type="button" class="gateSoundBtn" style="flex:1;min-width:120px;justify-content:center" onclick="openSyncModal()">📲 Sync Data (মোবাইল সিঙ্ক)</button>
+        </div>
+
         <div>
           <label style="font-size:11px;color:#8fa0be;font-weight:700;display:block;margin-bottom:6px">Manual Entry Code or Guest ID (যদি কিউআর কাজ না করে):</label>
           <div class="gateManualWrap">
@@ -908,7 +919,10 @@ function toggleGateSound(){
   toast(`Scanner sound ${gateSoundEnabled?'enabled':'muted'}`);
 }
 
-function startGateScanner(){
+let currentCameraIndex = 0;
+let availableCameras = [];
+
+async function startGateScanner(){
   if(!window.Html5Qrcode)return;
   const el=document.getElementById('gateReader');
   if(!el)return;
@@ -922,12 +936,86 @@ function startGateScanner(){
         setTimeout(()=>gateLastScan='',2200);
       }
     };
-    gateScanner.start({facingMode:{exact:'environment'}},{fps:12},onScanSuccess,()=>{}).catch(()=>{
-      gateScanner.start({facingMode:'environment'},{fps:12},onScanSuccess,()=>{}).catch(()=>{});
-    });
+    const scanConfig = {
+      fps: 15,
+      qrbox: (w, h) => {
+        const edge = Math.max(180, Math.floor(Math.min(w, h) * 0.72));
+        return { width: edge, height: edge };
+      }
+    };
+
+    if(!availableCameras.length){
+      try{ availableCameras = await Html5Qrcode.getCameras(); }catch(e){ availableCameras = []; }
+    }
+
+    if(availableCameras && availableCameras.length > 0){
+      if(currentCameraIndex >= availableCameras.length) currentCameraIndex = 0;
+      const cam = availableCameras[currentCameraIndex];
+      await gateScanner.start(cam.id, scanConfig, onScanSuccess, ()=>{});
+    }else{
+      await gateScanner.start({ facingMode: "environment" }, scanConfig, onScanSuccess, ()=>{});
+    }
   }catch(err){
-    console.error('Gate scanner start error:',err);
+    console.warn('Gate primary camera start failed, fallback to environment facingMode...', err);
+    try{
+      const scanConfig = { fps: 15, qrbox: { width: 220, height: 220 } };
+      await gateScanner.start({ facingMode: "environment" }, scanConfig, (decoded)=>{
+        if(decoded&&decoded!==gateLastScan){
+          gateLastScan=decoded;
+          gateCheckIn(decoded);
+          setTimeout(()=>gateLastScan='',2200);
+        }
+      }, ()=>{});
+    }catch(err2){
+      console.error('All camera attempts failed:', err2);
+    }
   }
+}
+
+async function switchGateCamera(){
+  if(!window.Html5Qrcode)return;
+  try{
+    if(!availableCameras.length){
+      availableCameras = await Html5Qrcode.getCameras();
+    }
+    if(availableCameras && availableCameras.length > 1){
+      currentCameraIndex = (currentCameraIndex + 1) % availableCameras.length;
+      toast(`ক্যামেরা পরিবর্তন করা হচ্ছে... (${availableCameras[currentCameraIndex].label || 'Camera ' + (currentCameraIndex+1)})`);
+      startGateScanner();
+    }else{
+      toast('এই ডিভাইসে অন্য কোনো ক্যামেরা পাওয়া যায়নি');
+    }
+  }catch(e){
+    toast('ক্যামেরা পরিবর্তন করা যায়নি','bad');
+  }
+}
+
+async function scanGateImage(input){
+  const file = input?.files?.[0];
+  if(!file) return;
+  toast('ছবি থেকে কিউআর রিড করা হচ্ছে...','info');
+  try{
+    const tempScanner = new Html5Qrcode('gateReader');
+    const decoded = await tempScanner.scanFile(file, true);
+    if(decoded){
+      gateCheckIn(decoded);
+    }else{
+      toast('ছবিতে কোনো কিউআর কোড পাওয়া যায়নি','bad');
+    }
+  }catch(err){
+    try{
+      if(gateScanner){
+        const decoded = await gateScanner.scanFile(file, true);
+        if(decoded) gateCheckIn(decoded);
+        else toast('ছবিতে কিউআর পাওয়া যায়নি','bad');
+      }else{
+        toast('কিউআর রিড করা যায়নি: ' + (err.message || 'Invalid image'),'bad');
+      }
+    }catch(e2){
+      toast('কিউআর রিড করা যায়নি: ' + (e2.message || 'Invalid image'),'bad');
+    }
+  }
+  input.value = '';
 }
 
 function stopGateScanner(){
@@ -955,8 +1043,8 @@ function render(){
  stopGateScanner();
  const h=getHeadcounts();
  const title=tab==='dashboard'?'Dashboard':tab==='guests'?'Guest Directory':tab==='volunteers'?'Scan Volunteers':tab==='scanner'?'QR Check-in Scanner':'Event Settings';
- document.getElementById('root').innerHTML=`<div class="app"><aside class="sidebar"><div class="brand"><div class="mark">EP</div><div><b>EventPass</b><small>ADMIN CONTROL</small></div></div><nav>${[['dashboard','▦','Dashboard'],['guests','◉','Guests'],['volunteers','👥','Volunteers'],['scanner','⌁','QR Scanner'],['settings','⚙','Event Settings']].map(x=>`<button class="${tab===x[0]?'active':''}" onclick="navigate('${x[0]}')"><span>${x[1]}</span>${x[2]}</button>`).join('')}</nav><div class="sideBottom" style="display:flex;flex-direction:column;gap:12px"><button class="secondary logoutBtn" style="width:100%;display:flex;align-items:center;justify-content:center;gap:8px" onclick="logoutAdmin()"><span>🔓</span> Logout Admin</button><div class="secure">● Admin Session<small>Full control active. Guest data in this browser.</small></div></div></aside><main class="main"><header><div><span class="eyebrow">EVENT CONTROL CENTER</span><h1>${title}</h1></div><div class="headerActions"><span class="adminBadge">🔐 ADMIN</span><div class="eventChip"><span>EVENT</span><b>${esc(settings.eventName)}</b></div><button class="primary" onclick="openAdd()">＋ Add Guest</button><button class="secondary logoutBtn" onclick="logoutAdmin()" title="Logout Admin">🔓 Logout</button></div></header>${tab==='dashboard'?dashboardHTML(h):tab==='guests'?guestsHTML(h):tab==='volunteers'?volunteersHTML():tab==='scanner'?scannerHTML():settingsHTML()}</main></div>`;
- if(tab==='scanner')setTimeout(startScanner,150);
+  document.getElementById('root').innerHTML=`<div class="app"><aside class="sidebar"><div class="brand"><div class="mark">EP</div><div><b>EventPass</b><small>ADMIN CONTROL</small></div></div><nav>${[['dashboard','▦','Dashboard'],['guests','◉','Guests'],['volunteers','👥','Volunteers'],['scanner','⌁','QR Scanner'],['settings','⚙','Event Settings']].map(x=>`<button class="${tab===x[0]?'active':''}" onclick="navigate('${x[0]}')"><span>${x[1]}</span>${x[2]}</button>`).join('')}</nav><div class="sideBottom" style="display:flex;flex-direction:column;gap:12px"><button class="secondary logoutBtn" style="width:100%;display:flex;align-items:center;justify-content:center;gap:8px" onclick="logoutAdmin()"><span>🔓</span> Logout Admin</button><div class="secure">● Admin Session<small>Full control active. Guest data in this browser.</small></div></div></aside><main class="main"><header><div><span class="eyebrow">EVENT CONTROL CENTER</span><h1>${title}</h1></div><div class="headerActions"><span class="adminBadge">🔐 ADMIN</span><div class="eventChip"><span>EVENT</span><b>${esc(settings.eventName)}</b></div><button class="secondary" onclick="openSyncModal()" title="মোবাইল সিঙ্ক">📲 Sync Data</button><button class="primary" onclick="openAdd()">＋ Add Guest</button><button class="secondary logoutBtn" onclick="logoutAdmin()" title="Logout Admin">🔓 Logout</button></div></header>${tab==='dashboard'?dashboardHTML(h):tab==='guests'?guestsHTML(h):tab==='volunteers'?volunteersHTML():tab==='scanner'?scannerHTML():settingsHTML()}</main></div>`;
+  if(tab==='scanner')setTimeout(startScanner,150);
 }
 function dashboardHTML(h){
  if(!h)h=getHeadcounts();
@@ -966,7 +1054,7 @@ function dashboardHTML(h){
 function guestsHTML(h){
  if(!h)h=getHeadcounts();
  let list=users.filter(u=>guestFilter==='all'||u.checkedIn).filter(u=>[u.name,u.email,u.phone,u.code,u.guestId,u.sscBatch,String(u.serial)].join(' ').toLowerCase().includes(search.toLowerCase())).sort((a,b)=>a.serial-b.serial);
- return `<section class="content"><div class="toolbar"><div class="search"><span>⌕</span><input id="search" value="${esc(search)}" oninput="search=this.value;renderGuestsOnly()" placeholder="Search name, ID, serial, phone or email..."></div><button class="secondary" onclick="exportCSV()">↓ Export CSV</button><button class="primary" onclick="openAdd()">＋ Add Guest</button></div><div class="panel tablePanel"><div class="panelHead guestTabsHead"><div><h2>Guest Directory</h2><p>${guestFilter==='all'?`${h.totalProfiles} profiles (${h.totalPersons} মোট ব্যক্তি, ${h.totalSub} সাব-গেস্ট)`:`${h.checkedProfiles} profiles checked in (${h.checkedPersons} জন উপস্থিত)`}${search?' · filtered':''}</p></div><div class="segmented"><button class="${guestFilter==='all'?'active':''}" onclick="guestFilter='all';renderGuestsOnly()">All Profiles <b>${h.totalProfiles} (${h.totalPersons} জন)</b></button><button class="${guestFilter==='checked'?'active':''}" onclick="guestFilter='checked';renderGuestsOnly()">Checked In <b>${h.checkedProfiles} (${h.checkedPersons} জন)</b></button></div></div><div id="guestTableArea">${list.length?tableHTML(list,true):emptyHTML(guestFilter==='checked'?'No guests checked in yet':'No guests found')}</div></div></section>`
+ return `<section class="content"><div class="toolbar"><div class="search"><span>⌕</span><input id="search" value="${esc(search)}" oninput="search=this.value;renderGuestsOnly()" placeholder="Search name, ID, serial, phone or email..."></div><button class="secondary" onclick="openSyncModal()">📲 Sync to Mobile</button><button class="secondary" onclick="exportCSV()">↓ Export CSV</button><button class="primary" onclick="openAdd()">＋ Add Guest</button></div><div class="panel tablePanel"><div class="panelHead guestTabsHead"><div><h2>Guest Directory</h2><p>${guestFilter==='all'?`${h.totalProfiles} profiles (${h.totalPersons} মোট ব্যক্তি, ${h.totalSub} সাব-গেস্ট)`:`${h.checkedProfiles} profiles checked in (${h.checkedPersons} জন উপস্থিত)`}${search?' · filtered':''}</p></div><div class="segmented"><button class="${guestFilter==='all'?'active':''}" onclick="guestFilter='all';renderGuestsOnly()">All Profiles <b>${h.totalProfiles} (${h.totalPersons} জন)</b></button><button class="${guestFilter==='checked'?'active':''}" onclick="guestFilter='checked';renderGuestsOnly()">Checked In <b>${h.checkedProfiles} (${h.checkedPersons} জন)</b></button></div></div><div id="guestTableArea">${list.length?tableHTML(list,true):emptyHTML(guestFilter==='checked'?'No guests checked in yet':'No guests found')}</div></div></section>`
 }
 function renderGuestsOnly(){
  const area=document.getElementById('guestTableArea');
@@ -1259,28 +1347,110 @@ function resultHTML(){
  return `<div class="result"><div class="resultIcon ${scanResult.ok?'ok':'bad'}">${scanResult.ok?'✓':'!'}</div><h2>${esc(scanResult.message)}</h2><p>${esc(scanResult.detail)}</p>${u?`<div class="resultGuest"><div style="display:flex;justify-content:space-between;align-items:center"><span>Guest #${String(u.serial).padStart(2,'0')}</span><span class="status ${u.checkedIn?'checked':'pending'}">${u.checkedIn?'✓ Verified':'◷ Pending'}</span></div><b style="font-size:16px">${esc(u.name)}</b><code>${esc(u.guestId)}</code><div style="background:#131f38;border:1px solid #243555;border-radius:9px;padding:9px 12px;margin-top:6px;display:flex;justify-content:space-between;align-items:center"><div style="text-align:left"><small style="color:#8ba0be;font-size:10px;display:block">হাজিরা ও সাব-গেস্ট বিবরণ</small><b style="color:#52e2ab;font-size:13px">${countDesc}</b></div><span style="background:#1e2a4a;color:#a5b4fc;font-size:11px;padding:3px 9px;border-radius:6px;font-weight:800">👥 ${count} জন এন্ট্রি</span></div>${scanResult.duplicate?'<small style="color:#ff7885;margin-top:4px">Already attended — this QR code has already been used and cannot be accepted again.</small>':''}${!u.checkedIn&&!scanResult.duplicate?`<button type="button" class="primary" style="margin-top:12px;background:linear-gradient(135deg,#059669,#10b981);width:100%;font-size:14px;padding:12px;font-weight:900;border:none;border-radius:10px;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;gap:8px" onclick="confirmAdminCheckIn('${u.guestId}')"><span style="font-size:16px">✓</span> <span>গেস্ট চেক ইন (Confirm Check-In)</span></button>`:''}</div>`:''}<button class="secondary" onclick="scanResult=null;updateResult()">Clear result</button></div>`
 }
 function updateResult(){const a=document.getElementById('scanResultArea');if(a)a.innerHTML=scannerMode==='valid'?validResultHTML():resultHTML()}
-function startScanner(){if(!window.Html5Qrcode)return;const el=document.getElementById('reader');if(!el)return;scanner=new Html5Qrcode('reader');scanner.start({facingMode:{exact:'environment'}},{fps:12},decoded=>{if(decoded&&decoded!==lastScan){lastScan=decoded;if(scannerMode==='valid')validateUser(decoded);else checkIn(decoded);setTimeout(()=>lastScan='',1800)}},()=>{}).catch(()=>{scanner.start({facingMode:'environment'},{fps:12},decoded=>{if(decoded&&decoded!==lastScan){lastScan=decoded;if(scannerMode==='valid')validateUser(decoded);else checkIn(decoded);setTimeout(()=>lastScan='',1800)}},()=>{}).catch(()=>{})})}
+function startScanner(){
+  if(!window.Html5Qrcode)return;
+  const el=document.getElementById('reader');
+  if(!el)return;
+  stopScanner();
+  try{
+    scanner=new Html5Qrcode('reader');
+    const scanConfig = {
+      fps: 15,
+      qrbox: (w, h) => {
+        const edge = Math.max(180, Math.floor(Math.min(w, h) * 0.72));
+        return { width: edge, height: edge };
+      }
+    };
+    const onScan = decoded => {
+      if(decoded && decoded !== lastScan){
+        lastScan = decoded;
+        if(scannerMode==='valid') validateUser(decoded);
+        else checkIn(decoded);
+        setTimeout(()=>lastScan='', 1800);
+      }
+    };
+    scanner.start({facingMode:'environment'}, scanConfig, onScan, ()=>{}).catch(()=>{
+      scanner.start({facingMode:'user'}, scanConfig, onScan, ()=>{}).catch(()=>{});
+    });
+  }catch(e){}
+}
 function stopScanner(){try{if(scanner){scanner.stop().then(()=>scanner.clear()).catch(()=>{});scanner=null}}catch{}}
 function resolveGuest(raw){
   if(!raw)return null;
   reloadUsersFromStorage();
   const clean=String(raw).trim();
   const lower=clean.toLowerCase();
+
+  // 1. Direct match with qrValue
   let found=users.find(u=>u.qrValue && u.qrValue.trim().toLowerCase()===lower);
   if(found)return found;
-  let id=clean;
+
+  // 2. Parse EVENTPASS format
   if(clean.toUpperCase().startsWith('EVENTPASS|')){
-    id=clean.substring(10).trim();
+    const parts = clean.split('|');
+    const guestId = (parts[1] || '').trim();
+    const guestIdLower = guestId.toLowerCase();
+
+    // Match by guestId in existing database
+    if(guestId){
+      found = users.find(u=>u.guestId && u.guestId.trim().toLowerCase()===guestIdLower);
+      if(found) return found;
+    }
+    // Match by code in existing database
+    if(parts[5]){
+      const c = parts[5].trim().toLowerCase();
+      found = users.find(u=>u.code && u.code.trim().toLowerCase()===c);
+      if(found) return found;
+    }
+
+    // IF NOT IN LOCAL DATABASE, BUT HAS SELF-CONTAINED GUEST DATA:
+    // (This happens when guest was registered on a Laptop, and scanned on a Mobile Phone!)
+    if(parts.length >= 3 && guestId){
+      let name = 'Registered Guest';
+      try{ name = decodeURIComponent(parts[2] || 'Registered Guest'); }catch(e){ name = parts[2] || 'Registered Guest'; }
+      let sscBatch = '';
+      try{ sscBatch = decodeURIComponent(parts[3] || ''); }catch(e){ sscBatch = parts[3] || ''; }
+      const personCount = Math.max(1, parseInt(parts[4] || '1', 10) || 1);
+      const code = (parts[5] || `EVT-${guestId.slice(-4)}`).trim();
+      let guestType = 'Individual';
+      try{ guestType = decodeURIComponent(parts[6] || 'Individual'); }catch(e){ guestType = parts[6] || 'Individual'; }
+
+      // Auto-register this guest into this device's storage so it is recognized!
+      const autoImported = {
+        serial: nextSerial(),
+        guestId: guestId,
+        name: name,
+        phone: '',
+        email: '',
+        sscBatch: sscBatch,
+        idCardPassword: '1234',
+        personCount: personCount,
+        profilePhoto: '',
+        entryType: 'Guest',
+        guestType: guestType,
+        code: code,
+        qrValue: clean,
+        checkedIn: false,
+        checkedAt: null,
+        scanner: null,
+        createdAt: new Date().toISOString()
+      };
+      users.push(autoImported);
+      save();
+      toast(`গেস্ট ডাটা লোড হয়েছে: ${name} (${personCount} জন) ✓`,'info');
+      return autoImported;
+    }
+
+    if(guestId){
+      found = users.find(u=>u.guestId && u.guestId.trim().toLowerCase()===guestIdLower);
+      if(found) return found;
+    }
   }
-  const idLower=id.toLowerCase();
+
+  // 3. Fallback matching across all fields: guestId, code, serial, phone
   found=users.find(u=>
-    (u.guestId && u.guestId.trim().toLowerCase()===idLower) ||
     (u.guestId && u.guestId.trim().toLowerCase()===lower) ||
     (u.code && u.code.trim().toLowerCase()===lower) ||
-    (u.code && u.code.trim().toLowerCase()===idLower)
-  );
-  if(found)return found;
-  found=users.find(u=>
     String(u.serial)===clean ||
     (u.phone && u.phone.replace(/[^0-9]/g,'')===clean.replace(/[^0-9]/g,''))
   );
@@ -1429,6 +1599,7 @@ async function submitGuest(e,id){
     u.guestType=f.get('guestType')||'Individual';
     u.personCount=personCount;
     if(file&&file.size)u.profilePhoto=await resizeImage(file);
+    u.qrValue=buildQrValue(u);
     save();
     closeModal();
     toast('Guest details updated');
@@ -1437,7 +1608,9 @@ async function submitGuest(e,id){
   }
   const serial=nextSerial(),guestId=uid(),prefix=(settings.eventName.replace(/[^A-Za-z]/g,'').slice(0,3)||'EVT').toUpperCase();
   const photo=await resizeImage(file);
-  const u={serial,guestId,name:f.get('name'),phone:f.get('phone'),email:f.get('email'),sscBatch:f.get('sscBatch')||'',idCardPassword:f.get('idCardPassword')||'1234',personCount,profilePhoto:photo,entryType:f.get('entryType')||'Guest',guestType:f.get('guestType')||'Individual',code:`${prefix}-${String(serial).padStart(4,'0')}-${guestId.slice(-4)}`,qrValue:`EVENTPASS|${guestId}`,checkedIn:false,checkedAt:null,scanner:null,createdAt:new Date().toISOString()};
+  const code=`${prefix}-${String(serial).padStart(4,'0')}-${guestId.slice(-4)}`;
+  const u={serial,guestId,name:f.get('name'),phone:f.get('phone'),email:f.get('email'),sscBatch:f.get('sscBatch')||'',idCardPassword:f.get('idCardPassword')||'1234',personCount,profilePhoto:photo,entryType:f.get('entryType')||'Guest',guestType:f.get('guestType')||'Individual',code,checkedIn:false,checkedAt:null,scanner:null,createdAt:new Date().toISOString()};
+  u.qrValue=buildQrValue(u);
   users.push(u);
   save();
   closeModal();
@@ -1795,7 +1968,91 @@ async function openGuest(id){
 }
 function inviteMessage(u){const qr=qrImageUrl(u);return `You're invited to ${settings.eventName}.\n\nGuest: ${u.name}\nGuest number: #${String(u.serial).padStart(2,'0')}\nGuest ID: ${u.guestId}\nEntry Code: ${u.code}\nPhone: ${u.phone||'N/A'}\nEmail: ${u.email||'N/A'}\n\nEvent: ${settings.eventName}\nDate & Time: ${fmtDateTime(settings.eventDate,settings.eventTime)}\nVenue: ${settings.venue||'N/A'}\n\nQR Code: ${qr}\n\nPlease open the QR Code link above and present the QR code at check-in. This QR code is valid for ONE entry only. Do not share it with anyone else.`}
 function downloadQR(id){const img=document.querySelector('#qrCanvas img');if(!img)return;const u=users.find(x=>x.guestId===id);const a=document.createElement('a');a.href=img.src;a.download=(u?.code||id)+'.png';a.click()}
-async function shareQR(id){const img=document.querySelector('#qrCanvas img');if(!img)return;const u=users.find(x=>x.guestId===id);try{const blob=await (await fetch(img.src)).blob();const file=new File([blob],`${u.code}.png`,{type:'image/png'});if(navigator.share&&(!navigator.canShare||navigator.canShare({files:[file]}))){await navigator.share({title:`${settings.eventName} — ${u.name}`,text:inviteMessage(u),files:[file]})}else{downloadQR(id);toast('QR downloaded — attach it to WhatsApp or Email')}}catch{downloadQR(id);toast('QR downloaded — attach it to WhatsApp or Email')}}
+function openSyncModal(){
+  const dataStr = JSON.stringify({
+    eventName: settings.eventName,
+    exportedAt: new Date().toISOString(),
+    users: users
+  }, null, 2);
+  const dataBlob = new Blob([dataStr], {type: 'application/json'});
+  const downloadUrl = URL.createObjectURL(dataBlob);
+  const totalCount = users.length;
+  const totalPersons = users.reduce((s,u)=>s+getGuestCount(u),0);
+
+  openModal(`
+    <div class="modalHead">
+      <div>
+        <span class="eyebrow">CROSS-DEVICE DATA SYNC</span>
+        <h2>📲 মোবাইল স্ক্যানার ডাটা সিঙ্ক (Device Sync)</h2>
+      </div>
+      <button class="close" onclick="closeModal()">×</button>
+    </div>
+    <p style="color:#8ba0be;font-size:13px;margin:0 0 16px">
+      ল্যাপটপ থেকে মোবাইলে সমস্ত গেস্ট লিস্ট ও কিউআর ডাটা সহজে ট্রান্সফার করুন যাতে যেকোনো মোবাইল দিয়ে অফলাইনে নির্ভুলভাবে স্ক্যান ও চেক-ইন করা যায়।
+    </p>
+
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:20px">
+      <div style="background:#0c1629;border:1.5px solid #1e3052;border-radius:12px;padding:16px;display:flex;flex-direction:column;justify-content:space-between">
+        <div>
+          <div style="font-size:24px;margin-bottom:8px">📥 ১. ডাটা এক্সপোর্ট (Laptop)</div>
+          <b style="color:#fff;font-size:14px;display:block">ল্যাপটপ থেকে ফাইল ডাউনলোড করুন</b>
+          <p style="color:#7e8ea6;font-size:12px;margin:6px 0 14px">মোট <b>${totalCount}</b> জন গেস্ট (${totalPersons} জন ব্যক্তি)-এর পূর্ণ ডাটাবেজ ফাইল ডাউনলোড করে হোয়াটসঅ্যাপে বা ব্লুটুথে মোবাইলে পাঠান।</p>
+        </div>
+        <a href="${downloadUrl}" download="eventpass-sync-data.json" class="primary" style="text-align:center;text-decoration:none;padding:11px 14px;font-size:13px;display:block;border-radius:8px">⬇️ Download Sync File (JSON)</a>
+      </div>
+
+      <div style="background:#0c1629;border:1.5px solid #1e3052;border-radius:12px;padding:16px;display:flex;flex-direction:column;justify-content:space-between">
+        <div>
+          <div style="font-size:24px;margin-bottom:8px">📲 ২. ডাটা ইমপোর্ট (Mobile)</div>
+          <b style="color:#fff;font-size:14px;display:block">মোবাইলে ফাইল আপলোড করুন</b>
+          <p style="color:#7e8ea6;font-size:12px;margin:6px 0 14px">মোবাইলে এই ওয়েবসাইট খুলে ডাউনলোড করা <code>eventpass-sync-data.json</code> ফাইলটি আপলোড করলেই সাথে সাথে সব গেস্ট মোবাইলে চলে আসবে।</p>
+        </div>
+        <label class="secondary" style="text-align:center;cursor:pointer;padding:11px 14px;font-size:13px;display:block;border-radius:8px;border:1px solid #3b82f6;color:#93c5fd">
+          ⬆️ Upload JSON to this Device
+          <input type="file" accept=".json,application/json" style="display:none" onchange="importSyncFile(this)">
+        </label>
+      </div>
+    </div>
+
+    <div style="background:#131c31;border:1px solid #233454;border-radius:12px;padding:14px;font-size:12.5px;color:#a5b4fc;line-height:1.6">
+      💡 <b>স্মার্ট কিউআর প্রযুক্তি:</b> আমাদের নতুন স্মার্ট কিউআরে অতিথির নাম, ব্যাচ ও ব্যক্তি সংখ্যা সরাসরি কিউআর কোডের ভেতরেই এনকোড করা থাকে। তাই মোবাইলে ডাটাবেজ ট্রান্সফার না করলেও কিউআর কোড স্ক্যান করলে স্বয়ংক্রিয়ভাবে অতিথি শনাক্ত হয়ে যায়!
+    </div>
+  `);
+}
+function importSyncFile(input){
+  const file = input?.files?.[0];
+  if(!file) return;
+  const reader = new FileReader();
+  reader.onload = function(e){
+    try{
+      const data = JSON.parse(e.target.result);
+      if(data && Array.isArray(data.users)){
+        const incoming = data.users;
+        let added = 0, updated = 0;
+        incoming.forEach(inc => {
+          const idx = users.findIndex(u => u.guestId === inc.guestId);
+          if(idx >= 0){
+            users[idx] = { ...users[idx], ...inc };
+            updated++;
+          }else{
+            users.push(inc);
+            added++;
+          }
+        });
+        save();
+        closeModal();
+        render();
+        toast(`ডাটা সিঙ্ক সফল! ${added} জন নতুন গেস্ট যুক্ত হয়েছে, ${updated} জন আপডেট হয়েছে ✓`);
+      }else{
+        toast('অবৈধ ফাইল ফরম্যাট! সঠিক eventpass-sync-data.json ফাইল দিন।','bad');
+      }
+    }catch(err){
+      toast('ফাইল পড়তে ব্যর্থ হয়েছে: ' + err.message, 'bad');
+    }
+  };
+  reader.readAsText(file);
+}
+
 function settingsHTML(){return `<section class="content settingsSection"><div class="panel formPanel"><span class="eyebrow">EVENT CONFIGURATION</span><h2>Event & Owner Settings</h2><p>Set event details, published date & time, venue and security password. Changes automatically reflect on all ID cards.</p><div class="formGrid"><label class="field"><span>Event name <b style="color:#ff8a8a">*</b></span><input id="sName" value="${esc(settings.eventName)}" placeholder="হীরক জয়ন্তী ২০২৭"></label><label class="field"><span>School / College / Institute Name</span><input id="sInstitute" value="${esc(settings.instituteName||settings.venue||defaults.instituteName)}" placeholder="অলিপুর আমডাঙ্গা স্কুল এন্ড কলেজ"><small>আইডি কার্ডের ফ্রন্ট ও ব্যাক পেজের উপরে বড় করে প্রদর্শিত হবে।</small></label><label class="field"><span>Event date <b style="color:#ff8a8a">*</b></span><input type="date" id="sDate" value="${esc(settings.eventDate)}"></label><label class="field"><span>Event time <b style="color:#ff8a8a">*</b></span><input id="sTime" value="${esc(settings.eventTime||'10:00 AM')}" placeholder="e.g. 10:00 AM"></label><label class="field"><span>Venue <b style="color:#ff8a8a">*</b></span><input id="sVenue" value="${esc(settings.venue)}" placeholder="Event Venue"></label><label class="field"><span>Organized By</span><input id="sOrganizedBy" value="${esc(settings.organizedBy||'SSC Batch 2018 Alumni')}" placeholder="e.g. SSC Batch 2018 Alumni"></label><label class="field"><span>Event Slogan (Front side)</span><input id="sEventSlogan" value="${esc(settings.eventSlogan||'Reconnect · Remember · Relive')}" placeholder="e.g. Reconnect · Remember · Relive"></label><label class="field"><span>Event Quote (Back side)</span><input id="sEventQuote" value="${esc(settings.eventQuote||'Same Friends New Stories')}" placeholder="e.g. Same Friends New Stories"></label><label class="field"><span>Event Motto (Wave footer)</span><input id="sEventMotto" value="${esc(settings.eventMotto||'A GREATER TOMORROW THROUGH FRIENDSHIP')}" placeholder="Motto text"></label><label class="field"><span>Scanner name</span><input id="sScanner" value="${esc(settings.scannerName)}"></label><label class="field"><span>Owner / Client name</span><input id="sOwnerName" value="${esc(settings.ownerName||'')}" placeholder="Event Owner"></label><label class="field"><span>Owner / Client email</span><input type="email" id="sOwnerEmail" value="${esc(settings.ownerEmail||'')}" placeholder="owner@example.com"></label><label class="field"><span>Owner / Client phone</span><input id="sOwnerPhone" value="${esc(settings.ownerPhone||'')}" placeholder="+8801XXXXXXXXX"></label></div><div class="settingsBlock"><h3>Email QR delivery</h3><p>For a real email with the QR image embedded, connect EmailJS below. The email service account controls the actual sender mailbox; the owner email is used as the reply-to/contact address.</p><div class="formGrid"><label class="field"><span>EmailJS Public Key</span><input id="sEmailPublic" value="${esc(settings.emailPublicKey||'')}" placeholder="Your EmailJS public key"></label><label class="field"><span>EmailJS Service ID</span><input id="sEmailService" value="${esc(settings.emailServiceId||'')}" placeholder="service_xxxxx"></label><label class="field"><span>EmailJS Template ID</span><input id="sEmailTemplate" value="${esc(settings.emailTemplateId||'')}" placeholder="template_xxxxx"></label><label class="field"><span>QR image size</span><input id="sQrSize" value="${esc(settings.qrSize||'400')}" inputmode="numeric" placeholder="400"></label></div><div class="formActions"><button class="secondary" onclick="testEmailConfig()">Send test email</button></div></div><div class="settingsBlock"><h3>🔐 Admin Password &amp; Security</h3><p>অ্যাডমিন পাসওয়ার্ড দিয়ে কন্ট্রোল সেন্টার, সেটিংস এবং গেস্ট ডিলিট সুরক্ষিত থাকে। ডিফল্ট পাসওয়ার্ড: <b>12345</b>। নিচে বর্তমান ও নতুন পাসওয়ার্ড দিয়ে পরিবর্তন করতে পারেন।</p><div class="formGrid"><label class="field"><span>Current / Old Admin Password</span><div class="passwordWrap"><input type="password" id="sOldAdminPassword" placeholder="Enter current password (default: 12345)"><button type="button" class="toggleEyeBtn" onclick="togglePasswordVisibility('sOldAdminPassword', this)" title="Show/Hide password">${EYE_OPEN_SVG}</button></div><small>পাসওয়ার্ড পরিবর্তনের জন্য বর্তমান পাসওয়ার্ড দিতে হবে।</small></label><label class="field"><span>New Admin Password</span><div class="passwordWrap"><input type="password" id="sNewAdminPassword" placeholder="Leave blank to keep current"><button type="button" class="toggleEyeBtn" onclick="togglePasswordVisibility('sNewAdminPassword', this)" title="Show/Hide password">${EYE_OPEN_SVG}</button></div><small>পরিবর্তন করতে না চাইলে ফাঁকা রাখুন (সর্বনিম্ন ৪ অক্ষর)।</small></label></div></div><div class="formActions"><button class="primary" onclick="saveSettings()">Save settings</button></div></div><div class="panel note"><h3>One-time QR verification</h3><p>Every guest has an immutable serial number, permanent Guest ID, unique entry code and QR value. The first valid scan changes the status to Verified / Attended and stores the scanner name + time. Any later scan shows <b>Already Attended</b> and is blocked. All Guests and Checked In are separate views.</p></div></section>`}
 async function saveSettings(){
   const oldPass=document.getElementById('sOldAdminPassword')?.value||'';
