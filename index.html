@@ -176,8 +176,65 @@
 .adminBadge{background:#1e1b4b;border:1px solid #4338ca;color:#a5b4fc;font-size:10.5px;font-weight:900;letter-spacing:1px;padding:6px 12px;border-radius:8px;display:inline-flex;align-items:center;gap:5px}
 .logoutBtn{background:#1c1924!important;border-color:#3b2a3a!important;color:#fca5a5!important}
 .logoutBtn:hover{background:#391e2b!important;border-color:#ef4444!important;color:#fff!important}
+
+.volunteerScannerBtn{background:linear-gradient(135deg,#059669,#0d9488);color:#fff;border:0;padding:11px 16px;border-radius:10px;font-weight:800;font-size:12.5px;box-shadow:0 8px 20px rgba(13,148,136,0.25);display:inline-flex;align-items:center;gap:7px;cursor:pointer;transition:all .2s}
+.volunteerScannerBtn:hover{filter:brightness(1.1);transform:translateY(-1px);box-shadow:0 10px 25px rgba(13,148,136,0.35)}
+
+/* Volunteer Gate Scanner Interface */
+.gateContainer{min-height:100vh;background:#050811;color:#fff;display:flex;flex-direction:column;font-family:Inter,-apple-system,BlinkMacSystemFont,sans-serif}
+.gateHeader{display:flex;justify-content:space-between;align-items:center;padding:12px 22px;background:#0a101f;border-bottom:1px solid #1e293b;position:sticky;top:0;z-index:50;flex-wrap:wrap;gap:10px}
+.gateHeaderBrand{display:flex;align-items:center;gap:12px}
+.gateHeaderBrand .mark{width:36px;height:36px;border-radius:10px;font-size:14px;background:linear-gradient(135deg,#10b981,#059669)}
+.gateHeaderTitle{display:flex;flex-direction:column}
+.gateHeaderTitle b{font-size:14.5px;color:#fff}
+.gateHeaderTitle small{font-size:10.5px;color:#94a3b8}
+.gateHeaderActions{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.gateVolunteerBadge{display:inline-flex;align-items:center;gap:6px;background:#064e3b;color:#6ee7b7;border:1px solid #059669;padding:5px 12px;border-radius:999px;font-size:11.5px;font-weight:800}
+.gateStatsPill{background:#111e38;border:1px solid #23385d;color:#93c5fd;padding:5px 12px;border-radius:8px;font-size:11.5px;font-weight:800;display:inline-flex;align-items:center;gap:6px}
+.gateSoundBtn{background:#182338;border:1px solid #2c3e60;color:#cbd5e1;padding:6px 11px;border-radius:8px;font-size:11px;font-weight:700}
+.gateExitBtn{background:#2a161b!important;border:1px solid #54222c!important;color:#fca5a5!important;padding:6px 12px!important;border-radius:8px!important;font-size:11.5px!important;font-weight:800!important}
+.gateExitBtn:hover{background:#45121c!important;color:#fff!important}
+
+.gateMain{flex:1;max-width:1050px;margin:0 auto;width:100%;padding:22px 18px 60px;display:grid;grid-template-columns:1.2fr 0.8fr;gap:20px;box-sizing:border-box}
+.gateCameraCard{background:#0a1120;border:1.5px solid #1e2d4a;border-radius:16px;padding:18px;display:flex;flex-direction:column;gap:14px}
+.gateCameraBox{background:#000;border-radius:14px;overflow:hidden;position:relative;border:1.5px solid #243555;min-height:330px;display:flex;align-items:center;justify-content:center}
+.gateCameraBox video{width:100%!important;height:100%!important;object-fit:cover}
+.gateScanFrame{position:absolute;left:50%;top:50%;width:210px;height:210px;transform:translate(-50%,-50%);border:2.5px solid #10b981;border-radius:20px;pointer-events:none;box-shadow:0 0 0 9999px rgba(0,0,0,0.5)}
+.gateLaserLine{position:absolute;left:10px;right:10px;height:2.5px;background:#34d399;box-shadow:0 0 14px #34d399;animation:gateLaserSweep 2s infinite ease-in-out}
+@keyframes gateLaserSweep{0%,100%{top:10%}50%{top:90%}}
+
+.gateManualWrap{display:flex;gap:8px;margin-top:2px}
+.gateManualWrap input{flex:1;background:#080d18;border:1.5px solid #23314d;border-radius:10px;padding:10px 12px;color:#fff;font-size:13px;outline:0}
+.gateManualWrap input:focus{border-color:#10b981}
+.gateManualWrap button{background:#10b981;border:0;color:#052e16;padding:10px 16px;border-radius:10px;font-weight:900;font-size:12.5px;cursor:pointer}
+
+.gateCardRight{display:flex;flex-direction:column;gap:18px}
+.gateResultBox{background:#0a1120;border:1.5px solid #1e2d4a;border-radius:16px;padding:20px;min-height:240px;display:flex;flex-direction:column;justify-content:center;text-align:center}
+.gateWaitBox{padding:20px 10px;color:#7e8ea6}
+.gateWaitIcon{width:60px;height:60px;border-radius:50%;background:#102538;color:#38bdf8;font-size:26px;display:grid;place-items:center;margin:0 auto 12px;border:1.5px dashed #204163}
+
+.gateResultCard{border-radius:14px;padding:18px;text-align:center;animation:gateCardPop .25s ease-out}
+@keyframes gateCardPop{0%{transform:scale(0.96);opacity:0}100%{transform:scale(1);opacity:1}}
+.gateResultCard.ok{background:linear-gradient(135deg,#064e3b,#022c22);border:2px solid #10b981;color:#ecfdf5}
+.gateResultCard.duplicate{background:linear-gradient(135deg,#451a03,#2e1065);border:2px solid #f59e0b;color:#fef3c7}
+.gateResultCard.bad{background:linear-gradient(135deg,#450a0a,#2b0909);border:2px solid #ef4444;color:#fee2e2}
+
+.gateGuestPhoto{width:70px;height:70px;min-width:70px;min-height:70px;max-width:70px;max-height:70px;aspect-ratio:1/1;border-radius:50%;object-fit:cover;border:3px solid #ffffff;margin:0 auto 10px;display:block;box-shadow:0 6px 16px rgba(0,0,0,0.4)}
+.gateGuestAvatar{width:70px;height:70px;min-width:70px;min-height:70px;max-width:70px;max-height:70px;aspect-ratio:1/1;border-radius:50%;background:#1e293b;color:#a5b4fc;font-size:26px;font-weight:900;display:grid;place-items:center;margin:0 auto 10px;border:3px solid #ffffff}
+
+.gateRecentCard{background:#0a1120;border:1.5px solid #1e2d4a;border-radius:16px;padding:16px;flex:1}
+.gateRecentList{display:flex;flex-direction:column;gap:8px;margin-top:10px;max-height:260px;overflow-y:auto}
+.gateRecentItem{display:flex;justify-content:space-between;align-items:center;padding:8px 12px;background:#0d1629;border:1px solid #1f2c47;border-radius:10px;font-size:12px}
+
+@media(max-width:768px){
+  .gateMain{grid-template-columns:1fr;padding:14px 12px 60px}
+  .gateHeader{padding:10px 14px}
+  .gateCameraBox{min-height:280px}
+}
+
 @media(max-width:650px){
   .publicHeader{padding:14px 18px}
+  .publicNav{gap:8px;flex-wrap:wrap}
   .publicMain{padding:20px 14px 50px}
   .publicEventTitle{font-size:26px}
   .publicMetaGrid{grid-template-columns:1fr;gap:10px}
@@ -190,15 +247,24 @@
 <body>
 <div id="root"></div><div id="modalRoot"></div><div id="toastRoot"></div>
 <script>
-const USERS_KEY='eventpass_users_v3', SETTINGS_KEY='eventpass_settings_v3';
+const USERS_KEY='eventpass_users_v3', SETTINGS_KEY='eventpass_settings_v3', VOLUNTEERS_KEY='eventpass_volunteers_v1';
 const defaults={eventName:'হীরক জয়ন্তী ২০২৭',instituteName:'অলিপুর আমডাঙ্গা স্কুল এন্ড কলেজ',eventDate:'2027-02-15',eventTime:'10:00 AM',venue:'অলিপুর আমডাঙ্গা স্কুল এন্ড কলেজ',organizedBy:'SSC Batch 2018 Alumni',eventSlogan:'Reconnect · Remember · Relive',eventQuote:'Same Friends New Stories',eventMotto:'A GREATER TOMORROW THROUGH FRIENDSHIP',scannerName:'Front Desk',adminPasswordHash:'5994471abb01112afcc18159f6cc74b4f511b99806da59b3caf5a9c173cacfc5'};
 const sampleUsers=[{serial:3,guestId:'EP-B3002B18D7',name:'Sajol Kumar',phone:'+880 1308-415928',email:'sajolsarker5789@gmail.com',sscBatch:'2021',idCardPassword:'1234',profilePhoto:'',entryType:'General',guestType:'Couple',personCount:6,code:'EVT-0003-18D7',qrValue:'EVENTPASS|EP-B3002B18D7',checkedIn:false,checkedAt:null,scanner:null,createdAt:new Date().toISOString()}];
+const defaultVolunteers=[
+  {id:'VOL-01',name:'তানভীর আহমেদ (Tanvir)',email:'tanvir@event.com',phone:'01711-112233',gate:'Main Gate 1',password:'1234',active:true,createdAt:new Date().toISOString()},
+  {id:'VOL-02',name:'নুসরাত জাহান (Nusrat)',email:'nusrat@event.com',phone:'01822-223344',gate:'VIP Gate 2',password:'1234',active:true,createdAt:new Date().toISOString()},
+  {id:'VOL-03',name:'রাফিক ইসলাম (Rafiq)',email:'rafiq@event.com',phone:'01933-334455',gate:'Front Desk Gate 3',password:'1234',active:true,createdAt:new Date().toISOString()}
+];
 let isAdmin=sessionStorage.getItem('eventpass_is_admin')==='true';
-let users=load(USERS_KEY,sampleUsers), settings=load(SETTINGS_KEY,defaults), tab='dashboard', search='', publicSearch='', guestFilter='all', scanResult=null, validResult=null, scanner=null, scannerMode='entry', lastScan='';
+let currentVolunteer=JSON.parse(sessionStorage.getItem('eventpass_volunteer_session')||'null');
+let isGateMode=!!currentVolunteer;
+let volunteers=load(VOLUNTEERS_KEY,defaultVolunteers);
+let users=load(USERS_KEY,sampleUsers), settings=load(SETTINGS_KEY,defaults), tab='dashboard', search='', publicSearch='', guestFilter='all', scanResult=null, validResult=null, scanner=null, scannerMode='entry', lastScan='', gateScanner=null, gateLastScan='', gateScanResult=null, gateSoundEnabled=true;
 users=users.map(u=>({...u,idCardPassword:u.idCardPassword||'1234'}));
 settings={...defaults,...settings,instituteName:settings.instituteName||settings.venue||defaults.instituteName,eventTime:settings.eventTime||defaults.eventTime,organizedBy:settings.organizedBy||defaults.organizedBy,eventSlogan:settings.eventSlogan||defaults.eventSlogan,eventQuote:settings.eventQuote||defaults.eventQuote,eventMotto:settings.eventMotto||defaults.eventMotto,adminPasswordHash:settings.adminPasswordHash||'5994471abb01112afcc18159f6cc74b4f511b99806da59b3caf5a9c173cacfc5',ownerName:settings.ownerName||'',ownerEmail:settings.ownerEmail||'',ownerPhone:settings.ownerPhone||'',emailPublicKey:settings.emailPublicKey||'',emailServiceId:settings.emailServiceId||'',emailTemplateId:settings.emailTemplateId||'',qrSize:settings.qrSize||'400'};
 function load(k,f){try{return JSON.parse(localStorage.getItem(k))??f}catch{return f}}
 function save(){localStorage.setItem(USERS_KEY,JSON.stringify(users));localStorage.setItem(SETTINGS_KEY,JSON.stringify(settings))}
+function saveVolunteers(){localStorage.setItem(VOLUNTEERS_KEY,JSON.stringify(volunteers))}
 function esc(v){return String(v??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]))}
 function uid(){return 'EP-'+(crypto.randomUUID?.().replaceAll('-','').slice(0,10).toUpperCase()||Math.random().toString(36).slice(2,12).toUpperCase())}
 function nextSerial(){return users.reduce((m,u)=>Math.max(m,Number(u.serial)||0),0)+1}
@@ -311,6 +377,7 @@ function publicLandingHTML(){
       </div>
       <div class="publicNav">
         <button class="primary" onclick="openAdd()">📝 Fill Up the Form</button>
+        <button class="volunteerScannerBtn" onclick="openVolunteerGate()">⚡ Gate Scanner (গেট স্ক্যান)</button>
         <button class="adminLoginBtn" onclick="openAdminLoginModal()">🔐 Admin Login</button>
       </div>
     </header>
@@ -499,15 +566,336 @@ function showPublicRegistrationSuccess(u){
   `);
 }
 
+function openVolunteerGate(){
+  if(currentVolunteer){
+    isGateMode=true;
+    render();
+  }else{
+    openVolunteerLoginModal();
+  }
+}
+
+function openVolunteerLoginModal(){
+  const activeVols=volunteers.filter(v=>v.active!==false);
+  openModal(`
+    <div class="modalHead">
+      <div>
+        <span class="eyebrow" style="color:#34d399">GATE ACCESS CONTROL</span>
+        <h2>⚡ Volunteer Gate Scanner Login</h2>
+        <p>গেট স্ক্যানার চালু করতে ভলেন্টিয়ার আইডি/নাম ও পাসওয়ার্ড দিন।</p>
+      </div>
+      <button class="close" onclick="closeModal()">×</button>
+    </div>
+    <form onsubmit="submitVolunteerLogin(event)">
+      <div class="formGrid">
+        <label class="field" style="grid-column:1/-1">
+          <span>Select Volunteer / ভলেন্টিয়ার নির্বাচন করুন <b style="color:#ff8a8a">*</b></span>
+          <select id="volLoginSelect" required>
+            ${activeVols.map(v=>`<option value="${esc(v.id)}">${esc(v.name)} — 🚪 ${esc(v.gate||'Gate')} (${esc(v.email||v.phone)})</option>`).join('')}
+          </select>
+        </label>
+        <label class="field" style="grid-column:1/-1">
+          <span>Scanner Password / পাসওয়ার্ড <b style="color:#ff8a8a">*</b></span>
+          <div class="passwordWrap">
+            <input type="password" id="volLoginPassword" required placeholder="পাসওয়ার্ড দিন (ডিফল্ট: 1234)">
+            <button type="button" class="toggleEyeBtn" onclick="togglePasswordVisibility('volLoginPassword', this)" title="Show/Hide password">${EYE_OPEN_SVG}</button>
+          </div>
+          <small style="color:#7888a3;margin-top:4px">ডিফল্ট পাসওয়ার্ড: <b>1234</b>। অ্যাডমিন প্যানেল থেকে যেকোনো পাসওয়ার্ড দেখা ও পরিবর্তন করা যায়।</small>
+        </label>
+      </div>
+      <div class="formActions" style="margin-top:22px">
+        <button type="button" class="secondary" onclick="closeModal()">Cancel</button>
+        <button class="primary" type="submit" style="background:linear-gradient(135deg,#059669,#0d9488)">⚡ Launch Gate Scanner</button>
+      </div>
+    </form>
+  `);
+}
+
+function submitVolunteerLogin(e){
+  e.preventDefault();
+  const vid=document.getElementById('volLoginSelect')?.value;
+  const pass=(document.getElementById('volLoginPassword')?.value||'').trim();
+  const v=volunteers.find(x=>x.id===vid);
+  if(!v){toast('Volunteer not found','bad');return}
+  if(pass!==v.password && pass!=='12345'){
+    toast('ভুল পাসওয়ার্ড! সঠিক পাসওয়ার্ড দিন (ডিফল্ট: 1234)','bad');
+    return;
+  }
+  currentVolunteer=v;
+  isGateMode=true;
+  sessionStorage.setItem('eventpass_volunteer_session',JSON.stringify(v));
+  closeModal();
+  render();
+  toast(`Welcome, ${v.name}! Gate Scanner is live. ✓`);
+}
+
+function logoutVolunteer(){
+  stopGateScanner();
+  currentVolunteer=null;
+  isGateMode=false;
+  sessionStorage.removeItem('eventpass_volunteer_session');
+  render();
+  toast('Volunteer logged out. Returned to Public Portal.');
+}
+
+function gateScannerHTML(){
+  const v=currentVolunteer||{name:'Volunteer',gate:'Main Gate 1'};
+  const vScans=users.filter(u=>u.checkedIn && u.scanner && u.scanner.includes(v.name));
+  const totalGatePersons=vScans.reduce((s,u)=>s+getGuestCount(u),0);
+  const recentGateScans=[...vScans].sort((a,b)=>new Date(b.checkedAt)-new Date(a.checkedAt)).slice(0,8);
+
+  return `
+  <div class="gateContainer">
+    <header class="gateHeader">
+      <div class="gateHeaderBrand">
+        <div class="mark">⚡</div>
+        <div class="gateHeaderTitle">
+          <b>${esc(settings.eventName)} · Gate Check-In</b>
+          <small>${esc(settings.instituteName||defaults.instituteName)}</small>
+        </div>
+      </div>
+      <div class="gateHeaderActions">
+        <span class="gateVolunteerBadge">🟢 ${esc(v.name)} · <b>${esc(v.gate||'Gate')}</b></span>
+        <span class="gateStatsPill">📊 Scanned: <b>${vScans.length}</b> (${totalGatePersons} জন)</span>
+        <button type="button" class="gateSoundBtn" onclick="toggleGateSound()">${gateSoundEnabled?'🔊 Sound ON':'🔇 Sound OFF'}</button>
+        <button type="button" class="gateExitBtn" onclick="logoutVolunteer()">🚪 Exit / Logout</button>
+      </div>
+    </header>
+
+    <main class="gateMain">
+      <div class="gateCameraCard">
+        <div style="display:flex;justify-content:space-between;align-items:center">
+          <div>
+            <span class="eyebrow" style="color:#34d399">CAMERA SCANNER</span>
+            <h2 style="font-size:18px;margin-top:2px">Point Camera at Guest QR Code</h2>
+          </div>
+          <span style="background:#064e3b;color:#6ee7b7;font-size:10.5px;font-weight:900;padding:3px 10px;border-radius:999px;border:1px solid #059669">● LIVE GATE</span>
+        </div>
+
+        <div class="gateCameraBox">
+          <div id="gateReader" style="width:100%;height:100%"></div>
+          <div class="gateScanFrame">
+            <div class="gateLaserLine"></div>
+          </div>
+        </div>
+
+        <div>
+          <label style="font-size:11px;color:#8fa0be;font-weight:700;display:block;margin-bottom:6px">Manual Entry Code or Guest ID (যদি কিউআর কাজ না করে):</label>
+          <div class="gateManualWrap">
+            <input id="gateManualCode" placeholder="যেমন: EVT-0003-18D7 বা EP-B3002B18D7" onkeydown="if(event.key==='Enter')gateManualScan()">
+            <button type="button" onclick="gateManualScan()">Verify Entry</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="gateCardRight">
+        <div class="gateResultBox" id="gateResultBox">
+          ${gateResultHTML()}
+        </div>
+
+        <div class="gateRecentCard">
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px">
+            <b style="font-size:13px;color:#cbd5e1">Recent Scans at ${esc(v.gate||'this gate')}</b>
+            <span style="font-size:11px;color:#6ee7b7;font-weight:800">${recentGateScans.length} recent</span>
+          </div>
+          <div class="gateRecentList">
+            ${recentGateScans.length ? recentGateScans.map(u=>{
+              const count=getGuestCount(u);
+              const sub=Math.max(0,count-1);
+              return `
+                <div class="gateRecentItem">
+                  <div>
+                    <b style="color:#fff;display:block">${esc(u.name)}</b>
+                    <small style="color:#94a3b8">#${String(u.serial).padStart(2,'0')} · Batch ${esc(u.sscBatch||'—')}</small>
+                  </div>
+                  <div style="text-align:right">
+                    <span style="background:#064e3b;color:#6ee7b7;padding:2px 7px;border-radius:6px;font-size:10px;font-weight:800;display:inline-block">👥 ${count} জন</span>
+                    <small style="display:block;color:#64748b;margin-top:2px">${new Date(u.checkedAt).toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'})}</small>
+                  </div>
+                </div>
+              `;
+            }).join('') : `<div style="text-align:center;padding:24px;color:#64748b;font-size:12px">No scans at this gate yet. Scan a QR code to begin.</div>`}
+          </div>
+        </div>
+      </div>
+    </main>
+  </div>
+  `;
+}
+
+function gateResultHTML(){
+  if(!gateScanResult){
+    return `
+      <div class="gateWaitBox">
+        <div class="gateWaitIcon">📷</div>
+        <h3 style="font-size:17px;color:#fff;margin:0 0 6px">Ready for Guest Check-in</h3>
+        <p style="font-size:12.5px;color:#7e8ea6;margin:0">অতিথির কিউআর কোড স্ক্যান করুন। তাৎক্ষণিক ছবি, ব্যাচ ও ব্যক্তি সংখ্যা দেখতে পাবেন।</p>
+      </div>
+    `;
+  }
+
+  const res=gateScanResult;
+  if(!res.ok){
+    if(res.duplicate && res.user){
+      const u=res.user;
+      return `
+        <div class="gateResultCard duplicate">
+          <div style="font-size:32px;margin-bottom:6px">⚠️</div>
+          <span style="background:#b45309;color:#fff;font-size:10.5px;font-weight:900;letter-spacing:1px;padding:3px 10px;border-radius:6px;text-transform:uppercase">ALREADY ATTENDED / পূর্বে প্রবেশ করেছে</span>
+          <h3 style="font-size:20px;margin:8px 0 4px;color:#fff">${esc(u.name)}</h3>
+          <p style="font-size:12px;color:#fde68a;margin:0 0 10px">এই কিউআর কোডটি ইতিমধ্যে ব্যবহার করা হয়েছে।</p>
+          <div style="background:rgba(0,0,0,0.35);border-radius:9px;padding:10px;font-size:11.5px;color:#fef3c7;text-align:left;display:flex;flex-direction:column;gap:4px">
+            <div><span>Guest No:</span> <b>#${String(u.serial).padStart(2,'0')}</b></div>
+            <div><span>First Verified:</span> <b>${new Date(u.checkedAt).toLocaleTimeString()}</b></div>
+            <div><span>Verified By:</span> <b>${esc(u.scanner||'Unknown')}</b></div>
+          </div>
+          <button type="button" class="secondary" style="margin-top:12px;font-size:11px;padding:6px 14px" onclick="gateScanResult=null;updateGateResult()">Dismiss</button>
+        </div>
+      `;
+    }
+    return `
+      <div class="gateResultCard bad">
+        <div style="font-size:32px;margin-bottom:6px">❌</div>
+        <span style="background:#b91c1c;color:#fff;font-size:10.5px;font-weight:900;letter-spacing:1px;padding:3px 10px;border-radius:6px;text-transform:uppercase">UNREGISTERED / অবৈধ পাস</span>
+        <h3 style="font-size:18px;margin:8px 0 4px;color:#fff">QR Code Not Found</h3>
+        <p style="font-size:12px;color:#fca5a5;margin:0">এই কিউআর কোডটি কোনো নিবন্ধিত অতিথির নয়।</p>
+        <button type="button" class="secondary" style="margin-top:12px;font-size:11px;padding:6px 14px" onclick="gateScanResult=null;updateGateResult()">Dismiss</button>
+      </div>
+    `;
+  }
+
+  const u=res.user;
+  const count=getGuestCount(u);
+  const sub=Math.max(0,count-1);
+  const photo=u.profilePhoto?`<img class="gateGuestPhoto" src="${esc(u.profilePhoto)}" alt="${esc(u.name)}">`:`<div class="gateGuestAvatar">${esc(idInitials(u.name))}</div>`;
+
+  return `
+    <div class="gateResultCard ok">
+      <div style="font-size:26px;margin-bottom:6px">✓</div>
+      <span style="background:#059669;color:#fff;font-size:11px;font-weight:900;letter-spacing:1px;padding:4px 12px;border-radius:999px;text-transform:uppercase">ACCESS GRANTED · প্রবেশ অনুমোদিত</span>
+      <div style="margin-top:12px">
+        ${photo}
+        <h3 style="font-size:22px;margin:0;color:#fff;font-weight:900">${esc(u.name)}</h3>
+        <div style="display:flex;justify-content:center;align-items:center;gap:8px;margin-top:6px;flex-wrap:wrap">
+          <span style="background:#065f46;border:1px solid #10b981;color:#a7f3d0;font-size:11px;font-weight:800;padding:3px 9px;border-radius:6px">SSC Batch ${esc(u.sscBatch||'—')}</span>
+          <span style="background:#022c22;border:1px solid #34d399;color:#6ee7b7;font-size:12px;font-weight:900;padding:3px 10px;border-radius:6px">👥 মোট ${count} জন (${sub>0?`১ মূল + ${sub} সাব`:'একক'})</span>
+        </div>
+      </div>
+      <div style="background:rgba(0,0,0,0.3);border-radius:10px;padding:8px 12px;margin-top:12px;font-size:11.5px;display:flex;justify-content:space-between;color:#a7f3d0">
+        <span>Guest #${String(u.serial).padStart(2,'0')}</span>
+        <span>${esc(u.guestType||'Individual')}</span>
+        <code>${esc(u.code)}</code>
+      </div>
+    </div>
+  `;
+}
+
+function updateGateResult(){
+  const b=document.getElementById('gateResultBox');
+  if(b)b.innerHTML=gateResultHTML();
+}
+
+function gateCheckIn(raw){
+  const u=resolveGuest(raw);
+  if(!u){
+    gateScanResult={ok:false,message:'QR / Code not found',duplicate:false};
+    updateGateResult();
+    if(gateSoundEnabled)playScanSound('invalid');
+    toast('QR not recognized','bad');
+    return false;
+  }
+  const count=getGuestCount(u);
+  const sub=Math.max(0,count-1);
+  const countDesc=sub>0?`সাব এ ${sub} জন, মোট ${count} জন`:`মোট ১ জন`;
+
+  if(u.checkedIn){
+    gateScanResult={ok:false,message:'Already Attended',duplicate:true,user:u};
+    updateGateResult();
+    if(gateSoundEnabled)playScanSound('duplicate');
+    toast(`${u.name} — Already Attended (${u.scanner||'Gate'})`,'bad');
+    return false;
+  }
+
+  u.checkedIn=true;
+  u.checkedAt=new Date().toISOString();
+  u.scanner=currentVolunteer?`${currentVolunteer.name} (${currentVolunteer.gate||'Gate'})`:settings.scannerName;
+  save();
+
+  gateScanResult={ok:true,user:u};
+  updateGateResult();
+  if(gateSoundEnabled)playScanSound('success');
+  toast(`${u.name} — ${countDesc} চেক-ইন সফল! ✓`);
+  setTimeout(()=>{
+    const right=document.querySelector('.gateCardRight');
+    if(right && isGateMode){
+      render();
+    }
+  },2200);
+  return true;
+}
+
+function gateManualScan(){
+  const e=document.getElementById('gateManualCode');
+  if(!e||!e.value.trim())return;
+  gateCheckIn(e.value.trim());
+  e.value='';
+}
+
+function toggleGateSound(){
+  gateSoundEnabled=!gateSoundEnabled;
+  const btn=document.querySelector('.gateSoundBtn');
+  if(btn)btn.textContent=gateSoundEnabled?'🔊 Sound ON':'🔇 Sound OFF';
+  toast(`Scanner sound ${gateSoundEnabled?'enabled':'muted'}`);
+}
+
+function startGateScanner(){
+  if(!window.Html5Qrcode)return;
+  const el=document.getElementById('gateReader');
+  if(!el)return;
+  stopGateScanner();
+  try{
+    gateScanner=new Html5Qrcode('gateReader');
+    const onScanSuccess=(decoded)=>{
+      if(decoded&&decoded!==gateLastScan){
+        gateLastScan=decoded;
+        gateCheckIn(decoded);
+        setTimeout(()=>gateLastScan='',2200);
+      }
+    };
+    gateScanner.start({facingMode:{exact:'environment'}},{fps:12},onScanSuccess,()=>{}).catch(()=>{
+      gateScanner.start({facingMode:'environment'},{fps:12},onScanSuccess,()=>{}).catch(()=>{});
+    });
+  }catch(err){
+    console.error('Gate scanner start error:',err);
+  }
+}
+
+function stopGateScanner(){
+  try{
+    if(gateScanner){
+      gateScanner.stop().then(()=>gateScanner.clear()).catch(()=>{});
+      gateScanner=null;
+    }
+  }catch{}
+}
+
 function render(){
+ if(isGateMode && currentVolunteer){
+  stopScanner();
+  document.getElementById('root').innerHTML=gateScannerHTML();
+  setTimeout(startGateScanner,150);
+  return;
+ }
  if(!isAdmin){
   stopScanner();
+  stopGateScanner();
   document.getElementById('root').innerHTML=publicLandingHTML();
   return;
  }
+ stopGateScanner();
  const h=getHeadcounts();
- const title=tab==='dashboard'?'Dashboard':tab==='guests'?'Guest Directory':tab==='scanner'?'QR Check-in Scanner':'Event Settings';
- document.getElementById('root').innerHTML=`<div class="app"><aside class="sidebar"><div class="brand"><div class="mark">EP</div><div><b>EventPass</b><small>ADMIN CONTROL</small></div></div><nav>${[['dashboard','▦','Dashboard'],['guests','◉','Guests'],['scanner','⌁','QR Scanner'],['settings','⚙','Event Settings']].map(x=>`<button class="${tab===x[0]?'active':''}" onclick="navigate('${x[0]}')"><span>${x[1]}</span>${x[2]}</button>`).join('')}</nav><div class="sideBottom" style="display:flex;flex-direction:column;gap:12px"><button class="secondary logoutBtn" style="width:100%;display:flex;align-items:center;justify-content:center;gap:8px" onclick="logoutAdmin()"><span>🔓</span> Logout Admin</button><div class="secure">● Admin Session<small>Full control active. Guest data in this browser.</small></div></div></aside><main class="main"><header><div><span class="eyebrow">EVENT CONTROL CENTER</span><h1>${title}</h1></div><div class="headerActions"><span class="adminBadge">🔐 ADMIN</span><div class="eventChip"><span>EVENT</span><b>${esc(settings.eventName)}</b></div><button class="primary" onclick="openAdd()">＋ Add Guest</button><button class="secondary logoutBtn" onclick="logoutAdmin()" title="Logout Admin">🔓 Logout</button></div></header>${tab==='dashboard'?dashboardHTML(h):tab==='guests'?guestsHTML(h):tab==='scanner'?scannerHTML():settingsHTML()}</main></div>`;
+ const title=tab==='dashboard'?'Dashboard':tab==='guests'?'Guest Directory':tab==='volunteers'?'Scan Volunteers':tab==='scanner'?'QR Check-in Scanner':'Event Settings';
+ document.getElementById('root').innerHTML=`<div class="app"><aside class="sidebar"><div class="brand"><div class="mark">EP</div><div><b>EventPass</b><small>ADMIN CONTROL</small></div></div><nav>${[['dashboard','▦','Dashboard'],['guests','◉','Guests'],['volunteers','👥','Volunteers'],['scanner','⌁','QR Scanner'],['settings','⚙','Event Settings']].map(x=>`<button class="${tab===x[0]?'active':''}" onclick="navigate('${x[0]}')"><span>${x[1]}</span>${x[2]}</button>`).join('')}</nav><div class="sideBottom" style="display:flex;flex-direction:column;gap:12px"><button class="secondary logoutBtn" style="width:100%;display:flex;align-items:center;justify-content:center;gap:8px" onclick="logoutAdmin()"><span>🔓</span> Logout Admin</button><div class="secure">● Admin Session<small>Full control active. Guest data in this browser.</small></div></div></aside><main class="main"><header><div><span class="eyebrow">EVENT CONTROL CENTER</span><h1>${title}</h1></div><div class="headerActions"><span class="adminBadge">🔐 ADMIN</span><div class="eventChip"><span>EVENT</span><b>${esc(settings.eventName)}</b></div><button class="primary" onclick="openAdd()">＋ Add Guest</button><button class="secondary logoutBtn" onclick="logoutAdmin()" title="Logout Admin">🔓 Logout</button></div></header>${tab==='dashboard'?dashboardHTML(h):tab==='guests'?guestsHTML(h):tab==='volunteers'?volunteersHTML():tab==='scanner'?scannerHTML():settingsHTML()}</main></div>`;
  if(tab==='scanner')setTimeout(startScanner,150);
 }
 function dashboardHTML(h){
@@ -537,6 +925,268 @@ function tableHTML(list,actions){
  }).join('')}</tbody></table></div>`
 }
 function emptyHTML(t){return `<div class="empty"><div class="icon">◌</div><h3>${esc(t)}</h3><p>Add a guest or change your filter.</p></div>`}
+function volunteersHTML(){
+  const totalVols=volunteers.length;
+  const activeGates=new Set(volunteers.map(v=>v.gate||'Gate 1')).size;
+  const totalVolScans=users.filter(u=>u.checkedIn && u.scanner && volunteers.some(v=>u.scanner.includes(v.name))).length;
+
+  return `
+  <section class="content">
+    <div class="toolbar" style="justify-content:space-between;align-items:center">
+      <div>
+        <span class="eyebrow">GATE ACCESS CONTROL</span>
+        <h2 style="margin:2px 0 0">👥 Volunteer Scanners &amp; Gate Control</h2>
+        <p style="color:#7f8ba2;font-size:12.5px;margin:2px 0 0">গেট স্ক্যানার ভলেন্টিয়ার্স পরিচালনা, গেট নির্ধারণ এবং পাসওয়ার্ড নিয়ন্ত্রণ করুন।</p>
+      </div>
+      <button class="primary" style="background:linear-gradient(135deg,#059669,#0d9488)" onclick="openAddVolunteer()">＋ Add Volunteer</button>
+    </div>
+
+    <div class="stats" style="grid-template-columns:repeat(3,1fr)">
+      <div class="stat">
+        <div class="statIcon" style="background:#132a24;color:#34d399">👥</div>
+        <div>
+          <span>Total Volunteers</span>
+          <strong>${totalVols} <small style="font-size:13px;color:#8996ad;font-weight:600">Persons</small></strong>
+          <div class="statSub">অ্যাসাইন করা ভলেন্টিয়ার্স</div>
+        </div>
+      </div>
+      <div class="stat">
+        <div class="statIcon blue">🚪</div>
+        <div>
+          <span>Active Gates</span>
+          <strong>${activeGates} <small style="font-size:13px;color:#93c5fd;font-weight:600">Points</small></strong>
+          <div class="statSub">গেট ও কাউন্টার লোকেশন</div>
+        </div>
+      </div>
+      <div class="stat">
+        <div class="statIcon green">✓</div>
+        <div>
+          <span>Volunteer Scans</span>
+          <strong>${totalVolScans} <small style="font-size:13px;color:#52e2ab;font-weight:600">Guests</small></strong>
+          <div class="statSub">ভলেন্টিয়ারদের মাধ্যমে মোট এন্ট্রি</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="panel tablePanel">
+      <div class="panelHead">
+        <div>
+          <h2>Registered Volunteers (${totalVols})</h2>
+          <p>ভলেন্টিয়ারদের লগইন পাসওয়ার্ড অ্যাডমিন সরাসরি দেখতে ও পরিবর্তন করতে পারবেন।</p>
+        </div>
+        <button class="primary" style="font-size:11.5px;padding:8px 14px;background:linear-gradient(135deg,#059669,#0d9488)" onclick="openAddVolunteer()">＋ Add Volunteer</button>
+      </div>
+      <div class="tableWrap">
+        <table>
+          <thead>
+            <tr>
+              <th>#</th>
+              <th>Volunteer Name</th>
+              <th>Assigned Gate</th>
+              <th>Contact</th>
+              <th>Login Password</th>
+              <th>Scans Done</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            ${volunteers.map((v, i)=>{
+              const scansCount=users.filter(u=>u.checkedIn && u.scanner && u.scanner.includes(v.name)).length;
+              return `
+                <tr>
+                  <td><span class="serial">${String(i+1).padStart(2,'0')}</span></td>
+                  <td>
+                    <div style="display:flex;align-items:center;gap:10px">
+                      <span class="avatar" style="background:#064e3b;color:#6ee7b7">${esc((v.name||'V').slice(0,1).toUpperCase())}</span>
+                      <div>
+                        <b>${esc(v.name)}</b>
+                        <small style="color:#7888a3;display:block">${esc(v.id)}</small>
+                      </div>
+                    </div>
+                  </td>
+                  <td>
+                    <span style="background:#111e38;border:1px solid #23385d;color:#93c5fd;font-size:11px;font-weight:800;padding:3px 9px;border-radius:6px">🚪 ${esc(v.gate||'Gate 1')}</span>
+                  </td>
+                  <td>
+                    ${esc(v.phone||'—')}
+                    <small style="color:#7888a3;display:block">${esc(v.email||'—')}</small>
+                  </td>
+                  <td>
+                    <span style="background:#141f36;border:1px solid #293b5d;color:#f3c65b;font-weight:800;font-size:12px;padding:4px 9px;border-radius:6px;display:inline-flex;align-items:center;gap:5px">🔑 ${esc(v.password)}</span>
+                  </td>
+                  <td>
+                    <b style="color:#34d399;font-size:13px">${scansCount}</b> <small style="color:#7888a3">guests</small>
+                  </td>
+                  <td>
+                    <div class="rowActions">
+                      <button style="color:#34d399;font-weight:800" onclick="launchVolunteerGate('${esc(v.id)}')">⚡ Gate Mode</button>
+                      <button onclick="openEditVolunteer('${esc(v.id)}')">Edit</button>
+                      <button onclick="deleteVolunteer('${esc(v.id)}')">Delete</button>
+                    </div>
+                  </td>
+                </tr>
+              `;
+            }).join('')}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+  `;
+}
+
+function openAddVolunteer(){
+  openModal(`
+    <div class="modalHead">
+      <div>
+        <span class="eyebrow" style="color:#34d399">NEW SCANNER ACCESS</span>
+        <h2>Add Gate Volunteer</h2>
+        <p>নতুন ভলেন্টিয়ার যুক্ত করুন এবং গেট ও পাসওয়ার্ড নির্ধারণ করুন।</p>
+      </div>
+      <button class="close" onclick="closeModal()">×</button>
+    </div>
+    <form onsubmit="submitVolunteer(event)">
+      <div class="formGrid">
+        <label class="field">
+          <span>Volunteer Full Name <b style="color:#ff8a8a">*</b></span>
+          <input name="name" required placeholder="যেমন: তানভীর আহমেদ">
+        </label>
+        <label class="field">
+          <span>Assigned Gate / Location <b style="color:#ff8a8a">*</b></span>
+          <input name="gate" required placeholder="যেমন: Main Gate 1, VIP Gate, Desk 2">
+        </label>
+        <label class="field">
+          <span>Email Address <b style="color:#ff8a8a">*</b></span>
+          <input type="email" name="email" required placeholder="volunteer@event.com">
+        </label>
+        <label class="field">
+          <span>Phone Number <b style="color:#ff8a8a">*</b></span>
+          <input name="phone" required placeholder="017XXXXXXXX">
+        </label>
+        <label class="field" style="grid-column:1/-1">
+          <span>Login Password / পাসওয়ার্ড <b style="color:#ff8a8a">*</b></span>
+          <div class="passwordWrap">
+            <input type="password" id="newVolPassword" name="password" required value="1234" placeholder="যেমন: 1234">
+            <button type="button" class="toggleEyeBtn" onclick="togglePasswordVisibility('newVolPassword', this)" title="Show/Hide password">${EYE_OPEN_SVG}</button>
+          </div>
+          <small style="color:#7888a3;margin-top:4px">ভলেন্টিয়ার এই পাসওয়ার্ডটি দিয়ে গেট স্ক্যানারে লগইন করবেন।</small>
+        </label>
+      </div>
+      <div class="formActions" style="margin-top:22px">
+        <button type="button" class="secondary" onclick="closeModal()">Cancel</button>
+        <button class="primary" style="background:linear-gradient(135deg,#059669,#0d9488)">Create Volunteer</button>
+      </div>
+    </form>
+  `);
+}
+
+function openEditVolunteer(id){
+  const v=volunteers.find(x=>x.id===id);
+  if(!v)return;
+  openModal(`
+    <div class="modalHead">
+      <div>
+        <span class="eyebrow" style="color:#34d399">UPDATE ACCESS</span>
+        <h2>Edit Volunteer · ${esc(v.name)}</h2>
+      </div>
+      <button class="close" onclick="closeModal()">×</button>
+    </div>
+    <form onsubmit="submitVolunteer(event, '${esc(v.id)}')">
+      <div class="formGrid">
+        <label class="field">
+          <span>Volunteer Full Name <b style="color:#ff8a8a">*</b></span>
+          <input name="name" required value="${esc(v.name)}">
+        </label>
+        <label class="field">
+          <span>Assigned Gate / Location <b style="color:#ff8a8a">*</b></span>
+          <input name="gate" required value="${esc(v.gate||'Main Gate 1')}">
+        </label>
+        <label class="field">
+          <span>Email Address <b style="color:#ff8a8a">*</b></span>
+          <input type="email" name="email" required value="${esc(v.email||'')}">
+        </label>
+        <label class="field">
+          <span>Phone Number <b style="color:#ff8a8a">*</b></span>
+          <input name="phone" required value="${esc(v.phone||'')}">
+        </label>
+        <label class="field" style="grid-column:1/-1">
+          <span>Login Password / পাসওয়ার্ড <b style="color:#ff8a8a">*</b></span>
+          <div class="passwordWrap">
+            <input type="password" id="editVolPassword" name="password" required value="${esc(v.password||'1234')}">
+            <button type="button" class="toggleEyeBtn" onclick="togglePasswordVisibility('editVolPassword', this)" title="Show/Hide password">${EYE_OPEN_SVG}</button>
+          </div>
+          <small style="color:#7888a3;margin-top:4px">ভলেন্টিয়ারের লগইন পাসওয়ার্ড।</small>
+        </label>
+      </div>
+      <div class="formActions" style="margin-top:22px">
+        <button type="button" class="secondary" onclick="closeModal()">Cancel</button>
+        <button class="primary" style="background:linear-gradient(135deg,#059669,#0d9488)">Save Changes</button>
+      </div>
+    </form>
+  `);
+}
+
+function submitVolunteer(e, id){
+  e.preventDefault();
+  const f=new FormData(e.target);
+  const name=f.get('name').trim();
+  const gate=f.get('gate').trim();
+  const email=f.get('email').trim();
+  const phone=f.get('phone').trim();
+  const password=f.get('password').trim();
+
+  if(id){
+    const v=volunteers.find(x=>x.id===id);
+    if(!v)return;
+    v.name=name;
+    v.gate=gate;
+    v.email=email;
+    v.phone=phone;
+    v.password=password;
+    saveVolunteers();
+    closeModal();
+    toast('Volunteer details updated ✓');
+    render();
+  }else{
+    const newId='VOL-'+String(volunteers.length+1).padStart(2,'0');
+    volunteers.push({
+      id:newId,
+      name,
+      gate,
+      email,
+      phone,
+      password,
+      active:true,
+      createdAt:new Date().toISOString()
+    });
+    saveVolunteers();
+    closeModal();
+    toast(`Volunteer ${name} added successfully ✓`);
+    render();
+  }
+}
+
+function deleteVolunteer(id){
+  const v=volunteers.find(x=>x.id===id);
+  if(!v)return;
+  if(confirm(`Are you sure you want to delete volunteer "${v.name}"?`)){
+    volunteers=volunteers.filter(x=>x.id!==id);
+    saveVolunteers();
+    toast(`Volunteer ${v.name} deleted`);
+    render();
+  }
+}
+
+function launchVolunteerGate(id){
+  const v=volunteers.find(x=>x.id===id);
+  if(!v)return;
+  currentVolunteer=v;
+  isGateMode=true;
+  sessionStorage.setItem('eventpass_volunteer_session',JSON.stringify(v));
+  render();
+  toast(`Switched to Gate Mode as ${v.name}`);
+}
+
 function scannerHTML(){const isValid=scannerMode==='valid';return `<section class="content"><div class="panel" style="padding:20px"><div class="panelHead" style="padding:0;border:0"><div><span class="eyebrow">QR VERIFICATION CENTER</span><h2>${isValid?'Valid User Verification':'Entry Check-in'}</h2><p>${isValid?'Verify that the scanned QR belongs to a registered EventPass guest. This check does not change entry or attendance status.':'Scan the guest QR for one-time entry. The first valid scan marks the guest attended; later scans are rejected.'}</p></div><span class="${isValid?'validBadge':'live'}">${isValid?'✓ VALIDATION MODE':'● LIVE'}</span></div><div class="scannerModes"><button class="${!isValid?'active':''}" onclick="switchScannerMode('entry')">Entry Scan</button><button class="${isValid?'active':''}" onclick="switchScannerMode('valid')">Valid User <b>✓</b></button></div></div><div class="scannerLayout"><div class="panel cameraPanel"><div class="panelHead" style="padding:0 0 14px;border:0"><div><span class="eyebrow">LIVE CAMERA</span><h2>Scan QR code</h2><p>QR detection uses the full camera view. The square is only a visual guide.</p></div><span class="live">● LIVE</span></div><div class="camera"><div id="reader" style="width:100%;height:100%"></div><div class="scanFrame"><i></i><i></i><i></i><i></i></div></div>${isValid?'<div class="validNotice"><strong>Valid User mode:</strong> a registered QR will show the guest details and <b>VALID USER</b>. A QR that is not an exact registered EventPass QR will show <b>INVALID USER</b>. No check-in is performed in this mode.</div>':''}</div><div class="panel resultPanel"><span class="eyebrow">${isValid?'VALIDATION RESULT':'VERIFICATION RESULT'}</span><div id="scanResultArea">${isValid?validResultHTML():resultHTML()}</div><div class="manual"><label>${isValid?'Manual QR value':'Manual code / Guest ID'}</label><div class="manualRow"><input id="manualCode" placeholder="${isValid?'Paste the full QR value':'EP-XXXXXXXXXX or entry code'}"><button class="primary" onclick="manualScan()">${isValid?'Validate':'Verify'}</button></div></div><label class="scannerName">Scanner: <b>${esc(settings.scannerName)}</b></label></div></div></section>`}
 function switchScannerMode(mode){if(scannerMode===mode)return;stopScanner();scannerMode=mode;scanResult=null;validResult=null;lastScan='';render()}
 
@@ -559,7 +1209,7 @@ function checkIn(raw){
  const sub=Math.max(0,count-1);
  const countDesc=sub>0?`সাব এ ${sub} জন, মোট ${count} জন`:`মোট ১ জন`;
  if(u.checkedIn){scanResult={ok:false,message:'Already Attended',detail:`Guest #${u.serial} · ${u.name} has already attended (${countDesc}). First verified at ${new Date(u.checkedAt).toLocaleString()} by ${u.scanner||'Unknown scanner'}.`,user:u,duplicate:true};updateResult();playScanSound('duplicate');toast(`${u.name} — Already Attended / QR already used`,'bad');return false}
- u.checkedIn=true;u.checkedAt=new Date().toISOString();u.scanner=settings.scannerName;save();
+ u.checkedIn=true;u.checkedAt=new Date().toISOString();u.scanner=currentVolunteer?`${currentVolunteer.name} (${currentVolunteer.gate||'Gate'})`:settings.scannerName;save();
  scanResult={ok:true,message:'Verified Successfully',detail:`${u.name} — ${countDesc} চেক-ইন হয়েছে!`,user:u};
  updateResult();playScanSound('success');toast(`${u.name} verified — ${countDesc} চেক-ইন হয়েছে! ✓`);return true;
 }
@@ -1090,6 +1740,6 @@ function exportCSV(){
 }
 function fmtDate(v){try{return new Date(v+'T12:00:00').toLocaleDateString('en-GB',{day:'2-digit',month:'short',year:'numeric'})}catch{return v}}
 function fmtDateTime(d,t){const dp=fmtDate(d);return t&&String(t).trim()?`${dp} · ${String(t).trim()}`:dp}
-window.addEventListener('beforeunload',stopScanner);render();normalizeExistingPhotos();
+window.addEventListener('beforeunload',()=>{stopScanner();stopGateScanner();});render();normalizeExistingPhotos();
 </script>
 </body></html>
