@@ -216,8 +216,14 @@
 .gateResultCard{border-radius:14px;padding:18px;text-align:center;animation:gateCardPop .25s ease-out}
 @keyframes gateCardPop{0%{transform:scale(0.96);opacity:0}100%{transform:scale(1);opacity:1}}
 .gateResultCard.ok{background:linear-gradient(135deg,#064e3b,#022c22);border:2px solid #10b981;color:#ecfdf5}
+.gateResultCard.pending{background:linear-gradient(135deg,#0b1d3a,#081326);border:2px solid #3b82f6;color:#f0f9ff}
 .gateResultCard.duplicate{background:linear-gradient(135deg,#451a03,#2e1065);border:2px solid #f59e0b;color:#fef3c7}
 .gateResultCard.bad{background:linear-gradient(135deg,#450a0a,#2b0909);border:2px solid #ef4444;color:#fee2e2}
+.gateConfirmBtn{width:100%;padding:14px 18px;background:linear-gradient(135deg,#059669,#10b981);color:#ffffff;border:none;border-radius:10px;font-size:15px;font-weight:900;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;gap:8px;box-shadow:0 4px 14px rgba(16,185,129,0.4);transition:all .15s ease;margin-top:14px}
+.gateConfirmBtn:hover{background:linear-gradient(135deg,#047857,#059669);transform:translateY(-1px);box-shadow:0 6px 18px rgba(16,185,129,0.5)}
+.gateConfirmBtn:active{transform:translateY(1px)}
+.gateCancelBtn{margin-top:8px;background:transparent;border:1px solid #334155;color:#94a3b8;font-size:12px;padding:6px 14px;border-radius:8px;cursor:pointer;transition:all .15s}
+.gateCancelBtn:hover{background:#1e293b;color:#f1f5f9}
 
 .gateGuestPhoto{width:70px;height:70px;min-width:70px;min-height:70px;max-width:70px;max-height:70px;aspect-ratio:1/1;border-radius:50%;object-fit:cover;border:3px solid #ffffff;margin:0 auto 10px;display:block;box-shadow:0 6px 16px rgba(0,0,0,0.4)}
 .gateGuestAvatar{width:70px;height:70px;min-width:70px;min-height:70px;max-width:70px;max-height:70px;aspect-ratio:1/1;border-radius:50%;background:#1e293b;color:#a5b4fc;font-size:26px;font-weight:900;display:grid;place-items:center;margin:0 auto 10px;border:3px solid #ffffff}
@@ -263,7 +269,15 @@ let users=load(USERS_KEY,sampleUsers), settings=load(SETTINGS_KEY,defaults), tab
 users=users.map(u=>({...u,idCardPassword:u.idCardPassword||'1234'}));
 settings={...defaults,...settings,instituteName:settings.instituteName||settings.venue||defaults.instituteName,eventTime:settings.eventTime||defaults.eventTime,organizedBy:settings.organizedBy||defaults.organizedBy,eventSlogan:settings.eventSlogan||defaults.eventSlogan,eventQuote:settings.eventQuote||defaults.eventQuote,eventMotto:settings.eventMotto||defaults.eventMotto,adminPasswordHash:settings.adminPasswordHash||'5994471abb01112afcc18159f6cc74b4f511b99806da59b3caf5a9c173cacfc5',ownerName:settings.ownerName||'',ownerEmail:settings.ownerEmail||'',ownerPhone:settings.ownerPhone||'',emailPublicKey:settings.emailPublicKey||'',emailServiceId:settings.emailServiceId||'',emailTemplateId:settings.emailTemplateId||'',qrSize:settings.qrSize||'400'};
 function load(k,f){try{return JSON.parse(localStorage.getItem(k))??f}catch{return f}}
-function save(){localStorage.setItem(USERS_KEY,JSON.stringify(users));localStorage.setItem(SETTINGS_KEY,JSON.stringify(settings))}
+function reloadUsersFromStorage(){
+  try{
+    const stored=JSON.parse(localStorage.getItem(USERS_KEY));
+    if(Array.isArray(stored)){
+      users=stored.map(u=>({...u,idCardPassword:u.idCardPassword||'1234'}));
+    }
+  }catch(e){}
+}
+function save(){localStorage.setItem(USERS_KEY,JSON.stringify(users));localStorage.setItem(SETTINGS_KEY,JSON.stringify(settings));try{window.dispatchEvent(new Event('storage'))}catch(e){}}
 function saveVolunteers(){localStorage.setItem(VOLUNTEERS_KEY,JSON.stringify(volunteers))}
 function esc(v){return String(v??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]))}
 function uid(){return 'EP-'+(crypto.randomUUID?.().replaceAll('-','').slice(0,10).toUpperCase()||Math.random().toString(36).slice(2,12).toUpperCase())}
@@ -769,10 +783,36 @@ function gateResultHTML(){
   const sub=Math.max(0,count-1);
   const photo=u.profilePhoto?`<img class="gateGuestPhoto" src="${esc(u.profilePhoto)}" alt="${esc(u.name)}">`:`<div class="gateGuestAvatar">${esc(idInitials(u.name))}</div>`;
 
+  if(!res.confirmed){
+    return `
+      <div class="gateResultCard pending">
+        <div style="font-size:26px;margin-bottom:6px">📋</div>
+        <span style="background:#1d4ed8;color:#fff;font-size:10.5px;font-weight:900;letter-spacing:1px;padding:3px 12px;border-radius:999px;text-transform:uppercase">অতিথি ভেরিফিকেশন · PENDING</span>
+        <div style="margin-top:12px">
+          ${photo}
+          <h3 style="font-size:22px;margin:0;color:#fff;font-weight:900">${esc(u.name)}</h3>
+          <div style="display:flex;justify-content:center;align-items:center;gap:8px;margin-top:6px;flex-wrap:wrap">
+            <span style="background:#1e3a8a;border:1px solid #3b82f6;color:#93c5fd;font-size:11px;font-weight:800;padding:3px 9px;border-radius:6px">SSC Batch ${esc(u.sscBatch||'—')}</span>
+            <span style="background:#022c22;border:1px solid #34d399;color:#6ee7b7;font-size:12px;font-weight:900;padding:3px 10px;border-radius:6px">👥 মোট ${count} জন (${sub>0?`১ মূল + ${sub} সাব`:'একক'})</span>
+          </div>
+        </div>
+        <div style="background:rgba(0,0,0,0.35);border-radius:10px;padding:8px 12px;margin-top:12px;font-size:11.5px;display:flex;justify-content:space-between;color:#cbd5e1">
+          <span>Guest #${String(u.serial).padStart(2,'0')}</span>
+          <span>${esc(u.guestType||'Individual')}</span>
+          <code>${esc(u.code)}</code>
+        </div>
+        <button type="button" class="gateConfirmBtn" onclick="confirmGateCheckIn('${u.guestId}')">
+          <span style="font-size:18px">✓</span> <span>গেস্ট চেক ইন (Confirm Check-In)</span>
+        </button>
+        <button type="button" class="gateCancelBtn" onclick="gateScanResult=null;updateGateResult()">✕ বাতিল / Dismiss</button>
+      </div>
+    `;
+  }
+
   return `
     <div class="gateResultCard ok">
       <div style="font-size:26px;margin-bottom:6px">✓</div>
-      <span style="background:#059669;color:#fff;font-size:11px;font-weight:900;letter-spacing:1px;padding:4px 12px;border-radius:999px;text-transform:uppercase">ACCESS GRANTED · প্রবেশ অনুমোদিত</span>
+      <span style="background:#059669;color:#fff;font-size:11px;font-weight:900;letter-spacing:1px;padding:4px 12px;border-radius:999px;text-transform:uppercase">✓ চেক ইন সম্পন্ন · ACCESS GRANTED</span>
       <div style="margin-top:12px">
         ${photo}
         <h3 style="font-size:22px;margin:0;color:#fff;font-weight:900">${esc(u.name)}</h3>
@@ -783,9 +823,10 @@ function gateResultHTML(){
       </div>
       <div style="background:rgba(0,0,0,0.3);border-radius:10px;padding:8px 12px;margin-top:12px;font-size:11.5px;display:flex;justify-content:space-between;color:#a7f3d0">
         <span>Guest #${String(u.serial).padStart(2,'0')}</span>
-        <span>${esc(u.guestType||'Individual')}</span>
+        <span>${new Date(u.checkedAt||Date.now()).toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'})}</span>
         <code>${esc(u.code)}</code>
       </div>
+      <button type="button" class="secondary" style="margin-top:12px;font-size:11.5px;padding:7px 16px;background:rgba(255,255,255,0.12);border:1px solid rgba(255,255,255,0.25);color:#fff;border-radius:8px;cursor:pointer" onclick="gateScanResult=null;updateGateResult()">পরবর্তী স্ক্যান / Next Scan ➔</button>
     </div>
   `;
 }
@@ -801,7 +842,7 @@ function gateCheckIn(raw){
     gateScanResult={ok:false,message:'QR / Code not found',duplicate:false};
     updateGateResult();
     if(gateSoundEnabled)playScanSound('invalid');
-    toast('QR not recognized','bad');
+    toast('QR not recognized / নিবন্ধিত নয়','bad');
     return false;
   }
   const count=getGuestCount(u);
@@ -816,22 +857,41 @@ function gateCheckIn(raw){
     return false;
   }
 
+  gateScanResult={ok:true,user:u,confirmed:false};
+  updateGateResult();
+  if(gateSoundEnabled)playScanSound('valid');
+  toast(`${u.name} পাওয়া গেছে — "গেস্ট চেক ইন" বাটনে ক্লিক করুন`);
+  return true;
+}
+
+function confirmGateCheckIn(id){
+  reloadUsersFromStorage();
+  const u=users.find(x=>x.guestId===id);
+  if(!u){
+    toast('Guest not found in database','bad');
+    return;
+  }
+  if(u.checkedIn){
+    gateScanResult={ok:false,message:'Already Attended',duplicate:true,user:u};
+    updateGateResult();
+    if(gateSoundEnabled)playScanSound('duplicate');
+    toast(`${u.name} — Already Attended`,'bad');
+    return;
+  }
+  const count=getGuestCount(u);
+  const sub=Math.max(0,count-1);
+  const countDesc=sub>0?`সাব এ ${sub} জন, মোট ${count} জন`:`মোট ১ জন`;
+
   u.checkedIn=true;
   u.checkedAt=new Date().toISOString();
   u.scanner=currentVolunteer?`${currentVolunteer.name} (${currentVolunteer.gate||'Gate'})`:settings.scannerName;
   save();
 
-  gateScanResult={ok:true,user:u};
+  gateScanResult={ok:true,user:u,confirmed:true};
   updateGateResult();
   if(gateSoundEnabled)playScanSound('success');
   toast(`${u.name} — ${countDesc} চেক-ইন সফল! ✓`);
-  setTimeout(()=>{
-    const right=document.querySelector('.gateCardRight');
-    if(right && isGateMode){
-      render();
-    }
-  },2200);
-  return true;
+  refreshLiveViews();
 }
 
 function gateManualScan(){
@@ -1196,22 +1256,69 @@ function resultHTML(){
  const count=u?getGuestCount(u):1;
  const sub=Math.max(0,count-1);
  const countDesc=sub>0?`সাব এ ${sub} জন, মোট ${count} জন`:`মোট ১ জন`;
- return `<div class="result"><div class="resultIcon ${scanResult.ok?'ok':'bad'}">${scanResult.ok?'✓':'!'}</div><h2>${esc(scanResult.message)}</h2><p>${esc(scanResult.detail)}</p>${u?`<div class="resultGuest"><div style="display:flex;justify-content:space-between;align-items:center"><span>Guest #${String(u.serial).padStart(2,'0')}</span><span class="status ${u.checkedIn?'checked':'pending'}">${u.checkedIn?'✓ Verified':'◷ Pending'}</span></div><b style="font-size:16px">${esc(u.name)}</b><code>${esc(u.guestId)}</code><div style="background:#131f38;border:1px solid #243555;border-radius:9px;padding:9px 12px;margin-top:6px;display:flex;justify-content:space-between;align-items:center"><div style="text-align:left"><small style="color:#8ba0be;font-size:10px;display:block">হাজিরা ও সাব-গেস্ট বিবরণ</small><b style="color:#52e2ab;font-size:13px">${countDesc} চেক-ইন</b></div><span style="background:#1e2a4a;color:#a5b4fc;font-size:11px;padding:3px 9px;border-radius:6px;font-weight:800">👥 ${count} জন এন্ট্রি</span></div>${scanResult.duplicate?'<small style="color:#ff7885;margin-top:4px">Already attended — this QR code has already been used and cannot be accepted again.</small>':''}</div>`:''}<button class="secondary" onclick="scanResult=null;updateResult()">Clear result</button></div>`
+ return `<div class="result"><div class="resultIcon ${scanResult.ok?'ok':'bad'}">${scanResult.ok?'✓':'!'}</div><h2>${esc(scanResult.message)}</h2><p>${esc(scanResult.detail)}</p>${u?`<div class="resultGuest"><div style="display:flex;justify-content:space-between;align-items:center"><span>Guest #${String(u.serial).padStart(2,'0')}</span><span class="status ${u.checkedIn?'checked':'pending'}">${u.checkedIn?'✓ Verified':'◷ Pending'}</span></div><b style="font-size:16px">${esc(u.name)}</b><code>${esc(u.guestId)}</code><div style="background:#131f38;border:1px solid #243555;border-radius:9px;padding:9px 12px;margin-top:6px;display:flex;justify-content:space-between;align-items:center"><div style="text-align:left"><small style="color:#8ba0be;font-size:10px;display:block">হাজিরা ও সাব-গেস্ট বিবরণ</small><b style="color:#52e2ab;font-size:13px">${countDesc}</b></div><span style="background:#1e2a4a;color:#a5b4fc;font-size:11px;padding:3px 9px;border-radius:6px;font-weight:800">👥 ${count} জন এন্ট্রি</span></div>${scanResult.duplicate?'<small style="color:#ff7885;margin-top:4px">Already attended — this QR code has already been used and cannot be accepted again.</small>':''}${!u.checkedIn&&!scanResult.duplicate?`<button type="button" class="primary" style="margin-top:12px;background:linear-gradient(135deg,#059669,#10b981);width:100%;font-size:14px;padding:12px;font-weight:900;border:none;border-radius:10px;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;gap:8px" onclick="confirmAdminCheckIn('${u.guestId}')"><span style="font-size:16px">✓</span> <span>গেস্ট চেক ইন (Confirm Check-In)</span></button>`:''}</div>`:''}<button class="secondary" onclick="scanResult=null;updateResult()">Clear result</button></div>`
 }
 function updateResult(){const a=document.getElementById('scanResultArea');if(a)a.innerHTML=scannerMode==='valid'?validResultHTML():resultHTML()}
 function startScanner(){if(!window.Html5Qrcode)return;const el=document.getElementById('reader');if(!el)return;scanner=new Html5Qrcode('reader');scanner.start({facingMode:{exact:'environment'}},{fps:12},decoded=>{if(decoded&&decoded!==lastScan){lastScan=decoded;if(scannerMode==='valid')validateUser(decoded);else checkIn(decoded);setTimeout(()=>lastScan='',1800)}},()=>{}).catch(()=>{scanner.start({facingMode:'environment'},{fps:12},decoded=>{if(decoded&&decoded!==lastScan){lastScan=decoded;if(scannerMode==='valid')validateUser(decoded);else checkIn(decoded);setTimeout(()=>lastScan='',1800)}},()=>{}).catch(()=>{})})}
 function stopScanner(){try{if(scanner){scanner.stop().then(()=>scanner.clear()).catch(()=>{});scanner=null}}catch{}}
-function resolveGuest(raw){const clean=String(raw||'').trim(),id=clean.startsWith('EVENTPASS|')?clean.split('|')[1]:clean;return users.find(u=>u.guestId.toLowerCase()===id.toLowerCase()||u.code.toLowerCase()===clean.toLowerCase())}
+function resolveGuest(raw){
+  if(!raw)return null;
+  reloadUsersFromStorage();
+  const clean=String(raw).trim();
+  const lower=clean.toLowerCase();
+  let found=users.find(u=>u.qrValue && u.qrValue.trim().toLowerCase()===lower);
+  if(found)return found;
+  let id=clean;
+  if(clean.toUpperCase().startsWith('EVENTPASS|')){
+    id=clean.substring(10).trim();
+  }
+  const idLower=id.toLowerCase();
+  found=users.find(u=>
+    (u.guestId && u.guestId.trim().toLowerCase()===idLower) ||
+    (u.guestId && u.guestId.trim().toLowerCase()===lower) ||
+    (u.code && u.code.trim().toLowerCase()===lower) ||
+    (u.code && u.code.trim().toLowerCase()===idLower)
+  );
+  if(found)return found;
+  found=users.find(u=>
+    String(u.serial)===clean ||
+    (u.phone && u.phone.replace(/[^0-9]/g,'')===clean.replace(/[^0-9]/g,''))
+  );
+  return found || null;
+}
 function checkIn(raw){
- const u=resolveGuest(raw);
- if(!u){scanResult={ok:false,message:'QR / Code not found',detail:'This code is not registered in the guest directory.'};updateResult();playScanSound('invalid');toast('QR / code not found','bad');return false}
- const count=getGuestCount(u);
- const sub=Math.max(0,count-1);
- const countDesc=sub>0?`সাব এ ${sub} জন, মোট ${count} জন`:`মোট ১ জন`;
- if(u.checkedIn){scanResult={ok:false,message:'Already Attended',detail:`Guest #${u.serial} · ${u.name} has already attended (${countDesc}). First verified at ${new Date(u.checkedAt).toLocaleString()} by ${u.scanner||'Unknown scanner'}.`,user:u,duplicate:true};updateResult();playScanSound('duplicate');toast(`${u.name} — Already Attended / QR already used`,'bad');return false}
- u.checkedIn=true;u.checkedAt=new Date().toISOString();u.scanner=currentVolunteer?`${currentVolunteer.name} (${currentVolunteer.gate||'Gate'})`:settings.scannerName;save();
- scanResult={ok:true,message:'Verified Successfully',detail:`${u.name} — ${countDesc} চেক-ইন হয়েছে!`,user:u};
- updateResult();playScanSound('success');toast(`${u.name} verified — ${countDesc} চেক-ইন হয়েছে! ✓`);return true;
+  const u=resolveGuest(raw);
+  if(!u){scanResult={ok:false,message:'QR / Code not found',detail:'This code is not registered in the guest directory.'};updateResult();playScanSound('invalid');toast('QR / code not found','bad');return false}
+  const count=getGuestCount(u);
+  const sub=Math.max(0,count-1);
+  const countDesc=sub>0?`সাব এ ${sub} জন, মোট ${count} জন`:`মোট ১ জন`;
+  if(u.checkedIn){scanResult={ok:false,message:'Already Attended',detail:`Guest #${u.serial} · ${u.name} has already attended (${countDesc}). First verified at ${new Date(u.checkedAt).toLocaleString()} by ${u.scanner||'Unknown scanner'}.`,user:u,duplicate:true};updateResult();playScanSound('duplicate');toast(`${u.name} — Already Attended / QR already used`,'bad');return false}
+  scanResult={ok:true,message:'Guest Identified · Ready to Check In',detail:`${u.name} (${countDesc}) — নিশ্চিত করতে নিচে ক্লিক করুন`,user:u,confirmed:false};
+  updateResult();
+  playScanSound('valid');
+  toast(`${u.name} পাওয়া গেছে — "গেস্ট চেক ইন" বাটনে ক্লিক করুন`);
+  return true;
+}
+function confirmAdminCheckIn(id){
+  reloadUsersFromStorage();
+  const u=users.find(x=>x.guestId===id);
+  if(!u)return;
+  if(u.checkedIn){
+    toast(`${u.name} — Already Attended`,'bad');
+    return;
+  }
+  const count=getGuestCount(u);
+  const sub=Math.max(0,count-1);
+  const countDesc=sub>0?`সাব এ ${sub} জন, মোট ${count} জন`:`মোট ১ জন`;
+  u.checkedIn=true;
+  u.checkedAt=new Date().toISOString();
+  u.scanner=settings.scannerName;
+  save();
+  scanResult={ok:true,message:'Verified Successfully',detail:`${u.name} — ${countDesc} চেক-ইন সম্পন্ন হয়েছে!`,user:u,confirmed:true};
+  updateResult();
+  playScanSound('success');
+  toast(`${u.name} — ${countDesc} চেক-ইন সফল! ✓`);
+  refreshLiveViews();
 }
 function manualScan(){const e=document.getElementById('manualCode');if(!e||!e.value.trim())return;if(scannerMode==='valid')validateUser(e.value.trim());else checkIn(e.value.trim());e.value=''}
 function validResultHTML(){
@@ -1223,9 +1330,9 @@ function validResultHTML(){
  return `<div class="result"><div class="resultIcon ${validResult.ok?'ok':'bad'}">${validResult.ok?'✓':'!'}</div><h2>${esc(validResult.message)}</h2><p>${esc(validResult.detail)}</p>${u?`<div class="resultGuest"><div style="display:flex;justify-content:space-between;align-items:center"><span>Guest #${String(u.serial).padStart(2,'0')}</span><span class="validBadge">✓ VALID USER</span></div><b style="font-size:16px">${esc(u.name)}</b><code>${esc(u.guestId)}</code><div style="background:#131f38;border:1px solid #243555;border-radius:9px;padding:9px 12px;margin-top:6px;display:flex;justify-content:space-between;align-items:center"><div style="text-align:left"><small style="color:#8ba0be;font-size:10px;display:block">নিবন্ধিত ব্যক্তি ও সাব-গেস্ট</small><b style="color:#52e2ab;font-size:13px">${countDesc}</b></div><span style="background:#1e2a4a;color:#a5b4fc;font-size:11px;padding:3px 9px;border-radius:6px;font-weight:800">👥 ${count} জন</span></div><span>Entry Code: ${esc(u.code)}</span><small style="color:#52e2ab">Validation only — attendance status was not changed.</small></div>`:''}<button class="secondary" onclick="validResult=null;updateResult()">Clear result</button></div>`
 }
 function validateUser(raw){
- const clean=String(raw||'').trim();
- const u=users.find(x=>String(x.qrValue||'').trim()===clean);
- if(!u){validResult={ok:false,message:'INVALID USER',detail:'This QR code is not an exact registered EventPass QR. Access validation failed.'};updateResult();playScanSound('invalid');toast('INVALID USER — QR is not registered','bad');return false}
+ reloadUsersFromStorage();
+ const u=resolveGuest(raw);
+ if(!u){validResult={ok:false,message:'INVALID USER',detail:'This QR code is not registered in the guest directory. Access validation failed.'};updateResult();playScanSound('invalid');toast('INVALID USER — QR is not registered','bad');return false}
  const count=getGuestCount(u);
  const sub=Math.max(0,count-1);
  const countDesc=sub>0?`সাব এ ${sub} জন, মোট ${count} জন`:`মোট ১ জন`;
@@ -1740,6 +1847,68 @@ function exportCSV(){
 }
 function fmtDate(v){try{return new Date(v+'T12:00:00').toLocaleDateString('en-GB',{day:'2-digit',month:'short',year:'numeric'})}catch{return v}}
 function fmtDateTime(d,t){const dp=fmtDate(d);return t&&String(t).trim()?`${dp} · ${String(t).trim()}`:dp}
+let lastStoredUsersRaw = localStorage.getItem(USERS_KEY) || '';
+function syncFromStorage(){
+  try{
+    const currentRaw = localStorage.getItem(USERS_KEY) || '';
+    if(currentRaw !== lastStoredUsersRaw){
+      lastStoredUsersRaw = currentRaw;
+      reloadUsersFromStorage();
+      refreshLiveViews();
+    }
+  }catch(e){}
+}
+function refreshLiveViews(){
+  if(isGateMode && currentVolunteer){
+    const v=currentVolunteer;
+    const vScans=users.filter(x=>x.checkedIn && x.scanner && x.scanner.includes(v.name));
+    const totalGatePersons=vScans.reduce((s,x)=>s+getGuestCount(x),0);
+    const statsPill=document.querySelector('.gateStatsPill');
+    if(statsPill)statsPill.innerHTML=`📊 Scanned: <b>${vScans.length}</b> (${totalGatePersons} জন)`;
+    const recentList=document.querySelector('.gateRecentList');
+    if(recentList){
+      const recentGateScans=[...vScans].sort((a,b)=>new Date(b.checkedAt)-new Date(a.checkedAt)).slice(0,8);
+      recentList.innerHTML=recentGateScans.length ? recentGateScans.map(gx=>{
+        const c=getGuestCount(gx);
+        return `
+          <div class="gateRecentItem">
+            <div>
+              <b style="color:#fff;display:block">${esc(gx.name)}</b>
+              <small style="color:#94a3b8">#${String(gx.serial).padStart(2,'0')} · Batch ${esc(gx.sscBatch||'—')}</small>
+            </div>
+            <div style="text-align:right">
+              <span style="background:#064e3b;color:#6ee7b7;padding:2px 7px;border-radius:6px;font-size:10px;font-weight:800;display:inline-block">👥 ${c} জন</span>
+              <small style="display:block;color:#64748b;margin-top:2px">${new Date(gx.checkedAt).toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'})}</small>
+            </div>
+          </div>
+        `;
+      }).join('') : `<div style="text-align:center;padding:24px;color:#64748b;font-size:12px">No scans at this gate yet. Scan a QR code to begin.</div>`;
+    }
+    return;
+  }
+  if(!isAdmin){
+    renderPublicLookup();
+    return;
+  }
+  if(tab==='dashboard'){
+    const content=document.querySelector('.content');
+    if(content && content.parentElement){
+      const h=getHeadcounts();
+      content.parentElement.innerHTML=`<header><div><span class="eyebrow">EVENT CONTROL CENTER</span><h1>Dashboard</h1></div><div class="headerActions"><span class="adminBadge">🔐 ADMIN</span><div class="eventChip"><span>EVENT</span><b>${esc(settings.eventName)}</b></div><button class="primary" onclick="openAdd()">＋ Add Guest</button><button class="secondary logoutBtn" onclick="logoutAdmin()" title="Logout Admin">🔓 Logout</button></div></header>${dashboardHTML(h)}`;
+    }
+  }else if(tab==='guests'){
+    renderGuestsOnly();
+  }
+}
+window.addEventListener('storage', e => {
+  if(!e.key || e.key === USERS_KEY || e.key === SETTINGS_KEY){
+    syncFromStorage();
+  }
+});
+window.addEventListener('focus', () => {
+  syncFromStorage();
+});
+setInterval(syncFromStorage, 1000);
 window.addEventListener('beforeunload',()=>{stopScanner();stopGateScanner();});render();normalizeExistingPhotos();
 </script>
 </body></html>
