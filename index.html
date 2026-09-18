@@ -394,25 +394,14 @@ function setupRealtimeDb(config){
     });
 
     firebaseDb.ref('eventpass/guests').on('value',(snap)=>{
+      // Firebase is the source of truth. Never restore deleted cloud data from localStorage.
       const val=snap.val();
-      if(val===null){
-        if(users && users.length>0){
-          firebaseDb.ref('eventpass/guests').set(users);
-        }
-      }else{
-        let cloudList=[];
-        if(Array.isArray(val)){
-          cloudList=val.filter(Boolean);
-        }else if(typeof val==='object'){
-          cloudList=Object.values(val);
-        }
-        if(cloudList.length>0){
-          const merged=mergeGuestLists(users,cloudList);
-          users=merged.map(u=>({...u,idCardPassword:u.idCardPassword||'1234',qrValue:u.qrValue||buildQrValue(u)}));
-          localStorage.setItem(USERS_KEY,JSON.stringify(users));
-          refreshLiveViews();
-        }
-      }
+      let cloudList=[];
+      if(Array.isArray(val)) cloudList=val.filter(Boolean);
+      else if(val && typeof val==='object') cloudList=Object.values(val).filter(Boolean);
+      users=cloudList.map(u=>({...u,idCardPassword:u.idCardPassword||'1234',qrValue:u.qrValue||buildQrValue(u)}));
+      localStorage.setItem(USERS_KEY,JSON.stringify(users));
+      refreshLiveViews();
       cloudSyncStatus='connected';
       cloudSyncMessage='লাইভ ক্লাউড ডাটাবেজ সক্রিয়';
       updateCloudStatusUI();
@@ -432,16 +421,14 @@ function setupRealtimeDb(config){
     });
 
     firebaseDb.ref('eventpass/volunteers').on('value',(snap)=>{
+      // Empty Firebase data means empty data. Do not repopulate it from localStorage/defaults.
       const val=snap.val();
-      if(val && (Array.isArray(val) || typeof val==='object')){
-        const vList=Array.isArray(val)?val.filter(Boolean):Object.values(val);
-        if(vList.length>0){
-          volunteers=vList;
-          localStorage.setItem(VOLUNTEERS_KEY,JSON.stringify(volunteers));
-        }
-      }else if(val===null && volunteers && volunteers.length>0){
-        try{ firebaseDb.ref('eventpass/volunteers').set(volunteers); }catch(e){}
-      }
+      let vList=[];
+      if(Array.isArray(val)) vList=val.filter(Boolean);
+      else if(val && typeof val==='object') vList=Object.values(val).filter(Boolean);
+      volunteers=vList;
+      localStorage.setItem(VOLUNTEERS_KEY,JSON.stringify(volunteers));
+      refreshLiveViews();
     });
   }catch(e){
     console.warn('RTDB init exception, fallback to Firestore...', e);
@@ -459,19 +446,12 @@ function setupFirestore(config){
     updateCloudStatusUI();
 
     firebaseFirestore.collection('guests').onSnapshot((snap)=>{
-      let cloudList=[];
-      snap.forEach(doc=>{
-        const d=doc.data();
-        if(d) cloudList.push(d);
-      });
-      if(cloudList.length>0){
-        const merged=mergeGuestLists(users,cloudList);
-        users=merged.map(u=>({...u,idCardPassword:u.idCardPassword||'1234',qrValue:u.qrValue||buildQrValue(u)}));
-        localStorage.setItem(USERS_KEY,JSON.stringify(users));
-        refreshLiveViews();
-      }else if(users && users.length>0){
-        pushAllDataToCloud();
-      }
+      // Firestore is the source of truth. A zero-document snapshot must clear local data.
+      const cloudList=[];
+      snap.forEach(doc=>{ const d=doc.data(); if(d) cloudList.push(d); });
+      users=cloudList.map(u=>({...u,idCardPassword:u.idCardPassword||'1234',qrValue:u.qrValue||buildQrValue(u)}));
+      localStorage.setItem(USERS_KEY,JSON.stringify(users));
+      refreshLiveViews();
       cloudSyncStatus='connected';
       cloudSyncMessage='লাইভ ক্লাউড ফায়ারস্টোর (Firestore) সক্রিয়';
       updateCloudStatusUI();
@@ -491,15 +471,8 @@ function setupFirestore(config){
 }
 
 function mergeGuestLists(localList,cloudList){
-  const map=new Map();
-  (localList||[]).forEach(u=>{if(u&&u.guestId)map.set(u.guestId,u)});
-  (cloudList||[]).forEach(u=>{
-    if(u&&u.guestId){
-      const existing=map.get(u.guestId);
-      map.set(u.guestId,{...existing,...u});
-    }
-  });
-  return Array.from(map.values()).sort((a,b)=>(b.serial||0)-(a.serial||0));
+  // Kept only for backward compatibility. Cloud data wins completely.
+  return (cloudList||[]).filter(u=>u&&u.guestId).sort((a,b)=>(b.serial||0)-(a.serial||0));
 }
 
 function pushAllDataToCloud(){
@@ -598,22 +571,36 @@ function save(skipCloud=false){
   try{window.dispatchEvent(new Event('storage'))}catch(e){}
   if(!skipCloud && isCloudActive){
     if(activeCloudEngine==='firestore' && firebaseFirestore){
-      try{
-        users.forEach(u=>{
-          if(u && u.guestId){
-            firebaseFirestore.collection('guests').doc(u.guestId).set(u,{merge:true});
-          }
-        });
-      }catch(e){console.warn('Firestore save warning:',e)}
+      syncGuestsToFirestore();
     }else if(activeCloudEngine==='rtdb' && firebaseDb){
       try{
+        // RTDB set() replaces the complete list, so deleted guests stay deleted.
         firebaseDb.ref('eventpass/guests').set(users);
         firebaseDb.ref('eventpass/settings').set(settings);
       }catch(e){console.warn('Firebase save warning:',e)}
     }
   }
 }
-function saveVolunteers(){localStorage.setItem(VOLUNTEERS_KEY,JSON.stringify(volunteers));if(isCloudActive && firebaseDb){try{firebaseDb.ref('eventpass/volunteers').set(volunteers)}catch(e){}}}
+async function syncGuestsToFirestore(){
+  if(!firebaseFirestore)return;
+  try{
+    const snap=await firebaseFirestore.collection('guests').get();
+    const batch=firebaseFirestore.batch();
+    const wanted=new Set(users.filter(u=>u&&u.guestId).map(u=>u.guestId));
+    snap.forEach(doc=>{ if(!wanted.has(doc.id)) batch.delete(doc.ref); });
+    users.forEach(u=>{ if(u&&u.guestId) batch.set(firebaseFirestore.collection('guests').doc(u.guestId),u); });
+    await batch.commit();
+  }catch(e){console.warn('Firestore sync warning:',e)}
+}
+function saveVolunteers(){
+  localStorage.setItem(VOLUNTEERS_KEY,JSON.stringify(volunteers));
+  if(isCloudActive && firebaseDb){
+    try{
+      // RTDB set() replaces the complete list, including an intentional empty list.
+      firebaseDb.ref('eventpass/volunteers').set(volunteers);
+    }catch(e){console.warn('Volunteer cloud save warning:',e)}
+  }
+}
 function esc(v){return String(v??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]))}
 function uid(){return 'EP-'+(crypto.randomUUID?.().replaceAll('-','').slice(0,10).toUpperCase()||Math.random().toString(36).slice(2,12).toUpperCase())}
 function nextSerial(){return users.reduce((m,u)=>Math.max(m,Number(u.serial)||0),0)+1}
