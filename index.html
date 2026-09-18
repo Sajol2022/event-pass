@@ -2,6 +2,8 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0"><meta name="theme-color" content="#080c17">
+<meta name="robots" content="noindex, nofollow, noarchive, nosnippet, noimageindex">
+<meta name="googlebot" content="noindex, nofollow, noarchive, nosnippet, max-image-preview:none">
 <title>EventPass — Professional QR Check-in</title>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
@@ -10,6 +12,7 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 <!-- Firebase Realtime Cloud Sync SDK (v9 compat) -->
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -347,6 +350,14 @@ function initFirebase(cfg=null){
       firebaseApp=firebase.app();
     }
 
+    if(firebase.auth){
+      try{
+        firebase.auth().signInAnonymously().catch(err=>{
+          console.warn('Anonymous auth note (optional):', err?.message||err);
+        });
+      }catch(e){}
+    }
+
     // Check whether to use Firestore or Realtime Database
     const hasDatabaseUrl = !!(config.databaseURL && config.databaseURL.trim());
     if(!hasDatabaseUrl && firebase.firestore && (config.projectId || config.apiKey)){
@@ -534,11 +545,11 @@ function updateCloudStatusUI(){
 
 const USERS_KEY='eventpass_users_v3', SETTINGS_KEY='eventpass_settings_v3', VOLUNTEERS_KEY='eventpass_volunteers_v1';
 const defaults={eventName:'হীরক জয়ন্তী ২০২৭',instituteName:'অলিপুর আমডাঙ্গা স্কুল এন্ড কলেজ',eventDate:'2027-02-15',eventTime:'10:00 AM',venue:'অলিপুর আমডাঙ্গা স্কুল এন্ড কলেজ',organizedBy:'SSC Batch 2018 Alumni',eventSlogan:'Reconnect · Remember · Relive',eventQuote:'Same Friends New Stories',eventMotto:'A GREATER TOMORROW THROUGH FRIENDSHIP',scannerName:'Front Desk',adminPasswordHash:'5994471abb01112afcc18159f6cc74b4f511b99806da59b3caf5a9c173cacfc5'};
-const sampleUsers=[{serial:3,guestId:'EP-B3002B18D7',name:'Sajol Kumar',phone:'+880 1308-415928',email:'sajolsarker5789@gmail.com',sscBatch:'2021',idCardPassword:'1234',profilePhoto:'',entryType:'General',guestType:'Couple',personCount:6,code:'EVT-0003-18D7',qrValue:'EVENTPASS|EP-B3002B18D7',checkedIn:false,checkedAt:null,scanner:null,createdAt:new Date().toISOString()}];
+const sampleUsers=[];
 const defaultVolunteers=[
-  {id:'VOL-01',name:'তানভীর আহমেদ (Tanvir)',email:'tanvir@event.com',phone:'01711-112233',gate:'Main Gate 1',password:'1234',active:true,createdAt:new Date().toISOString()},
-  {id:'VOL-02',name:'নুসরাত জাহান (Nusrat)',email:'nusrat@event.com',phone:'01822-223344',gate:'VIP Gate 2',password:'1234',active:true,createdAt:new Date().toISOString()},
-  {id:'VOL-03',name:'রাফিক ইসলাম (Rafiq)',email:'rafiq@event.com',phone:'01933-334455',gate:'Front Desk Gate 3',password:'1234',active:true,createdAt:new Date().toISOString()}
+  {id:'VOL-01',name:'তানভীর আহমেদ (Tanvir)',email:'tanvir@event.com',phone:'01711-112233',gate:'Main Gate 1',password:'1234',photo:'',active:true,createdAt:new Date().toISOString()},
+  {id:'VOL-02',name:'নুসরাত জাহান (Nusrat)',email:'nusrat@event.com',phone:'01822-223344',gate:'VIP Gate 2',password:'1234',photo:'',active:true,createdAt:new Date().toISOString()},
+  {id:'VOL-03',name:'রাফিক ইসলাম (Rafiq)',email:'rafiq@event.com',phone:'01933-334455',gate:'Front Desk Gate 3',password:'1234',photo:'',active:true,createdAt:new Date().toISOString()}
 ];
 let isAdmin=sessionStorage.getItem('eventpass_is_admin')==='true';
 let currentVolunteer=JSON.parse(sessionStorage.getItem('eventpass_volunteer_session')||'null');
@@ -549,7 +560,27 @@ function buildQrValue(u){
   const c=getGuestCount(u);
   return `EVENTPASS|${u.guestId}|${encodeURIComponent(u.name||'')}|${encodeURIComponent(u.sscBatch||'')}|${c}|${u.code||''}|${encodeURIComponent(u.guestType||'Individual')}`;
 }
-let users=load(USERS_KEY,sampleUsers), settings=load(SETTINGS_KEY,defaults), tab='dashboard', search='', publicSearch='', guestFilter='all', scanResult=null, validResult=null, scanner=null, scannerMode='entry', lastScan='', gateScanner=null, gateLastScan='', gateScanResult=null, gateSoundEnabled=true;
+function formatBDTime(isoString){
+  if(!isoString) return '—';
+  try{
+    const d=new Date(isoString);
+    if(isNaN(d.getTime())) return '—';
+    return new Intl.DateTimeFormat('en-US',{timeZone:'Asia/Dhaka',hour:'2-digit',minute:'2-digit',hour12:true}).format(d);
+  }catch(e){
+    return new Date(isoString).toLocaleTimeString([],{hour:'2-digit',minute:'2-digit',hour12:true});
+  }
+}
+function formatBDDateTime(isoString){
+  if(!isoString) return '—';
+  try{
+    const d=new Date(isoString);
+    if(isNaN(d.getTime())) return '—';
+    return new Intl.DateTimeFormat('en-US',{timeZone:'Asia/Dhaka',year:'numeric',month:'short',day:'numeric',hour:'2-digit',minute:'2-digit',hour12:true}).format(d);
+  }catch(e){
+    return new Date(isoString).toLocaleString([],{hour12:true});
+  }
+}
+let users=load(USERS_KEY,[]).filter(u=>u && u.guestId!=='EP-B3002B18D7'), settings=load(SETTINGS_KEY,defaults), tab='dashboard', search='', publicSearch='', guestFilter='all', scanResult=null, validResult=null, scanner=null, scannerMode='entry', lastScan='', gateScanner=null, gateLastScan='', gateScanResult=null, gateSoundEnabled=true, gateScannerMode='entry';
 users=users.map(u=>({...u,idCardPassword:u.idCardPassword||'1234',qrValue:buildQrValue(u)}));
 settings={...defaults,...settings,instituteName:settings.instituteName||settings.venue||defaults.instituteName,eventTime:settings.eventTime||defaults.eventTime,organizedBy:settings.organizedBy||defaults.organizedBy,eventSlogan:settings.eventSlogan||defaults.eventSlogan,eventQuote:settings.eventQuote||defaults.eventQuote,eventMotto:settings.eventMotto||defaults.eventMotto,adminPasswordHash:settings.adminPasswordHash||'5994471abb01112afcc18159f6cc74b4f511b99806da59b3caf5a9c173cacfc5',ownerName:settings.ownerName||'',ownerEmail:settings.ownerEmail||'',ownerPhone:settings.ownerPhone||'',emailPublicKey:settings.emailPublicKey||'',emailServiceId:settings.emailServiceId||'',emailTemplateId:settings.emailTemplateId||'',qrSize:settings.qrSize||'400'};
 function load(k,f){try{return JSON.parse(localStorage.getItem(k))??f}catch{return f}}
@@ -557,7 +588,7 @@ function reloadUsersFromStorage(){
   try{
     const stored=JSON.parse(localStorage.getItem(USERS_KEY));
     if(Array.isArray(stored)){
-      users=stored.map(u=>({...u,idCardPassword:u.idCardPassword||'1234',qrValue:u.qrValue||buildQrValue(u)}));
+      users=stored.filter(u=>u && u.guestId!=='EP-B3002B18D7').map(u=>({...u,idCardPassword:u.idCardPassword||'1234',qrValue:u.qrValue||buildQrValue(u)}));
     }
   }catch(e){}
 }
@@ -582,7 +613,7 @@ function save(skipCloud=false){
     }
   }
 }
-function saveVolunteers(){localStorage.setItem(VOLUNTEERS_KEY,JSON.stringify(volunteers))}
+function saveVolunteers(){localStorage.setItem(VOLUNTEERS_KEY,JSON.stringify(volunteers));if(isCloudActive && firebaseDb){try{firebaseDb.ref('eventpass/volunteers').set(volunteers)}catch(e){}}}
 function esc(v){return String(v??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]))}
 function uid(){return 'EP-'+(crypto.randomUUID?.().replaceAll('-','').slice(0,10).toUpperCase()||Math.random().toString(36).slice(2,12).toUpperCase())}
 function nextSerial(){return users.reduce((m,u)=>Math.max(m,Number(u.serial)||0),0)+1}
@@ -960,6 +991,9 @@ function gateScannerHTML(){
   const vScans=users.filter(u=>u.checkedIn && u.scanner && u.scanner.includes(v.name));
   const totalGatePersons=vScans.reduce((s,u)=>s+getGuestCount(u),0);
   const recentGateScans=[...vScans].sort((a,b)=>new Date(b.checkedAt)-new Date(a.checkedAt)).slice(0,8);
+  const volAvatar=v.photo
+    ? `<img src="${esc(v.photo)}" style="width:30px;height:30px;border-radius:50%;object-fit:cover;border:1.5px solid #34d399">`
+    : `<span style="width:30px;height:30px;border-radius:50%;background:#1b2842;display:grid;place-items:center;font-weight:900;color:#6ee7b7;font-size:11px">${esc(idInitials(v.name))}</span>`;
 
   return `
   <div class="gateContainer">
@@ -972,7 +1006,10 @@ function gateScannerHTML(){
         </div>
       </div>
       <div class="gateHeaderActions">
-        <span class="gateVolunteerBadge">🟢 ${esc(v.name)} · <b>${esc(v.gate||'Gate')}</b></span>
+        <div style="display:flex;align-items:center;gap:8px">
+          ${volAvatar}
+          <span class="gateVolunteerBadge">🟢 ${esc(v.name)} · <b>${esc(v.gate||'Gate')}</b></span>
+        </div>
         <span class="gateStatsPill">📊 Scanned: <b>${vScans.length}</b> (${totalGatePersons} জন)</span>
         <button type="button" class="gateSoundBtn" onclick="toggleGateSound()">${gateSoundEnabled?'🔊 Sound ON':'🔇 Sound OFF'}</button>
         <button type="button" class="gateExitBtn" onclick="logoutVolunteer()">🚪 Exit / Logout</button>
@@ -984,10 +1021,17 @@ function gateScannerHTML(){
         <div style="display:flex;justify-content:space-between;align-items:center">
           <div>
             <span class="eyebrow" style="color:#34d399">CAMERA SCANNER</span>
-            <h2 style="font-size:18px;margin-top:2px">Point Camera at Guest QR Code</h2>
+            <h2 style="font-size:18px;margin-top:2px">${gateScannerMode==='valid'?'Valid User Verification':'Point Camera at Guest QR Code'}</h2>
           </div>
-          <span style="background:#064e3b;color:#6ee7b7;font-size:10.5px;font-weight:900;padding:3px 10px;border-radius:999px;border:1px solid #059669">● LIVE GATE</span>
+          <span style="background:${gateScannerMode==='valid'?'#065f46':'#064e3b'};color:#6ee7b7;font-size:10.5px;font-weight:900;padding:3px 10px;border-radius:999px;border:1px solid #059669">${gateScannerMode==='valid'?'✓ VALID MODE':'● LIVE GATE'}</span>
         </div>
+
+        <div class="scannerModes" style="margin:10px 0 12px">
+          <button class="${gateScannerMode==='entry'?'active':''}" onclick="switchGateScannerMode('entry')">🚪 গেস্ট এন্ট্রি (Entry Check-in)</button>
+          <button class="${gateScannerMode==='valid'?'active':''}" onclick="switchGateScannerMode('valid')">✓ ভ্যালিড ইউজার (Valid User)</button>
+        </div>
+
+        ${gateScannerMode==='valid'?`<div class="validNotice" style="margin-top:0;margin-bottom:12px"><strong>ভ্যালিড ইউজার মোড সক্রিয়:</strong> কিউআর কোড স্ক্যান করলে অতিথির বিবরণ ও রেজিস্ট্রেশন যাচাই হবে। কোনো চেক-ইন বা হাজিরা পরিবর্তন হবে না।</div>`:''}
 
         <div class="gateCameraBox">
           <div id="gateReader" style="width:100%;height:100%"></div>
@@ -1000,14 +1044,13 @@ function gateScannerHTML(){
           <button type="button" class="gateSoundBtn" style="flex:1;min-width:130px;justify-content:center;background:#15233c;border:1.5px solid #38bdf8;color:#38bdf8;font-weight:900" onclick="switchGateCamera()">🔄 ক্যামেরা ঘোরান (Flip Camera)</button>
           <button type="button" class="gateSoundBtn" style="flex:1;min-width:130px;justify-content:center" onclick="document.getElementById('gateGalleryInput').click()">📁 ছবি থেকে স্ক্যান (Gallery)</button>
           <input type="file" id="gateGalleryInput" accept="image/*" style="display:none" onchange="scanGateImage(this)">
-          <button type="button" class="gateSoundBtn" style="flex:1;min-width:130px;justify-content:center" onclick="openSyncModal()">📲 ডাটা সিঙ্ক (Offline)</button>
         </div>
 
         <div>
-          <label style="font-size:11px;color:#8fa0be;font-weight:700;display:block;margin-bottom:6px">Manual Entry Code or Guest ID (যদি কিউআর কাজ না করে):</label>
+          <label style="font-size:11px;color:#8fa0be;font-weight:700;display:block;margin-bottom:6px">${gateScannerMode==='valid'?'Manual Entry Code or Guest ID to Validate:':'Manual Entry Code or Guest ID (যদি কিউআর কাজ না করে):'}</label>
           <div class="gateManualWrap">
             <input id="gateManualCode" placeholder="যেমন: EVT-0003-18D7 বা EP-B3002B18D7" onkeydown="if(event.key==='Enter')gateManualScan()">
-            <button type="button" onclick="gateManualScan()">Verify Entry</button>
+            <button type="button" onclick="gateManualScan()">${gateScannerMode==='valid'?'Validate User':'Verify Entry'}</button>
           </div>
         </div>
       </div>
@@ -1034,7 +1077,7 @@ function gateScannerHTML(){
                   </div>
                   <div style="text-align:right">
                     <span style="background:#064e3b;color:#6ee7b7;padding:2px 7px;border-radius:6px;font-size:10px;font-weight:800;display:inline-block">👥 ${count} জন</span>
-                    <small style="display:block;color:#64748b;margin-top:2px">${new Date(u.checkedAt).toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'})}</small>
+                    <small style="display:block;color:#64748b;margin-top:2px">${formatBDTime(u.checkedAt)}</small>
                   </div>
                 </div>
               `;
@@ -1047,18 +1090,68 @@ function gateScannerHTML(){
   `;
 }
 
+function switchGateScannerMode(mode){
+  if(gateScannerMode===mode)return;
+  gateScannerMode=mode;
+  gateScanResult=null;
+  gateLastScan='';
+  render();
+}
+
 function gateResultHTML(){
   if(!gateScanResult){
     return `
       <div class="gateWaitBox">
         <div class="gateWaitIcon">📷</div>
-        <h3 style="font-size:17px;color:#fff;margin:0 0 6px">Ready for Guest Check-in</h3>
-        <p style="font-size:12.5px;color:#7e8ea6;margin:0">অতিথির কিউআর কোড স্ক্যান করুন। তাৎক্ষণিক ছবি, ব্যাচ ও ব্যক্তি সংখ্যা দেখতে পাবেন।</p>
+        <h3 style="font-size:17px;color:#fff;margin:0 0 6px">${gateScannerMode==='valid'?'Ready to Validate Guest':'Ready for Guest Check-in'}</h3>
+        <p style="font-size:12.5px;color:#7e8ea6;margin:0">${gateScannerMode==='valid'?'অতিথির কিউআর কোড স্ক্যান করে ভ্যালিড কিনা যাচাই করুন।':'অতিথির কিউআর কোড স্ক্যান করুন। তাৎক্ষণিক ছবি, ব্যাচ ও ব্যক্তি সংখ্যা দেখতে পাবেন।'}</p>
       </div>
     `;
   }
 
   const res=gateScanResult;
+  if(res.mode==='valid'){
+    if(!res.ok){
+      return `
+        <div class="gateResultCard bad">
+          <div style="font-size:32px;margin-bottom:6px">❌</div>
+          <span style="background:#b91c1c;color:#fff;font-size:10.5px;font-weight:900;letter-spacing:1px;padding:3px 10px;border-radius:6px;text-transform:uppercase">INVALID USER / নিবন্ধিত নয়</span>
+          <h3 style="font-size:18px;margin:8px 0 4px;color:#fff">${esc(res.message||'QR Code Not Found')}</h3>
+          <p style="font-size:12px;color:#fca5a5;margin:0">${esc(res.detail||'এই কিউআর কোডটি কোনো নিবন্ধিত অতিথির নয়।')}</p>
+          <button type="button" class="secondary" style="margin-top:12px;font-size:11px;padding:6px 14px" onclick="gateScanResult=null;updateGateResult()">Dismiss</button>
+        </div>
+      `;
+    }
+    const u=res.user;
+    const count=getGuestCount(u);
+    const sub=Math.max(0,count-1);
+    const photo=u.profilePhoto?`<img class="gateGuestPhoto" src="${esc(u.profilePhoto)}" alt="${esc(u.name)}">`:`<div class="gateGuestAvatar">${esc(idInitials(u.name))}</div>`;
+    return `
+      <div class="gateResultCard ok" style="border-color:#10b981;background:linear-gradient(180deg,#064e3b,#022c22)">
+        <div style="font-size:30px;margin-bottom:6px">✓</div>
+        <span style="background:#059669;color:#fff;font-size:11px;font-weight:900;letter-spacing:1px;padding:4px 14px;border-radius:999px;text-transform:uppercase">✓ VALID USER (নিবন্ধিত অতিথি)</span>
+        <div style="margin-top:12px">
+          ${photo}
+          <h3 style="font-size:22px;margin:0;color:#fff;font-weight:900">${esc(u.name)}</h3>
+          <div style="display:flex;justify-content:center;align-items:center;gap:8px;margin-top:6px;flex-wrap:wrap">
+            <span style="background:#065f46;border:1px solid #10b981;color:#a7f3d0;font-size:11px;font-weight:800;padding:3px 9px;border-radius:6px">SSC Batch ${esc(u.sscBatch||'—')}</span>
+            <span style="background:#022c22;border:1px solid #34d399;color:#6ee7b7;font-size:12px;font-weight:900;padding:3px 10px;border-radius:6px">👥 মোট ${count} জন (${sub>0?`১ মূল + ${sub} সাব`:'একক'})</span>
+          </div>
+        </div>
+        <div style="background:rgba(0,0,0,0.35);border-radius:10px;padding:10px 14px;margin-top:14px;font-size:11.5px;display:flex;flex-direction:column;gap:6px;color:#a7f3d0;text-align:left">
+          <div style="display:flex;justify-content:space-between"><span>Guest ID:</span> <code>${esc(u.guestId)}</code></div>
+          <div style="display:flex;justify-content:space-between"><span>Entry Code:</span> <b>${esc(u.code)}</b></div>
+          <div style="display:flex;justify-content:space-between"><span>হাজিরা স্ট্যাটাস:</span> <b style="color:${u.checkedIn?'#6ee7b7':'#fde047'}">${u.checkedIn?'✓ অলরেডি চেক ইন সম্পন্ন':'◷ এখনও প্রবেশ করেনি (Pending)'}</b></div>
+          ${u.checkedIn?`<div style="display:flex;justify-content:space-between"><span>চেক-ইন সময়:</span> <b>${formatBDTime(u.checkedAt)} (${esc(u.scanner||'Gate')})</b></div>`:''}
+        </div>
+        <div style="background:#064e3b;border:1px dashed #34d399;color:#a7f3d0;border-radius:8px;padding:8px;font-size:11px;margin-top:10px">
+          ℹ️ ভ্যালিড ইউজার মোড: এটি শুধুমাত্র অতিথি যাচাইয়ের জন্য, কোনো চেক-ইন করা হয়নি।
+        </div>
+        <button type="button" class="secondary" style="margin-top:12px;font-size:11.5px;padding:7px 16px;background:rgba(255,255,255,0.12);border:1px solid rgba(255,255,255,0.25);color:#fff;border-radius:8px;cursor:pointer" onclick="gateScanResult=null;updateGateResult()">পরবর্তী স্ক্যান / Next Scan ➔</button>
+      </div>
+    `;
+  }
+
   if(!res.ok){
     if(res.duplicate && res.user){
       const u=res.user;
@@ -1070,7 +1163,7 @@ function gateResultHTML(){
           <p style="font-size:12px;color:#fde68a;margin:0 0 10px">এই কিউআর কোডটি ইতিমধ্যে ব্যবহার করা হয়েছে।</p>
           <div style="background:rgba(0,0,0,0.35);border-radius:9px;padding:10px;font-size:11.5px;color:#fef3c7;text-align:left;display:flex;flex-direction:column;gap:4px">
             <div><span>Guest No:</span> <b>#${String(u.serial).padStart(2,'0')}</b></div>
-            <div><span>First Verified:</span> <b>${new Date(u.checkedAt).toLocaleTimeString()}</b></div>
+            <div><span>First Verified:</span> <b>${formatBDTime(u.checkedAt)}</b></div>
             <div><span>Verified By:</span> <b>${esc(u.scanner||'Unknown')}</b></div>
           </div>
           <button type="button" class="secondary" style="margin-top:12px;font-size:11px;padding:6px 14px" onclick="gateScanResult=null;updateGateResult()">Dismiss</button>
@@ -1133,7 +1226,7 @@ function gateResultHTML(){
       </div>
       <div style="background:rgba(0,0,0,0.3);border-radius:10px;padding:8px 12px;margin-top:12px;font-size:11.5px;display:flex;justify-content:space-between;color:#a7f3d0">
         <span>Guest #${String(u.serial).padStart(2,'0')}</span>
-        <span>${new Date(u.checkedAt||Date.now()).toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'})}</span>
+        <span>${formatBDTime(u.checkedAt||Date.now())}</span>
         <code>${esc(u.code)}</code>
       </div>
       <button type="button" class="secondary" style="margin-top:12px;font-size:11.5px;padding:7px 16px;background:rgba(255,255,255,0.12);border:1px solid rgba(255,255,255,0.25);color:#fff;border-radius:8px;cursor:pointer" onclick="gateScanResult=null;updateGateResult()">পরবর্তী স্ক্যান / Next Scan ➔</button>
@@ -1144,6 +1237,22 @@ function gateResultHTML(){
 function updateGateResult(){
   const b=document.getElementById('gateResultBox');
   if(b)b.innerHTML=gateResultHTML();
+}
+
+function gateValidateUser(raw){
+  const u=resolveGuest(raw);
+  if(!u){
+    gateScanResult={ok:false,mode:'valid',message:'Invalid User',detail:'এই কিউআর কোডটি কোনো নিবন্ধিত অতিথির নয়।'};
+    updateGateResult();
+    if(gateSoundEnabled)playScanSound('invalid');
+    toast('Invalid User / অনিবন্ধিত কিউআর','bad');
+    return false;
+  }
+  gateScanResult={ok:true,mode:'valid',user:u};
+  updateGateResult();
+  if(gateSoundEnabled)playScanSound('valid');
+  toast(`✓ ${u.name} — Valid EventPass Guest`);
+  return true;
 }
 
 function gateCheckIn(raw){
@@ -1172,6 +1281,14 @@ function gateCheckIn(raw){
   if(gateSoundEnabled)playScanSound('valid');
   toast(`${u.name} পাওয়া গেছে — "গেস্ট চেক ইন" বাটনে ক্লিক করুন`);
   return true;
+}
+
+function gateProcessScan(decoded){
+  if(gateScannerMode==='valid'){
+    gateValidateUser(decoded);
+  }else{
+    gateCheckIn(decoded);
+  }
 }
 
 function confirmGateCheckIn(id){
@@ -1207,7 +1324,7 @@ function confirmGateCheckIn(id){
 function gateManualScan(){
   const e=document.getElementById('gateManualCode');
   if(!e||!e.value.trim())return;
-  gateCheckIn(e.value.trim());
+  gateProcessScan(e.value.trim());
   e.value='';
 }
 
@@ -1249,7 +1366,7 @@ async function startGateScanner(){
     const onScanSuccess=(decoded)=>{
       if(decoded&&decoded!==gateLastScan){
         gateLastScan=decoded;
-        gateCheckIn(decoded);
+        gateProcessScan(decoded);
         setTimeout(()=>gateLastScan='',2200);
       }
     };
@@ -1266,7 +1383,7 @@ async function startGateScanner(){
     }
 
     const hasLabels = availableCameras.some(c => !!(c.label && c.label.trim()));
-    if(availableCameras && availableCameras.length > 0 && hasLabels){
+    if(availableCameras.length > 0 && hasLabels){
       if(currentCameraIndex < 0 || currentCameraIndex >= availableCameras.length){
         currentCameraIndex = findBackCameraIndex(availableCameras);
       }
@@ -1290,7 +1407,7 @@ async function startGateScanner(){
       await gateScanner.start({ facingMode: fallbackMode }, scanConfig, (decoded)=>{
         if(decoded&&decoded!==gateLastScan){
           gateLastScan=decoded;
-          gateCheckIn(decoded);
+          gateProcessScan(decoded);
           setTimeout(()=>gateLastScan='',2200);
         }
       }, ()=>{});
@@ -1301,7 +1418,7 @@ async function startGateScanner(){
         await gateScanner.start({ facingMode: "user" }, scanConfig, (decoded)=>{
           if(decoded&&decoded!==gateLastScan){
             gateLastScan=decoded;
-            gateCheckIn(decoded);
+            gateProcessScan(decoded);
             setTimeout(()=>gateLastScan='',2200);
           }
         }, ()=>{});
@@ -1349,7 +1466,7 @@ async function switchGateCamera(){
           await gateScanner.start({ facingMode: gateFacingMode }, scanConfig, (decoded)=>{
             if(decoded && decoded !== gateLastScan){
               gateLastScan = decoded;
-              gateCheckIn(decoded);
+              gateProcessScan(decoded);
               setTimeout(()=>gateLastScan='', 2200);
             }
           }, ()=>{});
@@ -1371,7 +1488,7 @@ async function scanGateImage(input){
     const tempScanner = new Html5Qrcode('gateReader');
     const decoded = await tempScanner.scanFile(file, true);
     if(decoded){
-      gateCheckIn(decoded);
+      gateProcessScan(decoded);
     }else{
       toast('ছবিতে কোনো কিউআর কোড পাওয়া যায়নি','bad');
     }
@@ -1379,7 +1496,7 @@ async function scanGateImage(input){
     try{
       if(gateScanner){
         const decoded = await gateScanner.scanFile(file, true);
-        if(decoded) gateCheckIn(decoded);
+        if(decoded) gateProcessScan(decoded);
         else toast('ছবিতে কিউআর পাওয়া যায়নি','bad');
       }else{
         toast('কিউআর রিড করা যায়নি: ' + (err.message || 'Invalid image'),'bad');
@@ -1416,8 +1533,8 @@ function render(){
  stopGateScanner();
  const h=getHeadcounts();
  const title=tab==='dashboard'?'Dashboard':tab==='guests'?'Guest Directory':tab==='volunteers'?'Scan Volunteers':tab==='scanner'?'QR Check-in Scanner':'Event Settings';
-   document.getElementById('root').innerHTML=`<div class="app"><aside class="sidebar"><div class="brand"><div class="mark">EP</div><div><b>EventPass</b><small>ADMIN CONTROL</small></div></div><nav>${[['dashboard','▦','Dashboard'],['guests','◉','Guests'],['volunteers','👥','Volunteers'],['scanner','⌁','QR Scanner'],['settings','⚙','Event Settings']].map(x=>`<button class="${tab===x[0]?'active':''}" onclick="navigate('${x[0]}')"><span>${x[1]}</span>${x[2]}</button>`).join('')}</nav><div class="sideBottom" style="display:flex;flex-direction:column;gap:12px"><button class="secondary logoutBtn" style="width:100%;display:flex;align-items:center;justify-content:center;gap:8px" onclick="logoutAdmin()"><span>🔓</span> Logout Admin</button><div class="secure">● Admin Session<small>Full control active. Guest data in this browser.</small></div></div></aside><main class="main"><header><div><span class="eyebrow">EVENT CONTROL CENTER</span><h1>${title}</h1></div><div class="headerActions"><div class="cloudStatusContainer"></div><span class="adminBadge">🔐 ADMIN</span><div class="eventChip"><span>EVENT</span><b>${esc(settings.eventName)}</b></div><button class="secondary" onclick="openCloudModal()" title="ক্লাউড ডাটাবেজ সেটিংস">☁️ Cloud Sync</button><button class="secondary" onclick="openSyncModal()" title="মোবাইল সিঙ্ক">📲 Sync Data</button><button class="primary" onclick="openAdd()">＋ Add Guest</button><button class="secondary logoutBtn" onclick="logoutAdmin()" title="Logout Admin">🔓 Logout</button></div></header>${tab==='dashboard'?dashboardHTML(h):tab==='guests'?guestsHTML(h):tab==='volunteers'?volunteersHTML():tab==='scanner'?scannerHTML():settingsHTML()}</main></div>`;
-   if(tab==='scanner')setTimeout(startScanner,150);
+    document.getElementById('root').innerHTML=`<div class="app"><aside class="sidebar"><div class="brand"><div class="mark">EP</div><div><b>EventPass</b><small>ADMIN CONTROL</small></div></div><nav>${[['dashboard','▦','Dashboard'],['guests','◉','Guests'],['volunteers','👥','Volunteers'],['scanner','⌁','QR Scanner'],['settings','⚙','Event Settings']].map(x=>`<button class="${tab===x[0]?'active':''}" onclick="navigate('${x[0]}')"><span>${x[1]}</span>${x[2]}</button>`).join('')}</nav><div class="sideBottom" style="display:flex;flex-direction:column;gap:12px"><button class="secondary logoutBtn" style="width:100%;display:flex;align-items:center;justify-content:center;gap:8px" onclick="logoutAdmin()"><span>🔓</span> Logout Admin</button><div class="secure">● Admin Session<small>Full control active. Guest data in this browser.</small></div></div></aside><main class="main"><header><div><span class="eyebrow">EVENT CONTROL CENTER</span><h1>${title}</h1></div><div class="headerActions"><div class="cloudStatusContainer"></div><span class="adminBadge">🔐 ADMIN</span><div class="eventChip"><span>EVENT</span><b>${esc(settings.eventName)}</b></div><button class="secondary" onclick="openCloudModal()" title="ক্লাউড ডাটাবেজ সেটিংস">☁️ Cloud Sync</button><button class="primary" onclick="openAdd()">＋ Add Guest</button><button class="secondary logoutBtn" onclick="logoutAdmin()" title="Logout Admin">🔓 Logout</button></div></header>${tab==='dashboard'?dashboardHTML(h):tab==='guests'?guestsHTML(h):tab==='volunteers'?volunteersHTML():tab==='scanner'?scannerHTML():settingsHTML()}</main></div>`;
+    if(tab==='scanner')setTimeout(startScanner,150);
 }
 function dashboardHTML(h){
  if(!h)h=getHeadcounts();
@@ -1444,7 +1561,7 @@ function dashboardHTML(h){
 function guestsHTML(h){
  if(!h)h=getHeadcounts();
  let list=users.filter(u=>guestFilter==='all'||u.checkedIn).filter(u=>[u.name,u.email,u.phone,u.code,u.guestId,u.sscBatch,String(u.serial)].join(' ').toLowerCase().includes(search.toLowerCase())).sort((a,b)=>a.serial-b.serial);
- return `<section class="content"><div class="toolbar"><div class="search"><span>⌕</span><input id="search" value="${esc(search)}" oninput="search=this.value;renderGuestsOnly()" placeholder="Search name, ID, serial, phone or email..."></div><button class="secondary" onclick="openSyncModal()">📲 Sync to Mobile</button><button class="secondary" onclick="exportCSV()">↓ Export CSV</button><button class="primary" onclick="openAdd()">＋ Add Guest</button></div><div class="panel tablePanel"><div class="panelHead guestTabsHead"><div><h2>Guest Directory</h2><p>${guestFilter==='all'?`${h.totalProfiles} profiles (${h.totalPersons} মোট ব্যক্তি, ${h.totalSub} সাব-গেস্ট)`:`${h.checkedProfiles} profiles checked in (${h.checkedPersons} জন উপস্থিত)`}${search?' · filtered':''}</p></div><div class="segmented"><button class="${guestFilter==='all'?'active':''}" onclick="guestFilter='all';renderGuestsOnly()">All Profiles <b>${h.totalProfiles} (${h.totalPersons} জন)</b></button><button class="${guestFilter==='checked'?'active':''}" onclick="guestFilter='checked';renderGuestsOnly()">Checked In <b>${h.checkedProfiles} (${h.checkedPersons} জন)</b></button></div></div><div id="guestTableArea">${list.length?tableHTML(list,true):emptyHTML(guestFilter==='checked'?'No guests checked in yet':'No guests found')}</div></div></section>`
+ return `<section class="content"><div class="toolbar"><div class="search"><span>⌕</span><input id="search" value="${esc(search)}" oninput="search=this.value;renderGuestsOnly()" placeholder="Search name, ID, serial, phone or email..."></div><button class="secondary" onclick="exportCSV()">↓ Export CSV</button><button class="primary" onclick="openAdd()">＋ Add Guest</button></div><div class="panel tablePanel"><div class="panelHead guestTabsHead"><div><h2>Guest Directory</h2><p>${guestFilter==='all'?`${h.totalProfiles} profiles (${h.totalPersons} মোট ব্যক্তি, ${h.totalSub} সাব-গেস্ট)`:`${h.checkedProfiles} profiles checked in (${h.checkedPersons} জন উপস্থিত)`}${search?' · filtered':''}</p></div><div class="segmented"><button class="${guestFilter==='all'?'active':''}" onclick="guestFilter='all';renderGuestsOnly()">All Profiles <b>${h.totalProfiles} (${h.totalPersons} জন)</b></button><button class="${guestFilter==='checked'?'active':''}" onclick="guestFilter='checked';renderGuestsOnly()">Checked In <b>${h.checkedProfiles} (${h.checkedPersons} জন)</b></button></div></div><div id="guestTableArea">${list.length?tableHTML(list,true):emptyHTML(guestFilter==='checked'?'No guests checked in yet':'No guests found')}</div></div></section>`
 }
 function renderGuestsOnly(){
  const area=document.getElementById('guestTableArea');
@@ -1459,7 +1576,7 @@ function tableHTML(list,actions){
  return `<div class="tableWrap"><table><thead><tr><th>#</th><th>Guest</th><th>Total Persons</th><th>Permanent ID / Entry Code</th><th>ID Card Pass</th><th>Contact</th><th>Status</th><th>Check-in</th><th></th></tr></thead><tbody>${list.map(u=>{
   const c=getGuestCount(u);
   const sub=Math.max(0,c-1);
-  return `<tr><td><span class="serial">${String(u.serial).padStart(2,'0')}</span></td><td><button class="nameBtn" onclick="openGuest('${u.guestId}')"><span class="avatar">${esc(u.name.slice(0,1).toUpperCase())}</span><span><b>${esc(u.name)}</b><small>${esc(u.email||u.phone)}</small></span></button></td><td><div style="display:inline-flex;align-items:center;gap:6px"><span style="font-weight:900;color:#fff;font-size:13px">${c} জন</span><span style="background:#17223b;border:1px solid #283756;color:#a5b4fc;font-size:9.5px;padding:2px 6px;border-radius:6px;font-weight:800">${sub>0?`১ মূল + ${sub} সাব`:'একক'}</span></div><small style="color:#7888a3;display:block;margin-top:2px">${esc(u.guestType||'Individual')}</small></td><td><span class="guestId">${esc(u.guestId)}</span><small>${esc(u.code)}</small></td><td><span style="background:#141f36;border:1px solid #293b5d;color:#f3c65b;font-weight:800;font-size:11px;padding:3px 8px;border-radius:6px;display:inline-flex;align-items:center;gap:4px">🔑 ${esc(u.idCardPassword||'1234')}</span></td><td>${esc(u.phone)}<small>${esc(u.email||'—')}</small></td><td><span class="status ${u.checkedIn?'checked':'pending'}">${u.checkedIn?'✓ Verified':'◷ Pending'}</span></td><td>${u.checkedAt?`<b>${new Date(u.checkedAt).toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'})}</b><small>${esc(u.scanner||'—')}</small>`:'—'}</td><td>${actions?`<div class="rowActions"><button style="color:#a59cff;font-weight:800" onclick="openIDCard('${u.guestId}')">ID Card</button><button onclick="openEdit('${u.guestId}')">Edit</button><button onclick="deleteUser('${u.guestId}')">Delete</button></div>`:''}</td></tr>`;
+  return `<tr><td><span class="serial">${String(u.serial).padStart(2,'0')}</span></td><td><button class="nameBtn" onclick="openGuest('${u.guestId}')"><span class="avatar">${esc(u.name.slice(0,1).toUpperCase())}</span><span><b>${esc(u.name)}</b><small>${esc(u.email||u.phone)}</small></span></button></td><td><div style="display:inline-flex;align-items:center;gap:6px"><span style="font-weight:900;color:#fff;font-size:13px">${c} জন</span><span style="background:#17223b;border:1px solid #283756;color:#a5b4fc;font-size:9.5px;padding:2px 6px;border-radius:6px;font-weight:800">${sub>0?`১ মূল + ${sub} সাব`:'একক'}</span></div><small style="color:#7888a3;display:block;margin-top:2px">${esc(u.guestType||'Individual')}</small></td><td><span class="guestId">${esc(u.guestId)}</span><small>${esc(u.code)}</small></td><td><span style="background:#141f36;border:1px solid #293b5d;color:#f3c65b;font-weight:800;font-size:11px;padding:3px 8px;border-radius:6px;display:inline-flex;align-items:center;gap:4px">🔑 ${esc(u.idCardPassword||'1234')}</span></td><td>${esc(u.phone)}<small>${esc(u.email||'—')}</small></td><td><span class="status ${u.checkedIn?'checked':'pending'}">${u.checkedIn?'✓ Verified':'◷ Pending'}</span></td><td>${u.checkedAt?`<b>${formatBDTime(u.checkedAt)}</b><small>${esc(u.scanner||'—')}</small>`:'—'}</td><td>${actions?`<div class="rowActions"><button style="color:#a59cff;font-weight:800" onclick="openIDCard('${u.guestId}')">ID Card</button><button onclick="openEdit('${u.guestId}')">Edit</button><button onclick="deleteUser('${u.guestId}')">Delete</button></div>`:''}</td></tr>`;
  }).join('')}</tbody></table></div>`
 }
 function emptyHTML(t){return `<div class="empty"><div class="icon">◌</div><h3>${esc(t)}</h3><p>Add a guest or change your filter.</p></div>`}
@@ -1530,12 +1647,15 @@ function volunteersHTML(){
           <tbody>
             ${volunteers.map((v, i)=>{
               const scansCount=users.filter(u=>u.checkedIn && u.scanner && u.scanner.includes(v.name)).length;
+              const vAvatar=v.photo
+                ? `<img src="${esc(v.photo)}" style="width:36px;height:36px;border-radius:10px;object-fit:cover;border:1.5px solid #34d399">`
+                : `<span class="avatar" style="background:#064e3b;color:#6ee7b7">${esc((v.name||'V').slice(0,1).toUpperCase())}</span>`;
               return `
                 <tr>
                   <td><span class="serial">${String(i+1).padStart(2,'0')}</span></td>
                   <td>
                     <div style="display:flex;align-items:center;gap:10px">
-                      <span class="avatar" style="background:#064e3b;color:#6ee7b7">${esc((v.name||'V').slice(0,1).toUpperCase())}</span>
+                      ${vAvatar}
                       <div>
                         <b>${esc(v.name)}</b>
                         <small style="color:#7888a3;display:block">${esc(v.id)}</small>
@@ -1573,13 +1693,21 @@ function volunteersHTML(){
   `;
 }
 
+function previewVolPhoto(input){
+  const file=input?.files?.[0], img=document.getElementById('volPhotoPreview');
+  if(!file||!img)return;
+  const r=new FileReader();
+  r.onload=e=>{img.src=e.target.result;img.style.display='block'};
+  r.readAsDataURL(file);
+}
+
 function openAddVolunteer(){
   openModal(`
     <div class="modalHead">
       <div>
         <span class="eyebrow" style="color:#34d399">NEW SCANNER ACCESS</span>
         <h2>Add Gate Volunteer</h2>
-        <p>নতুন ভলেন্টিয়ার যুক্ত করুন এবং গেট ও পাসওয়ার্ড নির্ধারণ করুন।</p>
+        <p>নতুন ভলেন্টিয়ার যুক্ত করুন এবং গেট, পাসওয়ার্ড ও প্রোফাইল ছবি নির্ধারণ করুন।</p>
       </div>
       <button class="close" onclick="closeModal()">×</button>
     </div>
@@ -1608,6 +1736,11 @@ function openAddVolunteer(){
             <button type="button" class="toggleEyeBtn" onclick="togglePasswordVisibility('newVolPassword', this)" title="Show/Hide password">${EYE_OPEN_SVG}</button>
           </div>
           <small style="color:#7888a3;margin-top:4px">ভলেন্টিয়ার এই পাসওয়ার্ডটি দিয়ে গেট স্ক্যানারে লগইন করবেন।</small>
+        </label>
+        <label class="field" style="grid-column:1/-1">
+          <span>Volunteer Profile Photo / ছবি (ঐচ্ছিক)</span>
+          <input type="file" name="volPhoto" accept="image/*" onchange="previewVolPhoto(this)">
+          <img id="volPhotoPreview" style="display:none;width:64px;height:64px;object-fit:cover;border-radius:50%;margin-top:8px;border:2px solid #34d399">
         </label>
       </div>
       <div class="formActions" style="margin-top:22px">
@@ -1655,6 +1788,11 @@ function openEditVolunteer(id){
           </div>
           <small style="color:#7888a3;margin-top:4px">ভলেন্টিয়ারের লগইন পাসওয়ার্ড।</small>
         </label>
+        <label class="field" style="grid-column:1/-1">
+          <span>Volunteer Profile Photo / ছবি</span>
+          <input type="file" name="volPhoto" accept="image/*" onchange="previewVolPhoto(this)">
+          <img id="volPhotoPreview" src="${esc(v.photo||'')}" style="${v.photo?'display:block;':'display:none;'}width:64px;height:64px;object-fit:cover;border-radius:50%;margin-top:8px;border:2px solid #34d399">
+        </label>
       </div>
       <div class="formActions" style="margin-top:22px">
         <button type="button" class="secondary" onclick="closeModal()">Cancel</button>
@@ -1664,7 +1802,7 @@ function openEditVolunteer(id){
   `);
 }
 
-function submitVolunteer(e, id){
+async function submitVolunteer(e, id){
   e.preventDefault();
   const f=new FormData(e.target);
   const name=f.get('name').trim();
@@ -1672,6 +1810,11 @@ function submitVolunteer(e, id){
   const email=f.get('email').trim();
   const phone=f.get('phone').trim();
   const password=f.get('password').trim();
+  const file=f.get('volPhoto');
+  let photo='';
+  if(file && file.size){
+    photo = await resizeImage(file);
+  }
 
   if(id){
     const v=volunteers.find(x=>x.id===id);
@@ -1681,6 +1824,7 @@ function submitVolunteer(e, id){
     v.email=email;
     v.phone=phone;
     v.password=password;
+    if(photo) v.photo=photo;
     saveVolunteers();
     closeModal();
     toast('Volunteer details updated ✓');
@@ -1694,6 +1838,7 @@ function submitVolunteer(e, id){
       email,
       phone,
       password,
+      photo:photo||'',
       active:true,
       createdAt:new Date().toISOString()
     });
@@ -1976,7 +2121,7 @@ function checkIn(raw){
   const count=getGuestCount(u);
   const sub=Math.max(0,count-1);
   const countDesc=sub>0?`সাব এ ${sub} জন, মোট ${count} জন`:`মোট ১ জন`;
-  if(u.checkedIn){scanResult={ok:false,message:'Already Attended',detail:`Guest #${u.serial} · ${u.name} has already attended (${countDesc}). First verified at ${new Date(u.checkedAt).toLocaleString()} by ${u.scanner||'Unknown scanner'}.`,user:u,duplicate:true};updateResult();playScanSound('duplicate');toast(`${u.name} — Already Attended / QR already used`,'bad');return false}
+  if(u.checkedIn){scanResult={ok:false,message:'Already Attended',detail:`Guest #${u.serial} · ${u.name} has already attended (${countDesc}). First verified at ${formatBDDateTime(u.checkedAt)} by ${u.scanner||'Unknown scanner'}.`,user:u,duplicate:true};updateResult();playScanSound('duplicate');toast(`${u.name} — Already Attended / QR already used`,'bad');return false}
   scanResult={ok:true,message:'Guest Identified · Ready to Check In',detail:`${u.name} (${countDesc}) — নিশ্চিত করতে নিচে ক্লিক করুন`,user:u,confirmed:false};
   updateResult();
   playScanSound('valid');
@@ -2477,95 +2622,11 @@ async function openGuest(id){
   if(!u)return;
   const count=getGuestCount(u);
   const sub=Math.max(0,count-1);
-  openModal(`<div class="modalHead"><div><span class="eyebrow">GUEST PASS · QR GENERATED</span><h2>${esc(u.name)}</h2></div><button class="close" onclick="closeModal()">×</button></div><div class="passGrid"><div class="qrBox"><div id="qrCanvas" class="qrCanvas"></div><span class="serialBadge">GUEST #${String(u.serial).padStart(2,'0')}</span><code>${esc(u.guestId)}</code><small>ONE-TIME ENTRY QR</small></div><div><div class="infoRow"><span>Guest number</span><b>#${String(u.serial).padStart(2,'0')}</b></div><div class="infoRow"><span>Permanent Guest ID</span><b>${esc(u.guestId)}</b></div><div class="infoRow"><span>Entry code</span><b>${esc(u.code)}</b></div><div class="infoRow"><span>ID Card Password</span><b style="color:#f3c65b">🔑 ${esc(u.idCardPassword||'1234')}</b></div><div class="infoRow"><span>Guest Type</span><b>${esc(u.guestType||'Individual')}</b></div><div class="infoRow"><span>Persons &amp; Sub-Guests</span><b>${count} জন (${sub>0?`১ মূল + ${sub} সাব`: 'একক'})</b></div><div class="infoRow"><span>Phone</span><b>${esc(u.phone)}</b></div><div class="infoRow"><span>Email</span><b>${esc(u.email||'—')}</b></div><div class="infoRow"><span>Status</span><b class="${u.checkedIn?'greenText':''}">${u.checkedIn?'✓ Verified / Checked in':'◷ Pending'}</b></div>${u.checkedAt?`<div class="infoRow"><span>Verified</span><b>${new Date(u.checkedAt).toLocaleString()} · ${esc(u.scanner)}</b></div>`:''}<div class="share"><button class="primary" style="background:linear-gradient(135deg,#7d6cff,#5046e5)" onclick="openIDCard('${u.guestId}')">🪪 ID Card</button><a class="secondary" target="_blank" rel="noreferrer" href="https://wa.me/${normalizePhone(u.phone)}?text=${encodeURIComponent(inviteMessage(u))}">WhatsApp</a><button class="secondary" onclick="sendGuestEmail('${u.guestId}')">Email QR</button><button class="secondary" onclick="shareQR('${u.guestId}')">Share QR</button><button class="secondary" onclick="window.print()">Print</button><button class="primary" onclick="downloadQR('${u.guestId}')">Download QR</button></div><div class="delivery">WhatsApp opens a ready-to-send invitation. <b>Email QR</b> sends the QR image through the configured EmailJS service. <b>Share QR</b> shares the actual QR image on supported devices.</div>${isAdmin?`<div class="danger"><button onclick="openEdit('${u.guestId}')">Edit guest</button><button onclick="deleteUser('${u.guestId}')">Delete guest</button></div>`:''}</div></div>`);
+  openModal(`<div class="modalHead"><div><span class="eyebrow">GUEST PASS · QR GENERATED</span><h2>${esc(u.name)}</h2></div><button class="close" onclick="closeModal()">×</button></div><div class="passGrid"><div class="qrBox"><div id="qrCanvas" class="qrCanvas"></div><span class="serialBadge">GUEST #${String(u.serial).padStart(2,'0')}</span><code>${esc(u.guestId)}</code><small>ONE-TIME ENTRY QR</small></div><div><div class="infoRow"><span>Guest number</span><b>#${String(u.serial).padStart(2,'0')}</b></div><div class="infoRow"><span>Permanent Guest ID</span><b>${esc(u.guestId)}</b></div><div class="infoRow"><span>Entry code</span><b>${esc(u.code)}</b></div><div class="infoRow"><span>ID Card Password</span><b style="color:#f3c65b">🔑 ${esc(u.idCardPassword||'1234')}</b></div><div class="infoRow"><span>Guest Type</span><b>${esc(u.guestType||'Individual')}</b></div><div class="infoRow"><span>Persons &amp; Sub-Guests</span><b>${count} জন (${sub>0?`১ মূল + ${sub} সাব`: 'একক'})</b></div><div class="infoRow"><span>Phone</span><b>${esc(u.phone)}</b></div><div class="infoRow"><span>Email</span><b>${esc(u.email||'—')}</b></div><div class="infoRow"><span>Status</span><b class="${u.checkedIn?'greenText':''}">${u.checkedIn?'✓ Verified / Checked in':'◷ Pending'}</b></div>${u.checkedAt?`<div class="infoRow"><span>Verified</span><b>${formatBDDateTime(u.checkedAt)} · ${esc(u.scanner)}</b></div>`:''}<div class="share"><button class="primary" style="background:linear-gradient(135deg,#7d6cff,#5046e5)" onclick="openIDCard('${u.guestId}')">🪪 ID Card</button><a class="secondary" target="_blank" rel="noreferrer" href="https://wa.me/${normalizePhone(u.phone)}?text=${encodeURIComponent(inviteMessage(u))}">WhatsApp</a><button class="secondary" onclick="sendGuestEmail('${u.guestId}')">Email QR</button><button class="secondary" onclick="shareQR('${u.guestId}')">Share QR</button><button class="secondary" onclick="window.print()">Print</button><button class="primary" onclick="downloadQR('${u.guestId}')">Download QR</button></div><div class="delivery">WhatsApp opens a ready-to-send invitation. <b>Email QR</b> sends the QR image through the configured EmailJS service. <b>Share QR</b> shares the actual QR image on supported devices.</div>${isAdmin?`<div class="danger"><button onclick="openEdit('${u.guestId}')">Edit guest</button><button onclick="deleteUser('${u.guestId}')">Delete guest</button></div>`:''}</div></div>`);
   setTimeout(()=>{const q=document.getElementById('qrCanvas');if(window.QRCode&&q)new QRCode(q,{text:u.qrValue,width:230,height:230,colorDark:'#000',colorLight:'#fff',correctLevel:QRCode.CorrectLevel.H})},50);
 }
 function inviteMessage(u){const qr=qrImageUrl(u);return `You're invited to ${settings.eventName}.\n\nGuest: ${u.name}\nGuest number: #${String(u.serial).padStart(2,'0')}\nGuest ID: ${u.guestId}\nEntry Code: ${u.code}\nPhone: ${u.phone||'N/A'}\nEmail: ${u.email||'N/A'}\n\nEvent: ${settings.eventName}\nDate & Time: ${fmtDateTime(settings.eventDate,settings.eventTime)}\nVenue: ${settings.venue||'N/A'}\n\nQR Code: ${qr}\n\nPlease open the QR Code link above and present the QR code at check-in. This QR code is valid for ONE entry only. Do not share it with anyone else.`}
 function downloadQR(id){const img=document.querySelector('#qrCanvas img');if(!img)return;const u=users.find(x=>x.guestId===id);const a=document.createElement('a');a.href=img.src;a.download=(u?.code||id)+'.png';a.click()}
-function openSyncModal(){
-  const dataStr = JSON.stringify({
-    eventName: settings.eventName,
-    exportedAt: new Date().toISOString(),
-    users: users
-  }, null, 2);
-  const dataBlob = new Blob([dataStr], {type: 'application/json'});
-  const downloadUrl = URL.createObjectURL(dataBlob);
-  const totalCount = users.length;
-  const totalPersons = users.reduce((s,u)=>s+getGuestCount(u),0);
-
-  openModal(`
-    <div class="modalHead">
-      <div>
-        <span class="eyebrow">CROSS-DEVICE DATA SYNC</span>
-        <h2>📲 মোবাইল স্ক্যানার ডাটা সিঙ্ক (Device Sync)</h2>
-      </div>
-      <button class="close" onclick="closeModal()">×</button>
-    </div>
-    <p style="color:#8ba0be;font-size:13px;margin:0 0 16px">
-      ল্যাপটপ থেকে মোবাইলে সমস্ত গেস্ট লিস্ট ও কিউআর ডাটা সহজে ট্রান্সফার করুন যাতে যেকোনো মোবাইল দিয়ে অফলাইনে নির্ভুলভাবে স্ক্যান ও চেক-ইন করা যায়।
-    </p>
-
-    <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:20px">
-      <div style="background:#0c1629;border:1.5px solid #1e3052;border-radius:12px;padding:16px;display:flex;flex-direction:column;justify-content:space-between">
-        <div>
-          <div style="font-size:24px;margin-bottom:8px">📥 ১. ডাটা এক্সপোর্ট (Laptop)</div>
-          <b style="color:#fff;font-size:14px;display:block">ল্যাপটপ থেকে ফাইল ডাউনলোড করুন</b>
-          <p style="color:#7e8ea6;font-size:12px;margin:6px 0 14px">মোট <b>${totalCount}</b> জন গেস্ট (${totalPersons} জন ব্যক্তি)-এর পূর্ণ ডাটাবেজ ফাইল ডাউনলোড করে হোয়াটসঅ্যাপে বা ব্লুটুথে মোবাইলে পাঠান।</p>
-        </div>
-        <a href="${downloadUrl}" download="eventpass-sync-data.json" class="primary" style="text-align:center;text-decoration:none;padding:11px 14px;font-size:13px;display:block;border-radius:8px">⬇️ Download Sync File (JSON)</a>
-      </div>
-
-      <div style="background:#0c1629;border:1.5px solid #1e3052;border-radius:12px;padding:16px;display:flex;flex-direction:column;justify-content:space-between">
-        <div>
-          <div style="font-size:24px;margin-bottom:8px">📲 ২. ডাটা ইমপোর্ট (Mobile)</div>
-          <b style="color:#fff;font-size:14px;display:block">মোবাইলে ফাইল আপলোড করুন</b>
-          <p style="color:#7e8ea6;font-size:12px;margin:6px 0 14px">মোবাইলে এই ওয়েবসাইট খুলে ডাউনলোড করা <code>eventpass-sync-data.json</code> ফাইলটি আপলোড করলেই সাথে সাথে সব গেস্ট মোবাইলে চলে আসবে।</p>
-        </div>
-        <label class="secondary" style="text-align:center;cursor:pointer;padding:11px 14px;font-size:13px;display:block;border-radius:8px;border:1px solid #3b82f6;color:#93c5fd">
-          ⬆️ Upload JSON to this Device
-          <input type="file" accept=".json,application/json" style="display:none" onchange="importSyncFile(this)">
-        </label>
-      </div>
-    </div>
-
-    <div style="background:#131c31;border:1px solid #233454;border-radius:12px;padding:14px;font-size:12.5px;color:#a5b4fc;line-height:1.6">
-      💡 <b>স্মার্ট কিউআর প্রযুক্তি:</b> আমাদের নতুন স্মার্ট কিউআরে অতিথির নাম, ব্যাচ ও ব্যক্তি সংখ্যা সরাসরি কিউআর কোডের ভেতরেই এনকোড করা থাকে। তাই মোবাইলে ডাটাবেজ ট্রান্সফার না করলেও কিউআর কোড স্ক্যান করলে স্বয়ংক্রিয়ভাবে অতিথি শনাক্ত হয়ে যায়!
-    </div>
-  `);
-}
-function importSyncFile(input){
-  const file = input?.files?.[0];
-  if(!file) return;
-  const reader = new FileReader();
-  reader.onload = function(e){
-    try{
-      const data = JSON.parse(e.target.result);
-      if(data && Array.isArray(data.users)){
-        const incoming = data.users;
-        let added = 0, updated = 0;
-        incoming.forEach(inc => {
-          const idx = users.findIndex(u => u.guestId === inc.guestId);
-          if(idx >= 0){
-            users[idx] = { ...users[idx], ...inc };
-            updated++;
-          }else{
-            users.push(inc);
-            added++;
-          }
-        });
-        save();
-        closeModal();
-        render();
-        toast(`ডাটা সিঙ্ক সফল! ${added} জন নতুন গেস্ট যুক্ত হয়েছে, ${updated} জন আপডেট হয়েছে ✓`);
-      }else{
-        toast('অবৈধ ফাইল ফরম্যাট! সঠিক eventpass-sync-data.json ফাইল দিন।','bad');
-      }
-    }catch(err){
-      toast('ফাইল পড়তে ব্যর্থ হয়েছে: ' + err.message, 'bad');
-    }
-  };
-  reader.readAsText(file);
-}
 
 function openCloudModal(){
   if(!isAdmin){
@@ -2759,7 +2820,7 @@ function emailParams(u){const qr=qrImageUrl(u);return {to_email:u.email,to_name:
 async function sendGuestEmail(id){const u=users.find(x=>x.guestId===id);if(!u)return;if(!settings.emailPublicKey||!settings.emailServiceId||!settings.emailTemplateId){toast('Set EmailJS Public Key, Service ID and Template ID in Settings first','bad');navigate('settings');return}try{if(window.emailjs)window.emailjs.init({publicKey:settings.emailPublicKey});await emailjs.send(settings.emailServiceId,settings.emailTemplateId,emailParams(u));toast('QR email sent to '+u.email)}catch(err){toast('Email send failed. Check EmailJS settings/template.','bad');console.error(err)}}
 async function testEmailConfig(){const email=settings.ownerEmail||prompt('Enter a test email address');if(!email)return;if(!settings.emailPublicKey||!settings.emailServiceId||!settings.emailTemplateId){toast('Fill EmailJS Public Key, Service ID and Template ID first','bad');return}const fake={name:settings.ownerName||'Event Owner',email,serial:0,guestId:'TEST-GUEST',code:'TEST-0000',qrValue:'EVENTPASS|TEST-GUEST'};try{if(window.emailjs)window.emailjs.init({publicKey:settings.emailPublicKey});await emailjs.send(settings.emailServiceId,settings.emailTemplateId,emailParams(fake));toast('Test email sent')}catch(err){toast('Test email failed. Check your EmailJS template variables.','bad');console.error(err)}}
 function exportCSV(){
-  const rows=[['Serial','Permanent Guest ID','Name','Total Persons','Primary Guest','Sub-Guests','Guest Type','Entry Type','Entry Code','ID Card Pass','Phone','Email','Status','Checked At','Scanner'],...users.sort((a,b)=>a.serial-b.serial).map(u=>{const c=getGuestCount(u);const sub=Math.max(0,c-1);return [u.serial,u.guestId,u.name,c,1,sub,u.guestType||'Individual',u.entryType||'General',u.code,u.idCardPassword||'1234',u.phone,u.email,u.checkedIn?'Checked in':'Pending',u.checkedAt?new Date(u.checkedAt).toLocaleString():'',u.scanner||'']})];
+  const rows=[['Serial','Permanent Guest ID','Name','Total Persons','Primary Guest','Sub-Guests','Guest Type','Entry Type','Entry Code','ID Card Pass','Phone','Email','Status','Checked At','Scanner'],...users.sort((a,b)=>a.serial-b.serial).map(u=>{const c=getGuestCount(u);const sub=Math.max(0,c-1);return [u.serial,u.guestId,u.name,c,1,sub,u.guestType||'Individual',u.entryType||'General',u.code,u.idCardPassword||'1234',u.phone,u.email,u.checkedIn?'Checked in':'Pending',u.checkedAt?formatBDDateTime(u.checkedAt):'',u.scanner||'']})];
   const csv=rows.map(r=>r.map(v=>'"'+String(v).replaceAll('"','""')+'"').join(',')).join('\n');
   const a=document.createElement('a');
   a.href=URL.createObjectURL(new Blob([csv],{type:'text/csv'}));
@@ -2799,7 +2860,7 @@ function refreshLiveViews(){
             </div>
             <div style="text-align:right">
               <span style="background:#064e3b;color:#6ee7b7;padding:2px 7px;border-radius:6px;font-size:10px;font-weight:800;display:inline-block">👥 ${c} জন</span>
-              <small style="display:block;color:#64748b;margin-top:2px">${new Date(gx.checkedAt).toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'})}</small>
+              <small style="display:block;color:#64748b;margin-top:2px">${formatBDTime(gx.checkedAt)}</small>
             </div>
           </div>
         `;
@@ -2815,7 +2876,7 @@ function refreshLiveViews(){
     const content=document.querySelector('.content');
     if(content && content.parentElement){
       const h=getHeadcounts();
-      content.parentElement.innerHTML=`<header><div><span class="eyebrow">EVENT CONTROL CENTER</span><h1>Dashboard</h1></div><div class="headerActions"><div class="cloudStatusContainer"></div><span class="adminBadge">🔐 ADMIN</span><div class="eventChip"><span>EVENT</span><b>${esc(settings.eventName)}</b></div><button class="secondary" onclick="openCloudModal()" title="ক্লাউড ডাটাবেজ সেটিংস">☁️ Cloud Sync</button><button class="secondary" onclick="openSyncModal()" title="মোবাইল সিঙ্ক">📲 Sync Data</button><button class="primary" onclick="openAdd()">＋ Add Guest</button><button class="secondary logoutBtn" onclick="logoutAdmin()" title="Logout Admin">🔓 Logout</button></div></header>${dashboardHTML(h)}`;
+      content.parentElement.innerHTML=`<header><div><span class="eyebrow">EVENT CONTROL CENTER</span><h1>Dashboard</h1></div><div class="headerActions"><div class="cloudStatusContainer"></div><span class="adminBadge">🔐 ADMIN</span><div class="eventChip"><span>EVENT</span><b>${esc(settings.eventName)}</b></div><button class="secondary" onclick="openCloudModal()" title="ক্লাউড ডাটাবেজ সেটিংস">☁️ Cloud Sync</button><button class="primary" onclick="openAdd()">＋ Add Guest</button><button class="secondary logoutBtn" onclick="logoutAdmin()" title="Logout Admin">🔓 Logout</button></div></header>${dashboardHTML(h)}`;
     }
   }else if(tab==='guests'){
     renderGuestsOnly();
