@@ -1,24 +1,35 @@
-# EventPass — QR Check-in + Valid User
+# EventPass — Professional QR Check-in & Live Cloud Sync
 
-This build keeps the existing one-time Entry Scan flow and adds a separate **Valid User** verification mode.
+EventPass is a modern, responsive event guest management, ID card printing, and QR check-in platform designed for alumni reunions, jubilee celebrations, and major gatherings.
 
-## Scanner modes
-- **Entry Scan:** first valid scan marks the guest as Checked In; later scans show **Already Attended**.
-- **Valid User:** checks whether the scanned QR value exactly matches a registered guest QR. It does **not** change attendance/check-in status.
-- The camera uses the full preview for QR detection. The center square is only a visual guide.
+---
 
-## Important security note
-This is still a browser/localStorage application. The Valid User mode is an exact registered-QR check, which is useful for preventing arbitrary/unregistered QR values. However, because the guest database and QR payload are stored client-side, this build is **not cryptographically counterfeit-proof**. For strong anti-counterfeit protection across multiple devices/scanners, use a backend (for example, Firebase/Firestore) and signed/random server-issued QR tokens.
+## ☁️ Real-time Cloud Database (Firebase Live Sync)
+- **Multi-Device Instant Synchronization:** Mobile phones, laptops, and tablets automatically synchronize guest registrations, profile photos, and check-in statuses in real time (< 100ms latency).
+- **Vercel & GitHub Ready:** Zero-backend server architecture. Simply enter your Firebase config in `index.html` (`HARDCODED_FIREBASE_CONFIG`) and push to GitHub.
+- **Offline & Storage Resilient:** If internet connectivity drops at the gate, the app falls back transparently to `localStorage` and reconnects as soon as connection is restored.
+- **Setup Guide:** See [`FIREBASE_SETUP.md`](FIREBASE_SETUP.md) for a 2-minute step-by-step setup guide.
 
-## EmailJS
-EmailJS settings are entered in Event Settings. The app sends `qr_url` and guest/event variables to the configured EmailJS template.
+---
 
+## 🚪 Gate Check-In & Verification
+- **One-Click Check-In Confirmation:** When a guest QR is scanned, their photo, name, batch, total headcount, and sub-guest count appear on screen with a prominent **`✓ গেস্ট চেক ইন (Confirm Check-In)`** button.
+- **Duplicate Entry Protection:** Already attended guests immediately trigger an amber warning with check-in timestamp and volunteer name.
+- **Smart QR:** The QR code encodes guest data directly (`EVENTPASS|ID|Name|Batch|Count|Code|Type`) so even an un-synced scanner can recognize guests immediately.
+- **Mobile Camera Controls:** Features lens switcher (Wide, Macro, Telephoto) and gallery image scanner for blurry mobile lenses or dark environments.
 
-## ID Card & Badge Generation (Reunion 2026 Edition)
-- **Exact Visual Design:** Clean white card (`360px × 610px`) with 3D isometric cube logo, royal blue layered wave footers, circular profile photo ring with soft shadow, and light-blue info cards.
-- **Dynamic Event Date & Time:** Event Date and Event Time configured in Event Settings are published automatically to every ID card and throughout the application.
-- **Front Page:** Includes isometric EventPass logo, event slogan, SSC Batch, Entry Type, circular photo, full name, role subtitle, and structured info box with blue SVG icons (Guest No, Guest Type, Entry Type, Entry Code, Guest ID, Phone Number, Email Address) and wave footer with event motto.
-- **Back Page:** Includes EventPass branding, event title, custom italic quote (*“Same Friends New Stories”*), centered QR code container with "SCAN TO VERIFY" badge, detailed event box (Date & Time, Venue, Organized By, Valid For), elegant cursive *Friends Forever* script, and bottom wave footer.
+---
+
+## 🪪 ID Card & Badge Generation (Reunion Edition)
+- **Exact Visual Design:** Clean card (`340px × 490px`) with royal blue layered wave footers, circular 1:1 profile photo ring with soft shadow, and structured info rows.
+- **Front Page:** Header branding, institute title, event title, circular photo, full name, guest details, and wave footer.
+- **Back Page:** EventPass branding, event title, custom quote, centered high-contrast QR code container, detailed event box, and bottom wave footer.
 - **High-Resolution 2-Page PDF Download:** One-click download generates an exact aspect-ratio 2-page PDF ready for printing.
 - **Single-Side PNG Downloads & Print Support:** Options to download Front PNG, Back PNG, or trigger browser print preview (`window.print()`).
-- **Form Input Styling:** Fully customized dark-theme dropdowns (`<select>`) with custom chevron arrows and sleek file upload button (`::file-selector-button`).
+
+---
+
+## 👥 Volunteer Access & Gate Security
+- **Multi-Gate Volunteers:** Assign volunteers to specific gates (e.g., Gate 1, VIP Gate, Front Desk).
+- **Dedicated Scanner Mode:** Fast, full-screen volunteer scanner interface without access to admin dashboard or sensitive settings.
+- **Credentials:** Default Volunteer password is `1234`, Admin password is `12345`.

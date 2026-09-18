@@ -8,6 +8,9 @@
 <script src="https://unpkg.com/html5-qrcode@2.3.8/html5-qrcode.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<!-- Firebase Realtime Cloud Sync SDK (v9 compat) -->
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@600;700&display=swap" rel="stylesheet">
@@ -248,11 +251,213 @@
   .publicSearchWrap{width:100%}
   .bigCtaBtn{width:100%;padding:16px 20px}
 }
+
+/* ==================== CLOUD DATABASE SYNC UI ==================== */
+.cloudStatusBadge{display:inline-flex;align-items:center;gap:7px;padding:6px 12px;border-radius:20px;font-size:11px;font-weight:800;cursor:pointer;transition:all .2s;user-select:none;text-decoration:none}
+.cloudStatusBadge.connected{background:#0e2e22;border:1px solid #1f5f46;color:#4ade80}
+.cloudStatusBadge.connected:hover{background:#133d2e;border-color:#2ebb77;box-shadow:0 0 12px rgba(74,222,128,0.2)}
+.cloudStatusBadge.offline{background:#261f0f;border:1px solid #57431c;color:#facc15}
+.cloudStatusBadge.offline:hover{background:#382d16;border-color:#84652a}
+.cloudStatusBadge.error{background:#351319;border:1px solid #6b242e;color:#f87171}
+.cloudStatusBadge.connecting{background:#1e293b;border:1px solid #334155;color:#94a3b8}
+.statusDot{width:8px;height:8px;border-radius:50%;display:inline-block;flex-shrink:0}
+.statusDot.green{background:#4ade80;box-shadow:0 0 8px #4ade80}
+.statusDot.yellow{background:#facc15;box-shadow:0 0 8px #facc15}
+.statusDot.red{background:#f87171;box-shadow:0 0 8px #f87171}
+.cloudModalBox{display:flex;flex-direction:column;gap:16px}
+.cloudBanner{padding:14px 16px;border-radius:12px;display:flex;align-items:center;gap:12px;font-size:13px;line-height:1.45}
+.cloudBanner.ok{background:#0d261c;border:1px solid #1e5a43;color:#86efac}
+.cloudBanner.warn{background:#2b2210;border:1px solid #5e471d;color:#fde047}
+.cloudBanner.bad{background:#321419;border:1px solid #6e252f;color:#fca5a5}
+.guideCard{background:#0a1220;border:1px solid #1f2c45;border-radius:12px;padding:15px}
+.guideCard h4{margin:0 0 10px;font-size:13px;color:#93c5fd;display:flex;align-items:center;gap:6px}
+.guideSteps{display:flex;flex-direction:column;gap:9px;font-size:12px;color:#cbd5e1;line-height:1.55}
+.guideStep{display:flex;gap:10px;align-items:flex-start}
+.stepNum{background:#1e293b;color:#93c5fd;font-weight:900;width:22px;height:22px;border-radius:50%;display:grid;place-items:center;font-size:11px;flex-shrink:0;margin-top:1px}
+.configInputWrap{display:flex;flex-direction:column;gap:7px}
+.configInputWrap textarea{background:#0a111e;border:1.5px solid #23314d;border-radius:10px;color:#cbd5e1;font-family:ui-monospace,monospace;font-size:11.5px;padding:12px;height:110px;resize:vertical;outline:0;box-sizing:border-box;width:100%}
+.configInputWrap textarea:focus{border-color:#6366f1;box-shadow:0 0 0 3px rgba(99,102,241,0.25)}
 </style>
 </head>
 <body>
 <div id="root"></div><div id="modalRoot"></div><div id="toastRoot"></div>
 <script>
+// ==========================================================================
+// 🌐 REALTIME CLOUD DATABASE (Google Firebase Realtime Database)
+// ==========================================================================
+// মোবাইল, ল্যাপটপ ও সকল ডিভাইসে রিয়েল-টাইমে লাইভ ডাটা সিঙ্কের জন্য
+// আপনার Firebase প্রজেক্টের কনফিগ নিচে দিন। (সেটআপ করতে মাত্র ২ মিনিট লাগে)
+// ==========================================================================
+const FIREBASE_CONFIG_KEY='eventpass_firebase_config_v1';
+const HARDCODED_FIREBASE_CONFIG={
+  apiKey:"",
+  authDomain:"",
+  databaseURL:"",
+  projectId:"",
+  storageBucket:"",
+  messagingSenderId:"",
+  appId:""
+};
+
+let firebaseApp=null;
+let firebaseDb=null;
+let isCloudActive=false;
+let cloudSyncStatus='offline'; // 'offline' | 'connecting' | 'connected' | 'error'
+let cloudSyncMessage='লোকাল মোডে চলছে (ক্লাউড সেটআপ করতে ক্লিক করুন)';
+
+function getFirebaseConfig(){
+  if(HARDCODED_FIREBASE_CONFIG && (HARDCODED_FIREBASE_CONFIG.databaseURL || HARDCODED_FIREBASE_CONFIG.apiKey)){
+    return HARDCODED_FIREBASE_CONFIG;
+  }
+  try{
+    const saved=JSON.parse(localStorage.getItem(FIREBASE_CONFIG_KEY));
+    if(saved && (saved.databaseURL || saved.apiKey)) return saved;
+  }catch(e){}
+  return null;
+}
+
+function initFirebase(cfg=null){
+  const config=cfg||getFirebaseConfig();
+  if(!config || (!config.databaseURL && !config.apiKey)){
+    isCloudActive=false;
+    cloudSyncStatus='offline';
+    cloudSyncMessage='লোকাল মোডে চলছে (ক্লাউড সেটআপ করতে ক্লিক করুন)';
+    updateCloudStatusUI();
+    return;
+  }
+  if(typeof firebase==='undefined'){
+    console.warn('Firebase SDK not loaded');
+    cloudSyncStatus='error';
+    cloudSyncMessage='Firebase SDK লোড হয়নি।';
+    updateCloudStatusUI();
+    return;
+  }
+  try{
+    cloudSyncStatus='connecting';
+    cloudSyncMessage='ক্লাউড ডাটাবেজে যুক্ত হচ্ছে...';
+    updateCloudStatusUI();
+
+    if(!firebase.apps || !firebase.apps.length){
+      firebaseApp=firebase.initializeApp(config);
+    }else{
+      firebaseApp=firebase.app();
+    }
+    firebaseDb=firebase.database();
+    isCloudActive=true;
+
+    // Monitor connection
+    firebaseDb.ref('.info/connected').on('value',(snap)=>{
+      if(snap.val()===true){
+        cloudSyncStatus='connected';
+        cloudSyncMessage='লাইভ ক্লাউড ডাটাবেজ সক্রিয়';
+      }else{
+        cloudSyncStatus='connecting';
+        cloudSyncMessage='পুনরায় যুক্ত হচ্ছে...';
+      }
+      updateCloudStatusUI();
+    });
+
+    // 1. Listen for realtime guest updates
+    firebaseDb.ref('eventpass/guests').on('value',(snap)=>{
+      const val=snap.val();
+      if(val===null){
+        if(users && users.length>0){
+          firebaseDb.ref('eventpass/guests').set(users);
+        }
+      }else{
+        let cloudList=[];
+        if(Array.isArray(val)){
+          cloudList=val.filter(Boolean);
+        }else if(typeof val==='object'){
+          cloudList=Object.values(val);
+        }
+        if(cloudList.length>0){
+          const merged=mergeGuestLists(users,cloudList);
+          users=merged.map(u=>({...u,idCardPassword:u.idCardPassword||'1234',qrValue:u.qrValue||buildQrValue(u)}));
+          localStorage.setItem(USERS_KEY,JSON.stringify(users));
+          refreshLiveViews();
+        }
+      }
+      cloudSyncStatus='connected';
+      cloudSyncMessage='লাইভ ক্লাউড ডাটাবেজ সক্রিয়';
+      updateCloudStatusUI();
+    },(err)=>{
+      console.error('Firebase guest sync error:',err);
+      cloudSyncStatus='error';
+      cloudSyncMessage='ডাটাবেজ এক্সেস ত্রুটি (Firebase Rules চেক করুন)';
+      updateCloudStatusUI();
+    });
+
+    // 2. Listen for settings updates
+    firebaseDb.ref('eventpass/settings').on('value',(snap)=>{
+      const val=snap.val();
+      if(val && typeof val==='object'){
+        settings={...defaults,...settings,...val};
+        localStorage.setItem(SETTINGS_KEY,JSON.stringify(settings));
+      }
+    });
+
+    // 3. Listen for volunteers updates
+    firebaseDb.ref('eventpass/volunteers').on('value',(snap)=>{
+      const val=snap.val();
+      if(val && (Array.isArray(val) || typeof val==='object')){
+        const vList=Array.isArray(val)?val.filter(Boolean):Object.values(val);
+        if(vList.length>0){
+          volunteers=vList;
+          localStorage.setItem(VOLUNTEERS_KEY,JSON.stringify(volunteers));
+        }
+      }
+    });
+
+  }catch(err){
+    console.error('Firebase init error:',err);
+    isCloudActive=false;
+    cloudSyncStatus='error';
+    cloudSyncMessage='কানেকশন এরর: '+err.message;
+    updateCloudStatusUI();
+  }
+}
+
+function mergeGuestLists(localList,cloudList){
+  const map=new Map();
+  (localList||[]).forEach(u=>{if(u&&u.guestId)map.set(u.guestId,u)});
+  (cloudList||[]).forEach(u=>{
+    if(u&&u.guestId){
+      const existing=map.get(u.guestId);
+      map.set(u.guestId,{...existing,...u});
+    }
+  });
+  return Array.from(map.values()).sort((a,b)=>(b.serial||0)-(a.serial||0));
+}
+
+function pushAllDataToCloud(){
+  if(!isCloudActive||!firebaseDb){
+    toast('Cloud database not connected','bad');
+    return;
+  }
+  try{
+    firebaseDb.ref('eventpass/guests').set(users);
+    firebaseDb.ref('eventpass/settings').set(settings);
+    firebaseDb.ref('eventpass/volunteers').set(volunteers);
+    toast('সফলভাবে সমস্ত ডাটা ক্লাউডে আপলোড করা হয়েছে! 🚀','ok');
+  }catch(e){
+    toast('আপলোড ব্যর্থ: '+e.message,'bad');
+  }
+}
+
+function updateCloudStatusUI(){
+  const els=document.querySelectorAll('.cloudStatusContainer');
+  els.forEach(el=>{
+    const isConn=cloudSyncStatus==='connected';
+    const isErr=cloudSyncStatus==='error';
+    const isConnPending=cloudSyncStatus==='connecting';
+    const cls=isConn?'connected':isErr?'error':isConnPending?'connecting':'offline';
+    const dotCls=isConn?'green':isErr?'red':'yellow';
+    const txt=isConn?'☁️ Cloud Live':isErr?'☁️ Cloud Error':isConnPending?'☁️ Connecting...':'☁️ Local (Sync Setup)';
+    el.innerHTML=`<span class="cloudStatusBadge ${cls}" onclick="openCloudModal()" title="${esc(cloudSyncMessage)}"><span class="statusDot ${dotCls}"></span> ${txt}</span>`;
+  });
+}
+
 const USERS_KEY='eventpass_users_v3', SETTINGS_KEY='eventpass_settings_v3', VOLUNTEERS_KEY='eventpass_volunteers_v1';
 const defaults={eventName:'হীরক জয়ন্তী ২০২৭',instituteName:'অলিপুর আমডাঙ্গা স্কুল এন্ড কলেজ',eventDate:'2027-02-15',eventTime:'10:00 AM',venue:'অলিপুর আমডাঙ্গা স্কুল এন্ড কলেজ',organizedBy:'SSC Batch 2018 Alumni',eventSlogan:'Reconnect · Remember · Relive',eventQuote:'Same Friends New Stories',eventMotto:'A GREATER TOMORROW THROUGH FRIENDSHIP',scannerName:'Front Desk',adminPasswordHash:'5994471abb01112afcc18159f6cc74b4f511b99806da59b3caf5a9c173cacfc5'};
 const sampleUsers=[{serial:3,guestId:'EP-B3002B18D7',name:'Sajol Kumar',phone:'+880 1308-415928',email:'sajolsarker5789@gmail.com',sscBatch:'2021',idCardPassword:'1234',profilePhoto:'',entryType:'General',guestType:'Couple',personCount:6,code:'EVT-0003-18D7',qrValue:'EVENTPASS|EP-B3002B18D7',checkedIn:false,checkedAt:null,scanner:null,createdAt:new Date().toISOString()}];
@@ -282,7 +487,17 @@ function reloadUsersFromStorage(){
     }
   }catch(e){}
 }
-function save(){localStorage.setItem(USERS_KEY,JSON.stringify(users));localStorage.setItem(SETTINGS_KEY,JSON.stringify(settings));try{window.dispatchEvent(new Event('storage'))}catch(e){}}
+function save(skipCloud=false){
+  localStorage.setItem(USERS_KEY,JSON.stringify(users));
+  localStorage.setItem(SETTINGS_KEY,JSON.stringify(settings));
+  try{window.dispatchEvent(new Event('storage'))}catch(e){}
+  if(!skipCloud && isCloudActive && firebaseDb){
+    try{
+      firebaseDb.ref('eventpass/guests').set(users);
+      firebaseDb.ref('eventpass/settings').set(settings);
+    }catch(e){console.warn('Firebase save warning:',e)}
+  }
+}
 function saveVolunteers(){localStorage.setItem(VOLUNTEERS_KEY,JSON.stringify(volunteers))}
 function esc(v){return String(v??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]))}
 function uid(){return 'EP-'+(crypto.randomUUID?.().replaceAll('-','').slice(0,10).toUpperCase()||Math.random().toString(36).slice(2,12).toUpperCase())}
@@ -394,6 +609,7 @@ function publicLandingHTML(){
         <div><b>EventPass</b><small>PUBLIC REGISTRATION</small></div>
       </div>
       <div class="publicNav">
+        <div class="cloudStatusContainer"></div>
         <button class="primary" onclick="openAdd()">📝 Fill Up the Form</button>
         <button class="volunteerScannerBtn" onclick="openVolunteerGate()">⚡ Gate Scanner (গেট স্ক্যান)</button>
         <button class="adminLoginBtn" onclick="openAdminLoginModal()">🔐 Admin Login</button>
@@ -673,6 +889,7 @@ function gateScannerHTML(){
         </div>
       </div>
       <div class="gateHeaderActions">
+        <div class="cloudStatusContainer"></div>
         <span class="gateVolunteerBadge">🟢 ${esc(v.name)} · <b>${esc(v.gate||'Gate')}</b></span>
         <span class="gateStatsPill">📊 Scanned: <b>${vScans.length}</b> (${totalGatePersons} জন)</span>
         <button type="button" class="gateSoundBtn" onclick="toggleGateSound()">${gateSoundEnabled?'🔊 Sound ON':'🔇 Sound OFF'}</button>
@@ -1043,13 +1260,30 @@ function render(){
  stopGateScanner();
  const h=getHeadcounts();
  const title=tab==='dashboard'?'Dashboard':tab==='guests'?'Guest Directory':tab==='volunteers'?'Scan Volunteers':tab==='scanner'?'QR Check-in Scanner':'Event Settings';
-  document.getElementById('root').innerHTML=`<div class="app"><aside class="sidebar"><div class="brand"><div class="mark">EP</div><div><b>EventPass</b><small>ADMIN CONTROL</small></div></div><nav>${[['dashboard','▦','Dashboard'],['guests','◉','Guests'],['volunteers','👥','Volunteers'],['scanner','⌁','QR Scanner'],['settings','⚙','Event Settings']].map(x=>`<button class="${tab===x[0]?'active':''}" onclick="navigate('${x[0]}')"><span>${x[1]}</span>${x[2]}</button>`).join('')}</nav><div class="sideBottom" style="display:flex;flex-direction:column;gap:12px"><button class="secondary logoutBtn" style="width:100%;display:flex;align-items:center;justify-content:center;gap:8px" onclick="logoutAdmin()"><span>🔓</span> Logout Admin</button><div class="secure">● Admin Session<small>Full control active. Guest data in this browser.</small></div></div></aside><main class="main"><header><div><span class="eyebrow">EVENT CONTROL CENTER</span><h1>${title}</h1></div><div class="headerActions"><span class="adminBadge">🔐 ADMIN</span><div class="eventChip"><span>EVENT</span><b>${esc(settings.eventName)}</b></div><button class="secondary" onclick="openSyncModal()" title="মোবাইল সিঙ্ক">📲 Sync Data</button><button class="primary" onclick="openAdd()">＋ Add Guest</button><button class="secondary logoutBtn" onclick="logoutAdmin()" title="Logout Admin">🔓 Logout</button></div></header>${tab==='dashboard'?dashboardHTML(h):tab==='guests'?guestsHTML(h):tab==='volunteers'?volunteersHTML():tab==='scanner'?scannerHTML():settingsHTML()}</main></div>`;
-  if(tab==='scanner')setTimeout(startScanner,150);
+   document.getElementById('root').innerHTML=`<div class="app"><aside class="sidebar"><div class="brand"><div class="mark">EP</div><div><b>EventPass</b><small>ADMIN CONTROL</small></div></div><nav>${[['dashboard','▦','Dashboard'],['guests','◉','Guests'],['volunteers','👥','Volunteers'],['scanner','⌁','QR Scanner'],['settings','⚙','Event Settings']].map(x=>`<button class="${tab===x[0]?'active':''}" onclick="navigate('${x[0]}')"><span>${x[1]}</span>${x[2]}</button>`).join('')}</nav><div class="sideBottom" style="display:flex;flex-direction:column;gap:12px"><button class="secondary logoutBtn" style="width:100%;display:flex;align-items:center;justify-content:center;gap:8px" onclick="logoutAdmin()"><span>🔓</span> Logout Admin</button><div class="secure">● Admin Session<small>Full control active. Guest data in this browser.</small></div></div></aside><main class="main"><header><div><span class="eyebrow">EVENT CONTROL CENTER</span><h1>${title}</h1></div><div class="headerActions"><div class="cloudStatusContainer"></div><span class="adminBadge">🔐 ADMIN</span><div class="eventChip"><span>EVENT</span><b>${esc(settings.eventName)}</b></div><button class="secondary" onclick="openCloudModal()" title="ক্লাউড ডাটাবেজ সেটিংস">☁️ Cloud Sync</button><button class="secondary" onclick="openSyncModal()" title="মোবাইল সিঙ্ক">📲 Sync Data</button><button class="primary" onclick="openAdd()">＋ Add Guest</button><button class="secondary logoutBtn" onclick="logoutAdmin()" title="Logout Admin">🔓 Logout</button></div></header>${tab==='dashboard'?dashboardHTML(h):tab==='guests'?guestsHTML(h):tab==='volunteers'?volunteersHTML():tab==='scanner'?scannerHTML():settingsHTML()}</main></div>`;
+   if(tab==='scanner')setTimeout(startScanner,150);
 }
 function dashboardHTML(h){
  if(!h)h=getHeadcounts();
  const recent=[...users].sort((a,b)=>new Date(b.createdAt)-new Date(a.createdAt)).slice(0,6);
- return `<section class="content"><div class="stats"><div class="stat"><div class="statIcon">◉</div><div><span>Total Registrations</span><strong>${h.totalProfiles} <small style="font-size:13px;color:#8996ad;font-weight:600">Profiles</small></strong><div class="statSub">সাব গেস্ট: <b>${h.totalSub}</b> জন · মোট: <b>${h.totalPersons}</b> জন</div></div></div><div class="stat"><div class="statIcon green">✓</div><div><span>Checked In</span><strong>${h.checkedProfiles} <small style="font-size:13px;color:#52e2ab;font-weight:600">Profiles</small></strong><div class="statSub">উপস্থিত: <b>${h.checkedPersons}</b> জন (সাব: <b>${h.checkedSub}</b>)</div></div></div><div class="stat"><div class="statIcon yellow">◷</div><div><span>Pending Entry</span><strong>${h.pendingProfiles} <small style="font-size:13px;color:#f1c95d;font-weight:600">Profiles</small></strong><div class="statSub">বাকি: <b>${h.pendingPersons}</b> জন (সাব: <b>${h.pendingSub}</b>)</div></div></div><div class="stat"><div class="statIcon">↗</div><div><span>Check-in Rate</span><strong>${h.rate}%</strong><div class="statSub">উপস্থিত: <b>${h.checkedPersons}</b> / ${h.totalPersons} জন</div></div></div></div><div class="heroGrid"><div class="panel scannerCard"><div class="panelTop"><div><span class="eyebrow">FAST CHECK-IN</span><h2>Scan a guest QR code</h2><p>One QR code = one successful entry. Automatic headcount &amp; sub-guest calculation.</p></div><div class="scanIcon">⌁</div></div><button class="primary big" onclick="navigate('scanner')">Open Scanner <span>→</span></button></div><div class="panel eventCard"><span class="eyebrow">EVENT OVERVIEW</span><h2>${esc(settings.eventName)}</h2><div class="eventMeta"><div><small>Date & Time</small><b>${fmtDateTime(settings.eventDate,settings.eventTime)}</b></div><div><small>Guests &amp; Headcount</small><b>${h.totalProfiles} Profiles (${h.totalPersons} Persons)</b></div><div><small>Venue</small><b>${esc(settings.venue)}</b></div></div></div></div><div class="panel tablePanel"><div class="panelHead"><div><h2>Recent guests</h2><p>Registration and check-in activity</p></div><button class="ghost" onclick="navigate('guests')">View all →</button></div>${recent.length?tableHTML(recent,false):emptyHTML('No guests yet')}</div></section>`
+ const cloudBannerHTML=cloudSyncStatus==='connected'?`
+   <div class="cloudBanner ok" style="margin-bottom:16px;display:flex;justify-content:space-between;align-items:center;cursor:pointer" onclick="openCloudModal()">
+     <div style="display:flex;align-items:center;gap:10px">
+       <span class="statusDot green"></span>
+       <span><b>লাইভ ক্লাউড ডাটাবেজ সক্রিয়:</b> সকল মোবাইল ও ল্যাপটপ ডিভাইসে স্বয়ংক্রিয় রিয়েল-টাইম সিঙ্ক হচ্ছে। (${users.length} জন গেস্ট সিঙ্কড)</span>
+     </div>
+     <button class="secondary" style="padding:6px 12px;font-size:11px" onclick="event.stopPropagation();openCloudModal()">⚙️ Settings</button>
+   </div>
+ `:`
+   <div class="cloudBanner warn" style="margin-bottom:16px;display:flex;justify-content:space-between;align-items:center;cursor:pointer" onclick="openCloudModal()">
+     <div style="display:flex;align-items:center;gap:10px">
+       <span class="statusDot yellow"></span>
+       <span><b>লোকাল মেমোরি মোড:</b> মোবাইল ও ল্যাপটপ একসাথে লাইভ করতে ফায়ারবেস ক্লাউড ডাটাবেজ কানেক্ট করুন (২ মিনিট লাগে)।</span>
+     </div>
+     <button class="primary" style="padding:6px 14px;font-size:11px" onclick="event.stopPropagation();openCloudModal()">⚡ ক্লাউড কানেক্ট করুন</button>
+   </div>
+ `;
+ return `<section class="content">${cloudBannerHTML}<div class="stats"><div class="stat"><div class="statIcon">◉</div><div><span>Total Registrations</span><strong>${h.totalProfiles} <small style="font-size:13px;color:#8996ad;font-weight:600">Profiles</small></strong><div class="statSub">সাব গেস্ট: <b>${h.totalSub}</b> জন · মোট: <b>${h.totalPersons}</b> জন</div></div></div><div class="stat"><div class="statIcon green">✓</div><div><span>Checked In</span><strong>${h.checkedProfiles} <small style="font-size:13px;color:#52e2ab;font-weight:600">Profiles</small></strong><div class="statSub">উপস্থিত: <b>${h.checkedPersons}</b> জন (সাব: <b>${h.checkedSub}</b>)</div></div></div><div class="stat"><div class="statIcon yellow">◷</div><div><span>Pending Entry</span><strong>${h.pendingProfiles} <small style="font-size:13px;color:#f1c95d;font-weight:600">Profiles</small></strong><div class="statSub">বাকি: <b>${h.pendingPersons}</b> জন (সাব: <b>${h.pendingSub}</b>)</div></div></div><div class="stat"><div class="statIcon">↗</div><div><span>Check-in Rate</span><strong>${h.rate}%</strong><div class="statSub">উপস্থিত: <b>${h.checkedPersons}</b> / ${h.totalPersons} জন</div></div></div></div><div class="heroGrid"><div class="panel scannerCard"><div class="panelTop"><div><span class="eyebrow">FAST CHECK-IN</span><h2>Scan a guest QR code</h2><p>One QR code = one successful entry. Automatic headcount &amp; sub-guest calculation.</p></div><div class="scanIcon">⌁</div></div><button class="primary big" onclick="navigate('scanner')">Open Scanner <span>→</span></button></div><div class="panel eventCard"><span class="eyebrow">EVENT OVERVIEW</span><h2>${esc(settings.eventName)}</h2><div class="eventMeta"><div><small>Date & Time</small><b>${fmtDateTime(settings.eventDate,settings.eventTime)}</b></div><div><small>Guests &amp; Headcount</small><b>${h.totalProfiles} Profiles (${h.totalPersons} Persons)</b></div><div><small>Venue</small><b>${esc(settings.venue)}</b></div></div></div></div><div class="panel tablePanel"><div class="panelHead"><div><h2>Recent guests</h2><p>Registration and check-in activity</p></div><button class="ghost" onclick="navigate('guests')">View all →</button></div>${recent.length?tableHTML(recent,false):emptyHTML('No guests yet')}</div></section>`
 }
 function guestsHTML(h){
  if(!h)h=getHeadcounts();
@@ -1529,7 +1763,7 @@ function previewProfilePhoto(input){
     r.readAsDataURL(file);
   });
 }
-function resizeImage(file,size=600){
+function resizeImage(file,size=400){
   return new Promise((resolve,reject)=>{
     const r=new FileReader();
     r.onload=()=>{
@@ -1545,7 +1779,7 @@ function resizeImage(file,size=600){
         ctx.fillStyle='#ffffff';
         ctx.fillRect(0,0,size,size);
         ctx.drawImage(img,sx,sy,minDim,minDim,0,0,size,size);
-        resolve(c.toDataURL('image/jpeg',0.88));
+        resolve(c.toDataURL('image/jpeg',0.82));
       };
       img.onerror=reject;
       img.src=r.result;
@@ -2053,6 +2287,151 @@ function importSyncFile(input){
   reader.readAsText(file);
 }
 
+function openCloudModal(){
+  const cfg = getFirebaseConfig();
+  const isConn = cloudSyncStatus === 'connected';
+  const isErr = cloudSyncStatus === 'error';
+  const bannerCls = isConn ? 'ok' : isErr ? 'bad' : 'warn';
+  const bannerIcon = isConn ? '🟢' : isErr ? '🔴' : '🟡';
+  const bannerText = isConn
+    ? `<b>লাইভ ক্লাউড ডাটাবেজ সক্রিয় (Live Connected)</b><br><span style="font-size:11px;color:#a7f3d0">মোবাইল, ল্যাপটপ এবং সকল ডিভাইসে স্বয়ংক্রিয় রিয়েল-টাইম সিঙ্ক হচ্ছে। মোট গেস্ট: ${users.length} জন।</span>`
+    : isErr
+    ? `<b>ক্লাউড সংযোগে ত্রুটি:</b> ${esc(cloudSyncMessage)}<br><span style="font-size:11px;color:#fca5a5">দয়া করে Firebase Console-এ গিয়ে Realtime Database Rules এ read ও write: true দিন।</span>`
+    : `<b>লোকাল মেমোরিতে চলছে (Device Local Storage)</b><br><span style="font-size:11px;color:#fde047">বর্তমানে ডাটা শুধুমাত্র এই ব্রাউজারে সংরক্ষিত আছে। মোবাইল ও ল্যাপটপে একসাথে লাইভ সিঙ্ক করতে নিচে Firebase সেটআপ করুন (২ মিনিট লাগে)।</span>`;
+
+  const cfgStr = cfg ? JSON.stringify(cfg, null, 2) : '';
+
+  openModal(`
+    <div class="modalHead">
+      <div>
+        <span class="eyebrow">REALTIME CLOUD SYNCHRONIZATION</span>
+        <h2>☁️ লাইভ ক্লাউড ডাটাবেজ সেটিংস</h2>
+      </div>
+      <button class="close" onclick="closeModal()">×</button>
+    </div>
+
+    <div class="cloudModalBox">
+      <div class="cloudBanner ${bannerCls}">
+        <span style="font-size:22px">${bannerIcon}</span>
+        <div>${bannerText}</div>
+      </div>
+
+      <div class="guideCard">
+        <h4>⚡ গুগল ফায়ারবেস (Firebase) ফ্রি সেটআপ — মাত্র ২ মিনিটে:</h4>
+        <div class="guideSteps">
+          <div class="guideStep">
+            <div class="stepNum">১</div>
+            <div><a href="https://console.firebase.google.com/" target="_blank" style="color:#93c5fd;font-weight:700;text-decoration:underline">console.firebase.google.com</a> এ গিয়ে জিমেইল দিয়ে "Create a project" দিন (নাম দিন: <code>alipur-event</code>)।</div>
+          </div>
+          <div class="guideStep">
+            <div class="stepNum">২</div>
+            <div>বাম পাশের মেন্যু থেকে <b>Build > Realtime Database</b> এ গিয়ে <b>Create Database</b> চাপুন এবং <b>"Start in test mode"</b> (.read: true, .write: true) নির্বাচন করে Enable করুন।</div>
+          </div>
+          <div class="guideStep">
+            <div class="stepNum">৩</div>
+            <div>প্রজেক্ট সেটিংস (গিয়ার আইকন ⚙️) > <b>Your apps</b> থেকে ওয়েব আইকন <code>&lt;/&gt;</code> ক্লিক করে রেজিস্টার করুন এবং <code>firebaseConfig</code> কোডটি কপি করুন।</div>
+          </div>
+          <div class="guideStep">
+            <div class="stepNum">৪</div>
+            <div>কপি করা কোডটি নিচের বক্সে পেস্ট করে <b>"কানেক্ট করুন"</b> বাটনে চাপুন অথবা <code>index.html</code> ফাইলের উপরে <code>HARDCODED_FIREBASE_CONFIG</code> এ বসিয়ে গিটহাবে পুশ করুন!</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="configInputWrap">
+        <label style="font-size:12px;font-weight:800;color:#cbd5e1">Firebase Config পেস্ট করুন (JSON বা অবজেক্ট):</label>
+        <textarea id="firebaseConfigInput" placeholder="const firebaseConfig = {&#10;  apiKey: '...',&#10;  databaseURL: 'https://alipur-event-default-rtdb.firebaseio.com',&#10;  projectId: 'alipur-event',&#10;  ...&#10;};">${esc(cfgStr)}</textarea>
+      </div>
+
+      <div style="display:flex;gap:10px;flex-wrap:wrap;justify-content:space-between;align-items:center;margin-top:5px">
+        <div style="display:flex;gap:8px;flex-wrap:wrap">
+          <button type="button" class="primary" onclick="saveCloudConfigFromModal()">💾 সেভ ও কানেক্ট করুন</button>
+          ${isConn ? `<button type="button" class="secondary" onclick="pushAllDataToCloud()" style="background:#133d2e;color:#4ade80;border-color:#2ebb77">🚀 লোকাল ডাটা ক্লাউডে আপলোড করুন</button>` : ''}
+          ${cfg ? `<button type="button" class="secondary" onclick="clearCloudConfig()" style="color:#f87171">ডিসকানেক্ট / রিসেট</button>` : ''}
+        </div>
+        <button type="button" class="secondary" onclick="copyFirebaseCodeForIndexHtml()" title="index.html এর কোড কপি">📋 Copy Code for index.html</button>
+      </div>
+
+      <div style="background:#090f1c;border:1px dashed #20304c;border-radius:10px;padding:12px;font-size:11px;color:#899cb6;line-height:1.5">
+        💡 <b>পরামর্শ (Permanent Multi-User Sync):</b> সমস্ত ইউজার ও মোবাইল ডিভাইস যেন স্বয়ংক্রিয়ভাবে ক্লাউড ডাটাবেজে যুক্ত থাকে, সেজন্য আপনার <code>index.html</code> ফাইলের শুরুর দিকে থাকা <code>HARDCODED_FIREBASE_CONFIG</code> অংশে কনফিগটি বসিয়ে গিটহাবে পুশ করে দিন।
+      </div>
+    </div>
+  `);
+}
+
+function saveCloudConfigFromModal(){
+  const raw = document.getElementById('firebaseConfigInput')?.value?.trim();
+  if(!raw){
+    toast('Please paste your Firebase configuration','bad');
+    return;
+  }
+  let parsed = null;
+  if(raw.startsWith('https://') && raw.includes('firebaseio.com')){
+    parsed = { databaseURL: raw.trim().replace(/\/+$/,'') };
+  }else{
+    try{
+      parsed = JSON.parse(raw);
+    }catch(e){
+      try{
+        const extractKey = (k) => {
+          const m = raw.match(new RegExp(`${k}\\s*:\\s*["'\`]([^"'\`]+)["'\`]`));
+          return m ? m[1] : '';
+        };
+        parsed = {
+          apiKey: extractKey('apiKey'),
+          authDomain: extractKey('authDomain'),
+          databaseURL: extractKey('databaseURL'),
+          projectId: extractKey('projectId'),
+          storageBucket: extractKey('storageBucket'),
+          messagingSenderId: extractKey('messagingSenderId'),
+          appId: extractKey('appId')
+        };
+        if(!parsed.databaseURL && parsed.projectId){
+          parsed.databaseURL = `https://${parsed.projectId}-default-rtdb.firebaseio.com`;
+        }
+      }catch(err){
+        parsed = null;
+      }
+    }
+  }
+
+  if(!parsed || (!parsed.databaseURL && !parsed.apiKey)){
+    toast('Invalid Firebase config. Could not find apiKey or databaseURL.','bad');
+    return;
+  }
+
+  localStorage.setItem(FIREBASE_CONFIG_KEY, JSON.stringify(parsed));
+  toast('Firebase config saved! Connecting...','info');
+  initFirebase(parsed);
+  closeModal();
+}
+
+function clearCloudConfig(){
+  if(confirm('Are you sure you want to disconnect from Cloud Sync? Local storage will be kept.')){
+    localStorage.removeItem(FIREBASE_CONFIG_KEY);
+    isCloudActive = false;
+    cloudSyncStatus = 'offline';
+    cloudSyncMessage = 'ক্লাউড ডিসকানেক্ট করা হয়েছে';
+    toast('Cloud disconnected');
+    updateCloudStatusUI();
+    closeModal();
+  }
+}
+
+function copyFirebaseCodeForIndexHtml(){
+  const cfg = getFirebaseConfig();
+  if(!cfg){
+    toast('No Firebase config to copy. Please configure first.','bad');
+    return;
+  }
+  const code = `const HARDCODED_FIREBASE_CONFIG = ${JSON.stringify(cfg, null, 2)};`;
+  navigator.clipboard?.writeText(code).then(()=>{
+    toast('Code copied! Paste into index.html HARDCODED_FIREBASE_CONFIG and commit to GitHub.','ok');
+  }).catch(()=>{
+    toast('Could not auto-copy, please copy from textarea manually.','bad');
+  });
+}
+
 function settingsHTML(){return `<section class="content settingsSection"><div class="panel formPanel"><span class="eyebrow">EVENT CONFIGURATION</span><h2>Event & Owner Settings</h2><p>Set event details, published date & time, venue and security password. Changes automatically reflect on all ID cards.</p><div class="formGrid"><label class="field"><span>Event name <b style="color:#ff8a8a">*</b></span><input id="sName" value="${esc(settings.eventName)}" placeholder="হীরক জয়ন্তী ২০২৭"></label><label class="field"><span>School / College / Institute Name</span><input id="sInstitute" value="${esc(settings.instituteName||settings.venue||defaults.instituteName)}" placeholder="অলিপুর আমডাঙ্গা স্কুল এন্ড কলেজ"><small>আইডি কার্ডের ফ্রন্ট ও ব্যাক পেজের উপরে বড় করে প্রদর্শিত হবে।</small></label><label class="field"><span>Event date <b style="color:#ff8a8a">*</b></span><input type="date" id="sDate" value="${esc(settings.eventDate)}"></label><label class="field"><span>Event time <b style="color:#ff8a8a">*</b></span><input id="sTime" value="${esc(settings.eventTime||'10:00 AM')}" placeholder="e.g. 10:00 AM"></label><label class="field"><span>Venue <b style="color:#ff8a8a">*</b></span><input id="sVenue" value="${esc(settings.venue)}" placeholder="Event Venue"></label><label class="field"><span>Organized By</span><input id="sOrganizedBy" value="${esc(settings.organizedBy||'SSC Batch 2018 Alumni')}" placeholder="e.g. SSC Batch 2018 Alumni"></label><label class="field"><span>Event Slogan (Front side)</span><input id="sEventSlogan" value="${esc(settings.eventSlogan||'Reconnect · Remember · Relive')}" placeholder="e.g. Reconnect · Remember · Relive"></label><label class="field"><span>Event Quote (Back side)</span><input id="sEventQuote" value="${esc(settings.eventQuote||'Same Friends New Stories')}" placeholder="e.g. Same Friends New Stories"></label><label class="field"><span>Event Motto (Wave footer)</span><input id="sEventMotto" value="${esc(settings.eventMotto||'A GREATER TOMORROW THROUGH FRIENDSHIP')}" placeholder="Motto text"></label><label class="field"><span>Scanner name</span><input id="sScanner" value="${esc(settings.scannerName)}"></label><label class="field"><span>Owner / Client name</span><input id="sOwnerName" value="${esc(settings.ownerName||'')}" placeholder="Event Owner"></label><label class="field"><span>Owner / Client email</span><input type="email" id="sOwnerEmail" value="${esc(settings.ownerEmail||'')}" placeholder="owner@example.com"></label><label class="field"><span>Owner / Client phone</span><input id="sOwnerPhone" value="${esc(settings.ownerPhone||'')}" placeholder="+8801XXXXXXXXX"></label></div><div class="settingsBlock"><h3>Email QR delivery</h3><p>For a real email with the QR image embedded, connect EmailJS below. The email service account controls the actual sender mailbox; the owner email is used as the reply-to/contact address.</p><div class="formGrid"><label class="field"><span>EmailJS Public Key</span><input id="sEmailPublic" value="${esc(settings.emailPublicKey||'')}" placeholder="Your EmailJS public key"></label><label class="field"><span>EmailJS Service ID</span><input id="sEmailService" value="${esc(settings.emailServiceId||'')}" placeholder="service_xxxxx"></label><label class="field"><span>EmailJS Template ID</span><input id="sEmailTemplate" value="${esc(settings.emailTemplateId||'')}" placeholder="template_xxxxx"></label><label class="field"><span>QR image size</span><input id="sQrSize" value="${esc(settings.qrSize||'400')}" inputmode="numeric" placeholder="400"></label></div><div class="formActions"><button class="secondary" onclick="testEmailConfig()">Send test email</button></div></div><div class="settingsBlock"><h3>🔐 Admin Password &amp; Security</h3><p>অ্যাডমিন পাসওয়ার্ড দিয়ে কন্ট্রোল সেন্টার, সেটিংস এবং গেস্ট ডিলিট সুরক্ষিত থাকে। ডিফল্ট পাসওয়ার্ড: <b>12345</b>। নিচে বর্তমান ও নতুন পাসওয়ার্ড দিয়ে পরিবর্তন করতে পারেন।</p><div class="formGrid"><label class="field"><span>Current / Old Admin Password</span><div class="passwordWrap"><input type="password" id="sOldAdminPassword" placeholder="Enter current password (default: 12345)"><button type="button" class="toggleEyeBtn" onclick="togglePasswordVisibility('sOldAdminPassword', this)" title="Show/Hide password">${EYE_OPEN_SVG}</button></div><small>পাসওয়ার্ড পরিবর্তনের জন্য বর্তমান পাসওয়ার্ড দিতে হবে।</small></label><label class="field"><span>New Admin Password</span><div class="passwordWrap"><input type="password" id="sNewAdminPassword" placeholder="Leave blank to keep current"><button type="button" class="toggleEyeBtn" onclick="togglePasswordVisibility('sNewAdminPassword', this)" title="Show/Hide password">${EYE_OPEN_SVG}</button></div><small>পরিবর্তন করতে না চাইলে ফাঁকা রাখুন (সর্বনিম্ন ৪ অক্ষর)।</small></label></div></div><div class="formActions"><button class="primary" onclick="saveSettings()">Save settings</button></div></div><div class="panel note"><h3>One-time QR verification</h3><p>Every guest has an immutable serial number, permanent Guest ID, unique entry code and QR value. The first valid scan changes the status to Verified / Attended and stores the scanner name + time. Any later scan shows <b>Already Attended</b> and is blocked. All Guests and Checked In are separate views.</p></div></section>`}
 async function saveSettings(){
   const oldPass=document.getElementById('sOldAdminPassword')?.value||'';
@@ -2151,7 +2530,7 @@ function refreshLiveViews(){
     const content=document.querySelector('.content');
     if(content && content.parentElement){
       const h=getHeadcounts();
-      content.parentElement.innerHTML=`<header><div><span class="eyebrow">EVENT CONTROL CENTER</span><h1>Dashboard</h1></div><div class="headerActions"><span class="adminBadge">🔐 ADMIN</span><div class="eventChip"><span>EVENT</span><b>${esc(settings.eventName)}</b></div><button class="primary" onclick="openAdd()">＋ Add Guest</button><button class="secondary logoutBtn" onclick="logoutAdmin()" title="Logout Admin">🔓 Logout</button></div></header>${dashboardHTML(h)}`;
+      content.parentElement.innerHTML=`<header><div><span class="eyebrow">EVENT CONTROL CENTER</span><h1>Dashboard</h1></div><div class="headerActions"><div class="cloudStatusContainer"></div><span class="adminBadge">🔐 ADMIN</span><div class="eventChip"><span>EVENT</span><b>${esc(settings.eventName)}</b></div><button class="secondary" onclick="openCloudModal()" title="ক্লাউড ডাটাবেজ সেটিংস">☁️ Cloud Sync</button><button class="secondary" onclick="openSyncModal()" title="মোবাইল সিঙ্ক">📲 Sync Data</button><button class="primary" onclick="openAdd()">＋ Add Guest</button><button class="secondary logoutBtn" onclick="logoutAdmin()" title="Logout Admin">🔓 Logout</button></div></header>${dashboardHTML(h)}`;
     }
   }else if(tab==='guests'){
     renderGuestsOnly();
@@ -2166,6 +2545,10 @@ window.addEventListener('focus', () => {
   syncFromStorage();
 });
 setInterval(syncFromStorage, 1000);
-window.addEventListener('beforeunload',()=>{stopScanner();stopGateScanner();});render();normalizeExistingPhotos();
+window.addEventListener('beforeunload',()=>{stopScanner();stopGateScanner();});
+render();
+normalizeExistingPhotos();
+initFirebase();
+setTimeout(updateCloudStatusUI, 100);
 </script>
 </body></html>
