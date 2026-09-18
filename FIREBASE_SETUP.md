@@ -50,14 +50,13 @@
 
 ```javascript
 const firebaseConfig = {
-    apiKey: "AIzaSyCtdromjFLukFpvdjxr_mj-XpnwoK7-5qE",
-    authDomain: "alipur-event.firebaseapp.com",
-    databaseURL: "https://alipur-event-default-rtdb.firebaseio.com",
-    projectId: "alipur-event",
-    storageBucket: "alipur-event.firebasestorage.app",
-    messagingSenderId: "601515072069",
-    appId: "1:601515072069:web:0b8f98576553fc028fa12c",
-    measurementId: "G-BPXB9EP6L2"
+  apiKey: "AIzaSyDxxxxxxxxx...",
+  authDomain: "alipur-event.firebaseapp.com",
+  databaseURL: "https://alipur-event-default-rtdb.firebaseio.com",
+  projectId: "alipur-event",
+  storageBucket: "alipur-event.appspot.com",
+  messagingSenderId: "123456789...",
+  appId: "1:123456789:web:xxxxxx..."
 };
 ```
 
@@ -70,28 +69,26 @@ const firebaseConfig = {
 
 ```javascript
 const HARDCODED_FIREBASE_CONFIG = {
-    apiKey: "AIzaSyCtdromjFLukFpvdjxr_mj-XpnwoK7-5qE",
-    authDomain: "alipur-event.firebaseapp.com",
-    databaseURL: "https://alipur-event-default-rtdb.firebaseio.com",
-    projectId: "alipur-event",
-    storageBucket: "alipur-event.firebasestorage.app",
-    messagingSenderId: "601515072069",
-    appId: "1:601515072069:web:0b8f98576553fc028fa12c",
-    measurementId: "G-BPXB9EP6L2"
+  apiKey: "",
+  authDomain: "",
+  databaseURL: "",
+  projectId: "",
+  storageBucket: "",
+  messagingSenderId: "",
+  appId: ""
 };
 ```
 
 এখানে ফায়ারবেস থেকে পাওয়া আপনার তথ্যগুলো বসিয়ে দিন। যেমন:
 ```javascript
 const HARDCODED_FIREBASE_CONFIG = {
-    apiKey: "AIzaSyCtdromjFLukFpvdjxr_mj-XpnwoK7-5qE",
-    authDomain: "alipur-event.firebaseapp.com",
-    databaseURL: "https://alipur-event-default-rtdb.firebaseio.com",
-    projectId: "alipur-event",
-    storageBucket: "alipur-event.firebasestorage.app",
-    messagingSenderId: "601515072069",
-    appId: "1:601515072069:web:0b8f98576553fc028fa12c",
-    measurementId: "G-BPXB9EP6L2"
+  apiKey: "AIzaSyDxxxxxxxxx...",
+  authDomain: "alipur-event.firebaseapp.com",
+  databaseURL: "https://alipur-event-default-rtdb.firebaseio.com",
+  projectId: "alipur-event",
+  storageBucket: "alipur-event.appspot.com",
+  messagingSenderId: "123456789...",
+  appId: "1:123456789:web:xxxxxx..."
 };
 ```
 

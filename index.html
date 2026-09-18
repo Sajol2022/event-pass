@@ -11,6 +11,7 @@
 <!-- Firebase Realtime Cloud Sync SDK (v9 compat) -->
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@600;700&display=swap" rel="stylesheet">
@@ -290,36 +291,38 @@
 // ==========================================================================
 const FIREBASE_CONFIG_KEY='eventpass_firebase_config_v1';
 const HARDCODED_FIREBASE_CONFIG={
-    apiKey: "AIzaSyCtdromjFLukFpvdjxr_mj-XpnwoK7-5qE",
-    authDomain: "alipur-event.firebaseapp.com",
-    databaseURL: "https://alipur-event-default-rtdb.firebaseio.com",
-    projectId: "alipur-event",
-    storageBucket: "alipur-event.firebasestorage.app",
-    messagingSenderId: "601515072069",
-    appId: "1:601515072069:web:0b8f98576553fc028fa12c",
-    measurementId: "G-BPXB9EP6L2"
+  apiKey:"AIzaSyCtdromjFLukFpvdjxr_mj-XpnwoK7-5qE",
+  authDomain:"alipur-event.firebaseapp.com",
+  databaseURL:"https://alipur-event-default-rtdb.firebaseio.com",
+  projectId:"alipur-event",
+  storageBucket:"alipur-event.firebasestorage.app",
+  messagingSenderId:"601515072069",
+  appId:"1:601515072069:web:0b8f98576553fc028fa12c",
+  measurementId:"G-BPXB9EP6L2"
 };
 
 let firebaseApp=null;
 let firebaseDb=null;
+let firebaseFirestore=null;
+let activeCloudEngine='none'; // 'firestore' | 'rtdb' | 'none'
 let isCloudActive=false;
 let cloudSyncStatus='offline'; // 'offline' | 'connecting' | 'connected' | 'error'
 let cloudSyncMessage='লোকাল মোডে চলছে (ক্লাউড সেটআপ করতে ক্লিক করুন)';
 
 function getFirebaseConfig(){
-  if(HARDCODED_FIREBASE_CONFIG && (HARDCODED_FIREBASE_CONFIG.databaseURL || HARDCODED_FIREBASE_CONFIG.apiKey)){
+  if(HARDCODED_FIREBASE_CONFIG && (HARDCODED_FIREBASE_CONFIG.databaseURL || HARDCODED_FIREBASE_CONFIG.apiKey || HARDCODED_FIREBASE_CONFIG.projectId)){
     return HARDCODED_FIREBASE_CONFIG;
   }
   try{
     const saved=JSON.parse(localStorage.getItem(FIREBASE_CONFIG_KEY));
-    if(saved && (saved.databaseURL || saved.apiKey)) return saved;
+    if(saved && (saved.databaseURL || saved.apiKey || saved.projectId)) return saved;
   }catch(e){}
   return null;
 }
 
 function initFirebase(cfg=null){
   const config=cfg||getFirebaseConfig();
-  if(!config || (!config.databaseURL && !config.apiKey)){
+  if(!config || (!config.databaseURL && !config.apiKey && !config.projectId)){
     isCloudActive=false;
     cloudSyncStatus='offline';
     cloudSyncMessage='লোকাল মোডে চলছে (ক্লাউড সেটআপ করতে ক্লিক করুন)';
@@ -343,14 +346,35 @@ function initFirebase(cfg=null){
     }else{
       firebaseApp=firebase.app();
     }
+
+    // Check whether to use Firestore or Realtime Database
+    const hasDatabaseUrl = !!(config.databaseURL && config.databaseURL.trim());
+    if(!hasDatabaseUrl && firebase.firestore && (config.projectId || config.apiKey)){
+      setupFirestore(config);
+    }else if(firebase.database){
+      setupRealtimeDb(config);
+    }else if(firebase.firestore){
+      setupFirestore(config);
+    }
+  }catch(err){
+    console.error('Firebase init error:',err);
+    isCloudActive=false;
+    cloudSyncStatus='error';
+    cloudSyncMessage='কানেকশন এরর: '+err.message;
+    updateCloudStatusUI();
+  }
+}
+
+function setupRealtimeDb(config){
+  try{
     firebaseDb=firebase.database();
+    activeCloudEngine='rtdb';
     isCloudActive=true;
 
-    // Monitor connection
     firebaseDb.ref('.info/connected').on('value',(snap)=>{
       if(snap.val()===true){
         cloudSyncStatus='connected';
-        cloudSyncMessage='লাইভ ক্লাউড ডাটাবেজ সক্রিয়';
+        cloudSyncMessage='লাইভ ক্লাউড ডাটাবেজ (RTDB) সক্রিয়';
       }else{
         cloudSyncStatus='connecting';
         cloudSyncMessage='পুনরায় যুক্ত হচ্ছে...';
@@ -358,7 +382,6 @@ function initFirebase(cfg=null){
       updateCloudStatusUI();
     });
 
-    // 1. Listen for realtime guest updates
     firebaseDb.ref('eventpass/guests').on('value',(snap)=>{
       const val=snap.val();
       if(val===null){
@@ -383,22 +406,20 @@ function initFirebase(cfg=null){
       cloudSyncMessage='লাইভ ক্লাউড ডাটাবেজ সক্রিয়';
       updateCloudStatusUI();
     },(err)=>{
-      console.error('Firebase guest sync error:',err);
-      cloudSyncStatus='error';
-      cloudSyncMessage='ডাটাবেজ এক্সেস ত্রুটি (Firebase Rules চেক করুন)';
-      updateCloudStatusUI();
+      console.warn('RTDB error, trying Firestore...', err);
+      if(firebase.firestore) setupFirestore(config);
     });
 
-    // 2. Listen for settings updates
     firebaseDb.ref('eventpass/settings').on('value',(snap)=>{
       const val=snap.val();
       if(val && typeof val==='object'){
         settings={...defaults,...settings,...val};
         localStorage.setItem(SETTINGS_KEY,JSON.stringify(settings));
+      }else if(val===null && settings){
+        try{ firebaseDb.ref('eventpass/settings').set(settings); }catch(e){}
       }
     });
 
-    // 3. Listen for volunteers updates
     firebaseDb.ref('eventpass/volunteers').on('value',(snap)=>{
       const val=snap.val();
       if(val && (Array.isArray(val) || typeof val==='object')){
@@ -407,14 +428,53 @@ function initFirebase(cfg=null){
           volunteers=vList;
           localStorage.setItem(VOLUNTEERS_KEY,JSON.stringify(volunteers));
         }
+      }else if(val===null && volunteers && volunteers.length>0){
+        try{ firebaseDb.ref('eventpass/volunteers').set(volunteers); }catch(e){}
       }
     });
+  }catch(e){
+    console.warn('RTDB init exception, fallback to Firestore...', e);
+    if(firebase.firestore) setupFirestore(config);
+  }
+}
 
+function setupFirestore(config){
+  try{
+    firebaseFirestore=firebase.firestore();
+    activeCloudEngine='firestore';
+    isCloudActive=true;
+    cloudSyncStatus='connecting';
+    cloudSyncMessage='ক্লাউড ফায়ারস্টোরে যুক্ত হচ্ছে...';
+    updateCloudStatusUI();
+
+    firebaseFirestore.collection('guests').onSnapshot((snap)=>{
+      let cloudList=[];
+      snap.forEach(doc=>{
+        const d=doc.data();
+        if(d) cloudList.push(d);
+      });
+      if(cloudList.length>0){
+        const merged=mergeGuestLists(users,cloudList);
+        users=merged.map(u=>({...u,idCardPassword:u.idCardPassword||'1234',qrValue:u.qrValue||buildQrValue(u)}));
+        localStorage.setItem(USERS_KEY,JSON.stringify(users));
+        refreshLiveViews();
+      }else if(users && users.length>0){
+        pushAllDataToCloud();
+      }
+      cloudSyncStatus='connected';
+      cloudSyncMessage='লাইভ ক্লাউড ফায়ারস্টোর (Firestore) সক্রিয়';
+      updateCloudStatusUI();
+    },(err)=>{
+      console.error('Firestore sync error:',err);
+      cloudSyncStatus='error';
+      cloudSyncMessage='ফায়ারস্টোর এক্সেস ত্রুটি (Firestore Rules এ allow read, write: if true দিন)';
+      updateCloudStatusUI();
+    });
   }catch(err){
-    console.error('Firebase init error:',err);
+    console.error('Firestore setup error:',err);
     isCloudActive=false;
     cloudSyncStatus='error';
-    cloudSyncMessage='কানেকশন এরর: '+err.message;
+    cloudSyncMessage='ফায়ারস্টোর এরর: '+err.message;
     updateCloudStatusUI();
   }
 }
@@ -432,15 +492,24 @@ function mergeGuestLists(localList,cloudList){
 }
 
 function pushAllDataToCloud(){
-  if(!isCloudActive||!firebaseDb){
+  if(!isCloudActive){
     toast('Cloud database not connected','bad');
     return;
   }
   try{
-    firebaseDb.ref('eventpass/guests').set(users);
-    firebaseDb.ref('eventpass/settings').set(settings);
-    firebaseDb.ref('eventpass/volunteers').set(volunteers);
-    toast('সফলভাবে সমস্ত ডাটা ক্লাউডে আপলোড করা হয়েছে! 🚀','ok');
+    if(activeCloudEngine==='firestore' && firebaseFirestore){
+      users.forEach(u=>{
+        if(u && u.guestId){
+          firebaseFirestore.collection('guests').doc(u.guestId).set(u,{merge:true});
+        }
+      });
+      toast('সফলভাবে সমস্ত ডাটা ক্লাউড ফায়ারস্টোরে পুশ করা হয়েছে! 🚀','ok');
+    }else if(activeCloudEngine==='rtdb' && firebaseDb){
+      firebaseDb.ref('eventpass/guests').set(users);
+      firebaseDb.ref('eventpass/settings').set(settings);
+      firebaseDb.ref('eventpass/volunteers').set(volunteers);
+      toast('সফলভাবে সমস্ত ডাটা ক্লাউডে আপলোড করা হয়েছে! 🚀','ok');
+    }
   }catch(e){
     toast('আপলোড ব্যর্থ: '+e.message,'bad');
   }
@@ -449,6 +518,10 @@ function pushAllDataToCloud(){
 function updateCloudStatusUI(){
   const els=document.querySelectorAll('.cloudStatusContainer');
   els.forEach(el=>{
+    if(!isAdmin){
+      el.innerHTML='';
+      return;
+    }
     const isConn=cloudSyncStatus==='connected';
     const isErr=cloudSyncStatus==='error';
     const isConnPending=cloudSyncStatus==='connecting';
@@ -492,11 +565,21 @@ function save(skipCloud=false){
   localStorage.setItem(USERS_KEY,JSON.stringify(users));
   localStorage.setItem(SETTINGS_KEY,JSON.stringify(settings));
   try{window.dispatchEvent(new Event('storage'))}catch(e){}
-  if(!skipCloud && isCloudActive && firebaseDb){
-    try{
-      firebaseDb.ref('eventpass/guests').set(users);
-      firebaseDb.ref('eventpass/settings').set(settings);
-    }catch(e){console.warn('Firebase save warning:',e)}
+  if(!skipCloud && isCloudActive){
+    if(activeCloudEngine==='firestore' && firebaseFirestore){
+      try{
+        users.forEach(u=>{
+          if(u && u.guestId){
+            firebaseFirestore.collection('guests').doc(u.guestId).set(u,{merge:true});
+          }
+        });
+      }catch(e){console.warn('Firestore save warning:',e)}
+    }else if(activeCloudEngine==='rtdb' && firebaseDb){
+      try{
+        firebaseDb.ref('eventpass/guests').set(users);
+        firebaseDb.ref('eventpass/settings').set(settings);
+      }catch(e){console.warn('Firebase save warning:',e)}
+    }
   }
 }
 function saveVolunteers(){localStorage.setItem(VOLUNTEERS_KEY,JSON.stringify(volunteers))}
@@ -610,7 +693,6 @@ function publicLandingHTML(){
         <div><b>EventPass</b><small>PUBLIC REGISTRATION</small></div>
       </div>
       <div class="publicNav">
-        <div class="cloudStatusContainer"></div>
         <button class="primary" onclick="openAdd()">📝 Fill Up the Form</button>
         <button class="volunteerScannerBtn" onclick="openVolunteerGate()">⚡ Gate Scanner (গেট স্ক্যান)</button>
         <button class="adminLoginBtn" onclick="openAdminLoginModal()">🔐 Admin Login</button>
@@ -890,7 +972,6 @@ function gateScannerHTML(){
         </div>
       </div>
       <div class="gateHeaderActions">
-        <div class="cloudStatusContainer"></div>
         <span class="gateVolunteerBadge">🟢 ${esc(v.name)} · <b>${esc(v.gate||'Gate')}</b></span>
         <span class="gateStatsPill">📊 Scanned: <b>${vScans.length}</b> (${totalGatePersons} জন)</span>
         <button type="button" class="gateSoundBtn" onclick="toggleGateSound()">${gateSoundEnabled?'🔊 Sound ON':'🔇 Sound OFF'}</button>
@@ -916,10 +997,10 @@ function gateScannerHTML(){
         </div>
 
         <div style="display:flex;gap:8px;margin-top:10px;margin-bottom:14px;flex-wrap:wrap">
-          <button type="button" class="gateSoundBtn" style="flex:1;min-width:120px;justify-content:center" onclick="switchGateCamera()">🔄 Switch Lens / Camera</button>
-          <button type="button" class="gateSoundBtn" style="flex:1;min-width:120px;justify-content:center" onclick="document.getElementById('gateGalleryInput').click()">📁 Scan Photo / Gallery</button>
+          <button type="button" class="gateSoundBtn" style="flex:1;min-width:130px;justify-content:center;background:#15233c;border:1.5px solid #38bdf8;color:#38bdf8;font-weight:900" onclick="switchGateCamera()">🔄 ক্যামেরা ঘোরান (Flip Camera)</button>
+          <button type="button" class="gateSoundBtn" style="flex:1;min-width:130px;justify-content:center" onclick="document.getElementById('gateGalleryInput').click()">📁 ছবি থেকে স্ক্যান (Gallery)</button>
           <input type="file" id="gateGalleryInput" accept="image/*" style="display:none" onchange="scanGateImage(this)">
-          <button type="button" class="gateSoundBtn" style="flex:1;min-width:120px;justify-content:center" onclick="openSyncModal()">📲 Sync Data (মোবাইল সিঙ্ক)</button>
+          <button type="button" class="gateSoundBtn" style="flex:1;min-width:130px;justify-content:center" onclick="openSyncModal()">📲 ডাটা সিঙ্ক (Offline)</button>
         </div>
 
         <div>
@@ -1137,8 +1218,26 @@ function toggleGateSound(){
   toast(`Scanner sound ${gateSoundEnabled?'enabled':'muted'}`);
 }
 
-let currentCameraIndex = 0;
+let currentCameraIndex = -1;
 let availableCameras = [];
+let gateFacingMode = 'environment';
+
+function findBackCameraIndex(cams){
+  if(!cams || !cams.length) return 0;
+  const backIdx = cams.findIndex(c => {
+    const l = (c.label || '').toLowerCase();
+    return l.includes('back') || l.includes('rear') || l.includes('environment') || l.includes('wide') || l.includes('facing back');
+  });
+  if(backIdx !== -1) return backIdx;
+
+  const nonFrontIdx = cams.findIndex(c => {
+    const l = (c.label || '').toLowerCase();
+    return !l.includes('front') && !l.includes('selfie') && !l.includes('user') && !l.includes('facing front');
+  });
+  if(nonFrontIdx !== -1) return nonFrontIdx;
+
+  return 0;
+}
 
 async function startGateScanner(){
   if(!window.Html5Qrcode)return;
@@ -1166,18 +1265,29 @@ async function startGateScanner(){
       try{ availableCameras = await Html5Qrcode.getCameras(); }catch(e){ availableCameras = []; }
     }
 
-    if(availableCameras && availableCameras.length > 0){
-      if(currentCameraIndex >= availableCameras.length) currentCameraIndex = 0;
+    const hasLabels = availableCameras.some(c => !!(c.label && c.label.trim()));
+    if(availableCameras && availableCameras.length > 0 && hasLabels){
+      if(currentCameraIndex < 0 || currentCameraIndex >= availableCameras.length){
+        currentCameraIndex = findBackCameraIndex(availableCameras);
+      }
       const cam = availableCameras[currentCameraIndex];
       await gateScanner.start(cam.id, scanConfig, onScanSuccess, ()=>{});
     }else{
-      await gateScanner.start({ facingMode: "environment" }, scanConfig, onScanSuccess, ()=>{});
+      await gateScanner.start({ facingMode: gateFacingMode || "environment" }, scanConfig, onScanSuccess, ()=>{});
+      try{
+        const refreshed = await Html5Qrcode.getCameras();
+        if(refreshed && refreshed.length){
+          availableCameras = refreshed;
+          if(currentCameraIndex < 0) currentCameraIndex = findBackCameraIndex(availableCameras);
+        }
+      }catch(e){}
     }
   }catch(err){
     console.warn('Gate primary camera start failed, fallback to environment facingMode...', err);
     try{
       const scanConfig = { fps: 15, qrbox: { width: 220, height: 220 } };
-      await gateScanner.start({ facingMode: "environment" }, scanConfig, (decoded)=>{
+      const fallbackMode = gateFacingMode === 'user' ? 'user' : 'environment';
+      await gateScanner.start({ facingMode: fallbackMode }, scanConfig, (decoded)=>{
         if(decoded&&decoded!==gateLastScan){
           gateLastScan=decoded;
           gateCheckIn(decoded);
@@ -1185,7 +1295,19 @@ async function startGateScanner(){
         }
       }, ()=>{});
     }catch(err2){
-      console.error('All camera attempts failed:', err2);
+      console.warn('Fallback failed, attempting user facingMode...', err2);
+      try{
+        const scanConfig = { fps: 15, qrbox: { width: 220, height: 220 } };
+        await gateScanner.start({ facingMode: "user" }, scanConfig, (decoded)=>{
+          if(decoded&&decoded!==gateLastScan){
+            gateLastScan=decoded;
+            gateCheckIn(decoded);
+            setTimeout(()=>gateLastScan='',2200);
+          }
+        }, ()=>{});
+      }catch(err3){
+        console.error('All camera attempts failed:', err3);
+      }
     }
   }
 }
@@ -1194,17 +1316,50 @@ async function switchGateCamera(){
   if(!window.Html5Qrcode)return;
   try{
     if(!availableCameras.length){
-      availableCameras = await Html5Qrcode.getCameras();
+      try{ availableCameras = await Html5Qrcode.getCameras(); }catch(e){ availableCameras = []; }
     }
+
     if(availableCameras && availableCameras.length > 1){
       currentCameraIndex = (currentCameraIndex + 1) % availableCameras.length;
-      toast(`ক্যামেরা পরিবর্তন করা হচ্ছে... (${availableCameras[currentCameraIndex].label || 'Camera ' + (currentCameraIndex+1)})`);
+      const cam = availableCameras[currentCameraIndex];
+      const lbl = (cam.label || '').toLowerCase();
+      const isFront = lbl.includes('front') || lbl.includes('selfie') || lbl.includes('user') || lbl.includes('facing front');
+      const isBack = lbl.includes('back') || lbl.includes('rear') || lbl.includes('environment') || lbl.includes('wide') || lbl.includes('facing back');
+      let camDesc = cam.label || ('Camera ' + (currentCameraIndex + 1));
+      if(isFront) camDesc = `🤳 সামনের ক্যামেরা (${camDesc})`;
+      else if(isBack) camDesc = `📷 পেছনের ক্যামেরা (${camDesc})`;
+      else camDesc = `📷 ক্যামেরা: ${camDesc}`;
+      toast(camDesc);
       startGateScanner();
     }else{
-      toast('এই ডিভাইসে অন্য কোনো ক্যামেরা পাওয়া যায়নি');
+      gateFacingMode = (gateFacingMode === 'environment' ? 'user' : 'environment');
+      const modeText = gateFacingMode === 'environment' ? '📷 পেছনের ক্যামেরা চালু হচ্ছে (Back Camera)...' : '🤳 সামনের ক্যামেরা চালু হচ্ছে (Selfie Camera)...';
+      toast(modeText);
+      stopGateScanner();
+      setTimeout(async ()=>{
+        try{
+          gateScanner = new Html5Qrcode('gateReader');
+          const scanConfig = {
+            fps: 15,
+            qrbox: (w, h) => {
+              const edge = Math.max(180, Math.floor(Math.min(w, h) * 0.72));
+              return { width: edge, height: edge };
+            }
+          };
+          await gateScanner.start({ facingMode: gateFacingMode }, scanConfig, (decoded)=>{
+            if(decoded && decoded !== gateLastScan){
+              gateLastScan = decoded;
+              gateCheckIn(decoded);
+              setTimeout(()=>gateLastScan='', 2200);
+            }
+          }, ()=>{});
+        }catch(e){
+          toast('ক্যামেরা পরিবর্তন করা যায়নি','bad');
+        }
+      }, 100);
     }
   }catch(e){
-    toast('ক্যামেরা পরিবর্তন করা যায়নি','bad');
+    toast('ক্যামেরা পরিবর্তন করা যায়নি: ' + (e.message || ''),'bad');
   }
 }
 
@@ -1570,7 +1725,7 @@ function launchVolunteerGate(id){
   toast(`Switched to Gate Mode as ${v.name}`);
 }
 
-function scannerHTML(){const isValid=scannerMode==='valid';return `<section class="content"><div class="panel" style="padding:20px"><div class="panelHead" style="padding:0;border:0"><div><span class="eyebrow">QR VERIFICATION CENTER</span><h2>${isValid?'Valid User Verification':'Entry Check-in'}</h2><p>${isValid?'Verify that the scanned QR belongs to a registered EventPass guest. This check does not change entry or attendance status.':'Scan the guest QR for one-time entry. The first valid scan marks the guest attended; later scans are rejected.'}</p></div><span class="${isValid?'validBadge':'live'}">${isValid?'✓ VALIDATION MODE':'● LIVE'}</span></div><div class="scannerModes"><button class="${!isValid?'active':''}" onclick="switchScannerMode('entry')">Entry Scan</button><button class="${isValid?'active':''}" onclick="switchScannerMode('valid')">Valid User <b>✓</b></button></div></div><div class="scannerLayout"><div class="panel cameraPanel"><div class="panelHead" style="padding:0 0 14px;border:0"><div><span class="eyebrow">LIVE CAMERA</span><h2>Scan QR code</h2><p>QR detection uses the full camera view. The square is only a visual guide.</p></div><span class="live">● LIVE</span></div><div class="camera"><div id="reader" style="width:100%;height:100%"></div><div class="scanFrame"><i></i><i></i><i></i><i></i></div></div>${isValid?'<div class="validNotice"><strong>Valid User mode:</strong> a registered QR will show the guest details and <b>VALID USER</b>. A QR that is not an exact registered EventPass QR will show <b>INVALID USER</b>. No check-in is performed in this mode.</div>':''}</div><div class="panel resultPanel"><span class="eyebrow">${isValid?'VALIDATION RESULT':'VERIFICATION RESULT'}</span><div id="scanResultArea">${isValid?validResultHTML():resultHTML()}</div><div class="manual"><label>${isValid?'Manual QR value':'Manual code / Guest ID'}</label><div class="manualRow"><input id="manualCode" placeholder="${isValid?'Paste the full QR value':'EP-XXXXXXXXXX or entry code'}"><button class="primary" onclick="manualScan()">${isValid?'Validate':'Verify'}</button></div></div><label class="scannerName">Scanner: <b>${esc(settings.scannerName)}</b></label></div></div></section>`}
+function scannerHTML(){const isValid=scannerMode==='valid';return `<section class="content"><div class="panel" style="padding:20px"><div class="panelHead" style="padding:0;border:0"><div><span class="eyebrow">QR VERIFICATION CENTER</span><h2>${isValid?'Valid User Verification':'Entry Check-in'}</h2><p>${isValid?'Verify that the scanned QR belongs to a registered EventPass guest. This check does not change entry or attendance status.':'Scan the guest QR for one-time entry. The first valid scan marks the guest attended; later scans are rejected.'}</p></div><span class="${isValid?'validBadge':'live'}">${isValid?'✓ VALIDATION MODE':'● LIVE'}</span></div><div class="scannerModes"><button class="${!isValid?'active':''}" onclick="switchScannerMode('entry')">Entry Scan</button><button class="${isValid?'active':''}" onclick="switchScannerMode('valid')">Valid User <b>✓</b></button></div></div><div class="scannerLayout"><div class="panel cameraPanel"><div class="panelHead" style="padding:0 0 14px;border:0"><div><span class="eyebrow">LIVE CAMERA</span><h2>Scan QR code</h2><p>QR detection uses the full camera view. The square is only a visual guide.</p></div><span class="live">● LIVE</span></div><div class="camera"><div id="reader" style="width:100%;height:100%"></div><div class="scanFrame"><i></i><i></i><i></i><i></i></div></div><div style="display:flex;gap:8px;margin-top:12px;margin-bottom:12px;flex-wrap:wrap"><button type="button" class="gateSoundBtn" style="flex:1;min-width:130px;justify-content:center;background:#15233c;border:1.5px solid #38bdf8;color:#38bdf8;font-weight:900" onclick="switchAdminCamera()">🔄 ক্যামেরা ঘোরান (Flip Camera)</button><button type="button" class="gateSoundBtn" style="flex:1;min-width:130px;justify-content:center" onclick="document.getElementById('adminGalleryInput').click()">📁 ছবি থেকে স্ক্যান (Gallery)</button><input type="file" id="adminGalleryInput" accept="image/*" style="display:none" onchange="scanAdminImage(this)"></div>${isValid?'<div class="validNotice"><strong>Valid User mode:</strong> a registered QR will show the guest details and <b>VALID USER</b>. A QR that is not an exact registered EventPass QR will show <b>INVALID USER</b>. No check-in is performed in this mode.</div>':''}</div><div class="panel resultPanel"><span class="eyebrow">${isValid?'VALIDATION RESULT':'VERIFICATION RESULT'}</span><div id="scanResultArea">${isValid?validResultHTML():resultHTML()}</div><div class="manual"><label>${isValid?'Manual QR value':'Manual code / Guest ID'}</label><div class="manualRow"><input id="manualCode" placeholder="${isValid?'Paste the full QR value':'EP-XXXXXXXXXX or entry code'}"><button class="primary" onclick="manualScan()">${isValid?'Validate':'Verify'}</button></div></div><label class="scannerName">Scanner: <b>${esc(settings.scannerName)}</b></label></div></div></section>`}
 function switchScannerMode(mode){if(scannerMode===mode)return;stopScanner();scannerMode=mode;scanResult=null;validResult=null;lastScan='';render()}
 
 function resultHTML(){
@@ -1582,7 +1737,12 @@ function resultHTML(){
  return `<div class="result"><div class="resultIcon ${scanResult.ok?'ok':'bad'}">${scanResult.ok?'✓':'!'}</div><h2>${esc(scanResult.message)}</h2><p>${esc(scanResult.detail)}</p>${u?`<div class="resultGuest"><div style="display:flex;justify-content:space-between;align-items:center"><span>Guest #${String(u.serial).padStart(2,'0')}</span><span class="status ${u.checkedIn?'checked':'pending'}">${u.checkedIn?'✓ Verified':'◷ Pending'}</span></div><b style="font-size:16px">${esc(u.name)}</b><code>${esc(u.guestId)}</code><div style="background:#131f38;border:1px solid #243555;border-radius:9px;padding:9px 12px;margin-top:6px;display:flex;justify-content:space-between;align-items:center"><div style="text-align:left"><small style="color:#8ba0be;font-size:10px;display:block">হাজিরা ও সাব-গেস্ট বিবরণ</small><b style="color:#52e2ab;font-size:13px">${countDesc}</b></div><span style="background:#1e2a4a;color:#a5b4fc;font-size:11px;padding:3px 9px;border-radius:6px;font-weight:800">👥 ${count} জন এন্ট্রি</span></div>${scanResult.duplicate?'<small style="color:#ff7885;margin-top:4px">Already attended — this QR code has already been used and cannot be accepted again.</small>':''}${!u.checkedIn&&!scanResult.duplicate?`<button type="button" class="primary" style="margin-top:12px;background:linear-gradient(135deg,#059669,#10b981);width:100%;font-size:14px;padding:12px;font-weight:900;border:none;border-radius:10px;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;gap:8px" onclick="confirmAdminCheckIn('${u.guestId}')"><span style="font-size:16px">✓</span> <span>গেস্ট চেক ইন (Confirm Check-In)</span></button>`:''}</div>`:''}<button class="secondary" onclick="scanResult=null;updateResult()">Clear result</button></div>`
 }
 function updateResult(){const a=document.getElementById('scanResultArea');if(a)a.innerHTML=scannerMode==='valid'?validResultHTML():resultHTML()}
-function startScanner(){
+
+let adminCameraIndex = -1;
+let adminAvailableCameras = [];
+let adminFacingMode = 'environment';
+
+async function startScanner(){
   if(!window.Html5Qrcode)return;
   const el=document.getElementById('reader');
   if(!el)return;
@@ -1604,10 +1764,129 @@ function startScanner(){
         setTimeout(()=>lastScan='', 1800);
       }
     };
-    scanner.start({facingMode:'environment'}, scanConfig, onScan, ()=>{}).catch(()=>{
-      scanner.start({facingMode:'user'}, scanConfig, onScan, ()=>{}).catch(()=>{});
-    });
-  }catch(e){}
+
+    if(!adminAvailableCameras.length){
+      try{ adminAvailableCameras = await Html5Qrcode.getCameras(); }catch(e){ adminAvailableCameras = []; }
+    }
+
+    const hasLabels = adminAvailableCameras.some(c => !!(c.label && c.label.trim()));
+    if(adminAvailableCameras.length > 0 && hasLabels){
+      if(adminCameraIndex < 0 || adminCameraIndex >= adminAvailableCameras.length){
+        adminCameraIndex = findBackCameraIndex(adminAvailableCameras);
+      }
+      const cam = adminAvailableCameras[adminCameraIndex];
+      await scanner.start(cam.id, scanConfig, onScan, ()=>{});
+    }else{
+      await scanner.start({ facingMode: adminFacingMode || "environment" }, scanConfig, onScan, ()=>{});
+      try{
+        const refreshed = await Html5Qrcode.getCameras();
+        if(refreshed && refreshed.length){
+          adminAvailableCameras = refreshed;
+          if(adminCameraIndex < 0) adminCameraIndex = findBackCameraIndex(adminAvailableCameras);
+        }
+      }catch(e){}
+    }
+  }catch(err){
+    console.warn('Admin primary camera start failed, fallback...', err);
+    try{
+      const scanConfig = { fps: 15, qrbox: { width: 220, height: 220 } };
+      const fallbackMode = adminFacingMode === 'user' ? 'user' : 'environment';
+      await scanner.start({ facingMode: fallbackMode }, scanConfig, onScan, ()=>{});
+    }catch(err2){
+      try{
+        const scanConfig = { fps: 15, qrbox: { width: 220, height: 220 } };
+        await scanner.start({ facingMode: "user" }, scanConfig, onScan, ()=>{});
+      }catch(err3){
+        console.error('All admin camera attempts failed:', err3);
+      }
+    }
+  }
+}
+
+async function switchAdminCamera(){
+  if(!window.Html5Qrcode)return;
+  try{
+    if(!adminAvailableCameras.length){
+      try{ adminAvailableCameras = await Html5Qrcode.getCameras(); }catch(e){ adminAvailableCameras = []; }
+    }
+
+    if(adminAvailableCameras && adminAvailableCameras.length > 1){
+      adminCameraIndex = (adminCameraIndex + 1) % adminAvailableCameras.length;
+      const cam = adminAvailableCameras[adminCameraIndex];
+      const lbl = (cam.label || '').toLowerCase();
+      const isFront = lbl.includes('front') || lbl.includes('selfie') || lbl.includes('user') || lbl.includes('facing front');
+      const isBack = lbl.includes('back') || lbl.includes('rear') || lbl.includes('environment') || lbl.includes('wide') || lbl.includes('facing back');
+      let camDesc = cam.label || ('Camera ' + (adminCameraIndex + 1));
+      if(isFront) camDesc = `🤳 সামনের ক্যামেরা (${camDesc})`;
+      else if(isBack) camDesc = `📷 পেছনের ক্যামেরা (${camDesc})`;
+      else camDesc = `📷 ক্যামেরা: ${camDesc}`;
+      toast(camDesc);
+      startScanner();
+    }else{
+      adminFacingMode = (adminFacingMode === 'environment' ? 'user' : 'environment');
+      const modeText = adminFacingMode === 'environment' ? '📷 পেছনের ক্যামেরা চালু হচ্ছে (Back Camera)...' : '🤳 সামনের ক্যামেরা চালু হচ্ছে (Selfie Camera)...';
+      toast(modeText);
+      stopScanner();
+      setTimeout(async ()=>{
+        try{
+          scanner = new Html5Qrcode('reader');
+          const scanConfig = {
+            fps: 15,
+            qrbox: (w, h) => {
+              const edge = Math.max(180, Math.floor(Math.min(w, h) * 0.72));
+              return { width: edge, height: edge };
+            }
+          };
+          const onScan = decoded => {
+            if(decoded && decoded !== lastScan){
+              lastScan = decoded;
+              if(scannerMode==='valid') validateUser(decoded);
+              else checkIn(decoded);
+              setTimeout(()=>lastScan='', 1800);
+            }
+          };
+          await scanner.start({ facingMode: adminFacingMode }, scanConfig, onScan, ()=>{});
+        }catch(e){
+          toast('ক্যামেরা পরিবর্তন করা যায়নি','bad');
+        }
+      }, 100);
+    }
+  }catch(e){
+    toast('ক্যামেরা পরিবর্তন করা যায়নি: ' + (e.message || ''),'bad');
+  }
+}
+
+async function scanAdminImage(input){
+  const file = input?.files?.[0];
+  if(!file) return;
+  toast('ছবি থেকে কিউআর রিড করা হচ্ছে...','info');
+  try{
+    const tempScanner = new Html5Qrcode('reader');
+    const decoded = await tempScanner.scanFile(file, true);
+    if(decoded){
+      if(scannerMode==='valid') validateUser(decoded);
+      else checkIn(decoded);
+    }else{
+      toast('ছবিতে কোনো কিউআর কোড পাওয়া যায়নি','bad');
+    }
+  }catch(err){
+    try{
+      if(scanner){
+        const decoded = await scanner.scanFile(file, true);
+        if(decoded){
+          if(scannerMode==='valid') validateUser(decoded);
+          else checkIn(decoded);
+        }else{
+          toast('ছবিতে কিউআর পাওয়া যায়নি','bad');
+        }
+      }else{
+        toast('কিউআর রিড করা যায়নি: ' + (err.message || 'Invalid image'),'bad');
+      }
+    }catch(e2){
+      toast('কিউআর রিড করা যায়নি: ' + (e2.message || 'Invalid image'),'bad');
+    }
+  }
+  input.value = '';
 }
 function stopScanner(){try{if(scanner){scanner.stop().then(()=>scanner.clear()).catch(()=>{});scanner=null}}catch{}}
 function resolveGuest(raw){
@@ -2289,6 +2568,11 @@ function importSyncFile(input){
 }
 
 function openCloudModal(){
+  if(!isAdmin){
+    toast('শুধুমাত্র অ্যাডমিন ক্লাউড ডাটাবেজ দেখতে পারবে (Admin access required)','bad');
+    openAdminLoginModal();
+    return;
+  }
   const cfg = getFirebaseConfig();
   const isConn = cloudSyncStatus === 'connected';
   const isErr = cloudSyncStatus === 'error';
