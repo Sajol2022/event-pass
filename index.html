@@ -175,8 +175,6 @@
 .publicGuestGrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(290px,1fr));gap:16px;margin-top:16px}
 .publicGuestCard{background:#080e1b;border:1px solid #1c2a44;border-radius:14px;padding:16px;display:flex;flex-direction:column;justify-content:space-between;gap:14px}
 .publicGuestTop{display:flex;gap:12px;align-items:center}
-.guestProfileAvatar{object-fit:cover!important;object-position:center 20%;padding:0!important;background:#1a2238!important;border:1.5px solid #2d3b59!important;}
-.guestProfileFallback{display:flex;align-items:center;justify-content:center;}
 .publicGuestAvatar{width:46px;height:46px;min-width:46px;min-height:46px;max-width:46px;max-height:46px;aspect-ratio:1/1;border-radius:12px;object-fit:cover;background:#1a2238;border:1.5px solid #2d3b59;flex-shrink:0;display:grid;place-items:center;font-weight:900;font-size:18px;color:#9da8ff;overflow:hidden;box-sizing:border-box}
 .publicGuestInfo b{display:block;font-size:14px;color:#fff}
 .publicGuestInfo small{display:block;font-size:11px;color:#7d8ea7;margin-top:2px}
@@ -396,14 +394,24 @@ function setupRealtimeDb(config){
     });
 
     firebaseDb.ref('eventpass/guests').on('value',(snap)=>{
-      // Firebase is the source of truth. Never restore deleted cloud data from localStorage.
       const val=snap.val();
-      let cloudList=[];
-      if(Array.isArray(val)) cloudList=val.filter(Boolean);
-      else if(val && typeof val==='object') cloudList=Object.values(val).filter(Boolean);
-      users=cloudList.map(u=>({...u,idCardPassword:u.idCardPassword||'1234',qrValue:u.qrValue||buildQrValue(u)}));
-      localStorage.setItem(USERS_KEY,JSON.stringify(users));
-      refreshLiveViews();
+      if(val===null){
+        users=[];
+        localStorage.setItem(USERS_KEY,JSON.stringify(users));
+        refreshLiveViews();
+        if(tab==='guests' || tab==='dashboard') render();
+      }else{
+        let cloudList=[];
+        if(Array.isArray(val)){
+          cloudList=val.filter(Boolean);
+        }else if(typeof val==='object'){
+          cloudList=Object.values(val);
+        }
+        users=cloudList.map(u=>({...u,idCardPassword:u.idCardPassword||'1234',qrValue:u.qrValue||buildQrValue(u)})).sort((a,b)=>(a.serial||0)-(b.serial||0));
+        localStorage.setItem(USERS_KEY,JSON.stringify(users));
+        refreshLiveViews();
+        if(tab==='guests' || tab==='dashboard') render();
+      }
       cloudSyncStatus='connected';
       cloudSyncMessage='লাইভ ক্লাউড ডাটাবেজ সক্রিয়';
       updateCloudStatusUI();
@@ -417,20 +425,21 @@ function setupRealtimeDb(config){
       if(val && typeof val==='object'){
         settings={...defaults,...settings,...val};
         localStorage.setItem(SETTINGS_KEY,JSON.stringify(settings));
-      }else if(val===null && settings){
-        try{ firebaseDb.ref('eventpass/settings').set(settings); }catch(e){}
       }
     });
 
     firebaseDb.ref('eventpass/volunteers').on('value',(snap)=>{
-      // Empty Firebase data means empty data. Do not repopulate it from localStorage/defaults.
       const val=snap.val();
-      let vList=[];
-      if(Array.isArray(val)) vList=val.filter(Boolean);
-      else if(val && typeof val==='object') vList=Object.values(val).filter(Boolean);
-      volunteers=vList;
-      localStorage.setItem(VOLUNTEERS_KEY,JSON.stringify(volunteers));
-      refreshLiveViews();
+      if(val===null){
+        volunteers=[];
+        localStorage.setItem(VOLUNTEERS_KEY,JSON.stringify(volunteers));
+        if(tab==='volunteers') render();
+      }else if(val && (Array.isArray(val) || typeof val==='object')){
+        const vList=Array.isArray(val)?val.filter(Boolean):Object.values(val);
+        volunteers=vList;
+        localStorage.setItem(VOLUNTEERS_KEY,JSON.stringify(volunteers));
+        if(tab==='volunteers') render();
+      }
     });
   }catch(e){
     console.warn('RTDB init exception, fallback to Firestore...', e);
@@ -448,12 +457,22 @@ function setupFirestore(config){
     updateCloudStatusUI();
 
     firebaseFirestore.collection('guests').onSnapshot((snap)=>{
-      // Firestore is the source of truth. A zero-document snapshot must clear local data.
-      const cloudList=[];
-      snap.forEach(doc=>{ const d=doc.data(); if(d) cloudList.push(d); });
-      users=cloudList.map(u=>({...u,idCardPassword:u.idCardPassword||'1234',qrValue:u.qrValue||buildQrValue(u)}));
-      localStorage.setItem(USERS_KEY,JSON.stringify(users));
-      refreshLiveViews();
+      let cloudList=[];
+      snap.forEach(doc=>{
+        const d=doc.data();
+        if(d) cloudList.push(d);
+      });
+      if(cloudList.length>0){
+        users=cloudList.map(u=>({...u,idCardPassword:u.idCardPassword||'1234',qrValue:u.qrValue||buildQrValue(u)})).sort((a,b)=>(a.serial||0)-(b.serial||0));
+        localStorage.setItem(USERS_KEY,JSON.stringify(users));
+        refreshLiveViews();
+        if(tab==='guests' || tab==='dashboard') render();
+      }else{
+        users=[];
+        localStorage.setItem(USERS_KEY,JSON.stringify(users));
+        refreshLiveViews();
+        if(tab==='guests' || tab==='dashboard') render();
+      }
       cloudSyncStatus='connected';
       cloudSyncMessage='লাইভ ক্লাউড ফায়ারস্টোর (Firestore) সক্রিয়';
       updateCloudStatusUI();
@@ -473,8 +492,15 @@ function setupFirestore(config){
 }
 
 function mergeGuestLists(localList,cloudList){
-  // Kept only for backward compatibility. Cloud data wins completely.
-  return (cloudList||[]).filter(u=>u&&u.guestId).sort((a,b)=>(b.serial||0)-(a.serial||0));
+  const map=new Map();
+  (localList||[]).forEach(u=>{if(u&&u.guestId)map.set(u.guestId,u)});
+  (cloudList||[]).forEach(u=>{
+    if(u&&u.guestId){
+      const existing=map.get(u.guestId);
+      map.set(u.guestId,{...existing,...u});
+    }
+  });
+  return Array.from(map.values()).sort((a,b)=>(b.serial||0)-(a.serial||0));
 }
 
 function pushAllDataToCloud(){
@@ -503,33 +529,53 @@ function pushAllDataToCloud(){
 
 function updateCloudStatusUI(){
   const els=document.querySelectorAll('.cloudStatusContainer');
+  const isConn=cloudSyncStatus==='connected';
+  const isErr=cloudSyncStatus==='error';
+  const isConnPending=cloudSyncStatus==='connecting';
+  const cls=isConn?'connected':isErr?'error':isConnPending?'connecting':'offline';
+  const dotCls=isConn?'green':isErr?'red':'yellow';
+  const txt=isConn?'☁️ Cloud Live':isErr?'☁️ Cloud Error':isConnPending?'☁️ Connecting...':'☁️ Local (Sync Setup)';
+
   els.forEach(el=>{
     if(!isAdmin){
       el.innerHTML='';
       return;
     }
-    const isConn=cloudSyncStatus==='connected';
-    const isErr=cloudSyncStatus==='error';
-    const isConnPending=cloudSyncStatus==='connecting';
-    const cls=isConn?'connected':isErr?'error':isConnPending?'connecting':'offline';
-    const dotCls=isConn?'green':isErr?'red':'yellow';
-    const txt=isConn?'☁️ Cloud Live':isErr?'☁️ Cloud Error':isConnPending?'☁️ Connecting...':'☁️ Local (Sync Setup)';
     el.innerHTML=`<span class="cloudStatusBadge ${cls}" onclick="openCloudModal()" title="${esc(cloudSyncMessage)}"><span class="statusDot ${dotCls}"></span> ${txt}</span>`;
   });
+
+  const banner=document.getElementById('dashboardCloudBanner');
+  if(banner && isAdmin){
+    if(isConn){
+      banner.className='cloudBanner ok';
+      banner.innerHTML=`
+        <div style="display:flex;align-items:center;gap:10px">
+          <span class="statusDot green"></span>
+          <span><b>লাইভ ক্লাউড ডাটাবেজ সক্রিয়:</b> সকল মোবাইল ও ল্যাপটপ ডিভাইসে স্বয়ংক্রিয় রিয়েল-টাইম সিঙ্ক হচ্ছে। (${users.length} জন গেস্ট সিঙ্কড)</span>
+        </div>
+        <button class="secondary" style="padding:6px 12px;font-size:11px" onclick="event.stopPropagation();openCloudModal()">⚙️ Settings</button>
+      `;
+    }else if(isErr){
+      banner.className='cloudBanner bad';
+      banner.innerHTML=`
+        <div style="display:flex;align-items:center;gap:10px">
+          <span class="statusDot red"></span>
+          <span><b>ক্লাউড কানেকশন এরর:</b> ${esc(cloudSyncMessage)}</span>
+        </div>
+        <button class="primary" style="padding:6px 14px;font-size:11px" onclick="event.stopPropagation();openCloudModal()">⚡ সেটিংস ঠিক করুন</button>
+      `;
+    }
+  }
 }
 
 const USERS_KEY='eventpass_users_v3', SETTINGS_KEY='eventpass_settings_v3', VOLUNTEERS_KEY='eventpass_volunteers_v1';
 const defaults={eventName:'হীরক জয়ন্তী ২০২৭',instituteName:'অলিপুর আমডাঙ্গা স্কুল এন্ড কলেজ',eventDate:'2027-02-15',eventTime:'10:00 AM',venue:'অলিপুর আমডাঙ্গা স্কুল এন্ড কলেজ',organizedBy:'SSC Batch 2018 Alumni',eventSlogan:'Reconnect · Remember · Relive',eventQuote:'Same Friends New Stories',eventMotto:'A GREATER TOMORROW THROUGH FRIENDSHIP',scannerName:'Front Desk',adminPasswordHash:'5994471abb01112afcc18159f6cc74b4f511b99806da59b3caf5a9c173cacfc5'};
 const sampleUsers=[];
-const defaultVolunteers=[
-  {id:'VOL-01',name:'তানভীর আহমেদ (Tanvir)',email:'tanvir@event.com',phone:'01711-112233',gate:'Main Gate 1',password:'1234',photo:'',active:true,createdAt:new Date().toISOString()},
-  {id:'VOL-02',name:'নুসরাত জাহান (Nusrat)',email:'nusrat@event.com',phone:'01822-223344',gate:'VIP Gate 2',password:'1234',photo:'',active:true,createdAt:new Date().toISOString()},
-  {id:'VOL-03',name:'রাফিক ইসলাম (Rafiq)',email:'rafiq@event.com',phone:'01933-334455',gate:'Front Desk Gate 3',password:'1234',photo:'',active:true,createdAt:new Date().toISOString()}
-];
+const defaultVolunteers=[];
 let isAdmin=sessionStorage.getItem('eventpass_is_admin')==='true';
 let currentVolunteer=JSON.parse(sessionStorage.getItem('eventpass_volunteer_session')||'null');
 let isGateMode=!!currentVolunteer;
-let volunteers=load(VOLUNTEERS_KEY,defaultVolunteers);
+let volunteers=load(VOLUNTEERS_KEY,[]);
 function getGuestCount(u){return Math.max(1,Number(u?.personCount)||(u?.guestType==='Couple'?2:u?.guestType==='Family'?3:1))}
 function buildQrValue(u){
   const c=getGuestCount(u);
@@ -573,34 +619,39 @@ function save(skipCloud=false){
   try{window.dispatchEvent(new Event('storage'))}catch(e){}
   if(!skipCloud && isCloudActive){
     if(activeCloudEngine==='firestore' && firebaseFirestore){
-      syncGuestsToFirestore();
+      try{
+        if(users.length===0){
+          firebaseFirestore.collection('guests').get().then(qs=>qs.forEach(d=>d.ref.delete()));
+        }else{
+          users.forEach(u=>{
+            if(u && u.guestId){
+              firebaseFirestore.collection('guests').doc(u.guestId).set(u,{merge:true});
+            }
+          });
+        }
+      }catch(e){console.warn('Firestore save warning:',e)}
     }else if(activeCloudEngine==='rtdb' && firebaseDb){
       try{
-        // RTDB set() replaces the complete list, so deleted guests stay deleted.
-        firebaseDb.ref('eventpass/guests').set(users);
+        if(users.length===0){
+          firebaseDb.ref('eventpass/guests').remove();
+        }else{
+          firebaseDb.ref('eventpass/guests').set(users);
+        }
         firebaseDb.ref('eventpass/settings').set(settings);
       }catch(e){console.warn('Firebase save warning:',e)}
     }
   }
 }
-async function syncGuestsToFirestore(){
-  if(!firebaseFirestore)return;
-  try{
-    const snap=await firebaseFirestore.collection('guests').get();
-    const batch=firebaseFirestore.batch();
-    const wanted=new Set(users.filter(u=>u&&u.guestId).map(u=>u.guestId));
-    snap.forEach(doc=>{ if(!wanted.has(doc.id)) batch.delete(doc.ref); });
-    users.forEach(u=>{ if(u&&u.guestId) batch.set(firebaseFirestore.collection('guests').doc(u.guestId),u); });
-    await batch.commit();
-  }catch(e){console.warn('Firestore sync warning:',e)}
-}
 function saveVolunteers(){
   localStorage.setItem(VOLUNTEERS_KEY,JSON.stringify(volunteers));
   if(isCloudActive && firebaseDb){
     try{
-      // RTDB set() replaces the complete list, including an intentional empty list.
-      firebaseDb.ref('eventpass/volunteers').set(volunteers);
-    }catch(e){console.warn('Volunteer cloud save warning:',e)}
+      if(volunteers.length===0){
+        firebaseDb.ref('eventpass/volunteers').remove();
+      }else{
+        firebaseDb.ref('eventpass/volunteers').set(volunteers);
+      }
+    }catch(e){console.warn('saveVolunteers error:',e)}
   }
 }
 function esc(v){return String(v??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]))}
@@ -1529,7 +1580,7 @@ function dashboardHTML(h){
  if(!h)h=getHeadcounts();
  const recent=[...users].sort((a,b)=>new Date(b.createdAt)-new Date(a.createdAt)).slice(0,6);
  const cloudBannerHTML=cloudSyncStatus==='connected'?`
-   <div class="cloudBanner ok" style="margin-bottom:16px;display:flex;justify-content:space-between;align-items:center;cursor:pointer" onclick="openCloudModal()">
+   <div id="dashboardCloudBanner" class="cloudBanner ok" style="margin-bottom:16px;display:flex;justify-content:space-between;align-items:center;cursor:pointer" onclick="openCloudModal()">
      <div style="display:flex;align-items:center;gap:10px">
        <span class="statusDot green"></span>
        <span><b>লাইভ ক্লাউড ডাটাবেজ সক্রিয়:</b> সকল মোবাইল ও ল্যাপটপ ডিভাইসে স্বয়ংক্রিয় রিয়েল-টাইম সিঙ্ক হচ্ছে। (${users.length} জন গেস্ট সিঙ্কড)</span>
@@ -1537,7 +1588,7 @@ function dashboardHTML(h){
      <button class="secondary" style="padding:6px 12px;font-size:11px" onclick="event.stopPropagation();openCloudModal()">⚙️ Settings</button>
    </div>
  `:`
-   <div class="cloudBanner warn" style="margin-bottom:16px;display:flex;justify-content:space-between;align-items:center;cursor:pointer" onclick="openCloudModal()">
+   <div id="dashboardCloudBanner" class="cloudBanner warn" style="margin-bottom:16px;display:flex;justify-content:space-between;align-items:center;cursor:pointer" onclick="openCloudModal()">
      <div style="display:flex;align-items:center;gap:10px">
        <span class="statusDot yellow"></span>
        <span><b>লোকাল মেমোরি মোড:</b> মোবাইল ও ল্যাপটপ একসাথে লাইভ করতে ফায়ারবেস ক্লাউড ডাটাবেজ কানেক্ট করুন (২ মিনিট লাগে)।</span>
@@ -1550,7 +1601,7 @@ function dashboardHTML(h){
 function guestsHTML(h){
  if(!h)h=getHeadcounts();
  let list=users.filter(u=>guestFilter==='all'||u.checkedIn).filter(u=>[u.name,u.email,u.phone,u.code,u.guestId,u.sscBatch,String(u.serial)].join(' ').toLowerCase().includes(search.toLowerCase())).sort((a,b)=>a.serial-b.serial);
- return `<section class="content"><div class="toolbar"><div class="search"><span>⌕</span><input id="search" value="${esc(search)}" oninput="search=this.value;renderGuestsOnly()" placeholder="Search name, ID, serial, phone or email..."></div><button class="secondary" onclick="exportCSV()">↓ Export CSV</button><button class="primary" onclick="openAdd()">＋ Add Guest</button></div><div class="panel tablePanel"><div class="panelHead guestTabsHead"><div><h2>Guest Directory</h2><p>${guestFilter==='all'?`${h.totalProfiles} profiles (${h.totalPersons} মোট ব্যক্তি, ${h.totalSub} সাব-গেস্ট)`:`${h.checkedProfiles} profiles checked in (${h.checkedPersons} জন উপস্থিত)`}${search?' · filtered':''}</p></div><div class="segmented"><button class="${guestFilter==='all'?'active':''}" onclick="guestFilter='all';renderGuestsOnly()">All Profiles <b>${h.totalProfiles} (${h.totalPersons} জন)</b></button><button class="${guestFilter==='checked'?'active':''}" onclick="guestFilter='checked';renderGuestsOnly()">Checked In <b>${h.checkedProfiles} (${h.checkedPersons} জন)</b></button></div></div><div id="guestTableArea">${list.length?tableHTML(list,true):emptyHTML(guestFilter==='checked'?'No guests checked in yet':'No guests found')}</div></div></section>`
+ return `<section class="content"><div class="toolbar"><div class="search"><span>⌕</span><input id="search" value="${esc(search)}" oninput="search=this.value;renderGuestsOnly()" placeholder="Search name, ID, serial, phone or email..."></div><button class="secondary" onclick="exportCSV()">↓ Export CSV</button>${users.length?`<button class="secondary" style="color:#f87171;border-color:#7f1d1d" onclick="openClearAllGuestsModal()">🗑️ Clear All (${users.length})</button>`:''}<button class="primary" onclick="openAdd()">＋ Add Guest</button></div><div class="panel tablePanel"><div class="panelHead guestTabsHead"><div><h2>Guest Directory</h2><p>${guestFilter==='all'?`${h.totalProfiles} profiles (${h.totalPersons} মোট ব্যক্তি, ${h.totalSub} সাব-গেস্ট)`:`${h.checkedProfiles} profiles checked in (${h.checkedPersons} জন উপস্থিত)`}${search?' · filtered':''}</p></div><div class="segmented"><button class="${guestFilter==='all'?'active':''}" onclick="guestFilter='all';renderGuestsOnly()">All Profiles <b>${h.totalProfiles} (${h.totalPersons} জন)</b></button><button class="${guestFilter==='checked'?'active':''}" onclick="guestFilter='checked';renderGuestsOnly()">Checked In <b>${h.checkedProfiles} (${h.checkedPersons} জন)</b></button></div></div><div id="guestTableArea">${list.length?tableHTML(list,true):emptyHTML(guestFilter==='checked'?'No guests checked in yet':'No guests found')}</div></div></section>`
 }
 function renderGuestsOnly(){
  const area=document.getElementById('guestTableArea');
@@ -1565,7 +1616,7 @@ function tableHTML(list,actions){
  return `<div class="tableWrap"><table><thead><tr><th>#</th><th>Guest</th><th>Total Persons</th><th>Permanent ID / Entry Code</th><th>ID Card Pass</th><th>Contact</th><th>Status</th><th>Check-in</th><th></th></tr></thead><tbody>${list.map(u=>{
   const c=getGuestCount(u);
   const sub=Math.max(0,c-1);
-  return `<tr><td><span class="serial">${String(u.serial).padStart(2,'0')}</span></td><td><button class="nameBtn" onclick="openGuest('${u.guestId}')">${u.profilePhoto ? `<img class="avatar guestProfileAvatar" src="${esc(u.profilePhoto)}" alt="${esc(u.name)}" loading="lazy" onerror="this.style.display=\'none\';this.nextElementSibling.style.display=\'flex\';"><span class="avatar guestProfileFallback" style="display:none">${esc(u.name.slice(0,1).toUpperCase())}</span>` : `<span class="avatar guestProfileFallback">${esc(u.name.slice(0,1).toUpperCase())}</span>`}<span><b>${esc(u.name)}</b><small>${esc(u.email||u.phone)}</small></span></button></td><td><div style="display:inline-flex;align-items:center;gap:6px"><span style="font-weight:900;color:#fff;font-size:13px">${c} জন</span><span style="background:#17223b;border:1px solid #283756;color:#a5b4fc;font-size:9.5px;padding:2px 6px;border-radius:6px;font-weight:800">${sub>0?`১ মূল + ${sub} সাব`:'একক'}</span></div><small style="color:#7888a3;display:block;margin-top:2px">${esc(u.guestType||'Individual')}</small></td><td><span class="guestId">${esc(u.guestId)}</span><small>${esc(u.code)}</small></td><td><span style="background:#141f36;border:1px solid #293b5d;color:#f3c65b;font-weight:800;font-size:11px;padding:3px 8px;border-radius:6px;display:inline-flex;align-items:center;gap:4px">🔑 ${esc(u.idCardPassword||'1234')}</span></td><td>${esc(u.phone)}<small>${esc(u.email||'—')}</small></td><td><span class="status ${u.checkedIn?'checked':'pending'}">${u.checkedIn?'✓ Verified':'◷ Pending'}</span></td><td>${u.checkedAt?`<b>${formatBDTime(u.checkedAt)}</b><small>${esc(u.scanner||'—')}</small>`:'—'}</td><td>${actions?`<div class="rowActions"><button style="color:#a59cff;font-weight:800" onclick="openIDCard('${u.guestId}')">ID Card</button><button onclick="openEdit('${u.guestId}')">Edit</button><button onclick="deleteUser('${u.guestId}')">Delete</button></div>`:''}</td></tr>`;
+  return `<tr><td><span class="serial">${String(u.serial).padStart(2,'0')}</span></td><td><button class="nameBtn" onclick="openGuest('${u.guestId}')"><span class="avatar">${esc(u.name.slice(0,1).toUpperCase())}</span><span><b>${esc(u.name)}</b><small>${esc(u.email||u.phone)}</small></span></button></td><td><div style="display:inline-flex;align-items:center;gap:6px"><span style="font-weight:900;color:#fff;font-size:13px">${c} জন</span><span style="background:#17223b;border:1px solid #283756;color:#a5b4fc;font-size:9.5px;padding:2px 6px;border-radius:6px;font-weight:800">${sub>0?`১ মূল + ${sub} সাব`:'একক'}</span></div><small style="color:#7888a3;display:block;margin-top:2px">${esc(u.guestType||'Individual')}</small></td><td><span class="guestId">${esc(u.guestId)}</span><small>${esc(u.code)}</small></td><td><span style="background:#141f36;border:1px solid #293b5d;color:#f3c65b;font-weight:800;font-size:11px;padding:3px 8px;border-radius:6px;display:inline-flex;align-items:center;gap:4px">🔑 ${esc(u.idCardPassword||'1234')}</span></td><td>${esc(u.phone)}<small>${esc(u.email||'—')}</small></td><td><span class="status ${u.checkedIn?'checked':'pending'}">${u.checkedIn?'✓ Verified':'◷ Pending'}</span></td><td>${u.checkedAt?`<b>${formatBDTime(u.checkedAt)}</b><small>${esc(u.scanner||'—')}</small>`:'—'}</td><td>${actions?`<div class="rowActions"><button style="color:#a59cff;font-weight:800" onclick="openIDCard('${u.guestId}')">ID Card</button><button onclick="openEdit('${u.guestId}')">Edit</button><button onclick="deleteUser('${u.guestId}')">Delete</button></div>`:''}</td></tr>`;
  }).join('')}</tbody></table></div>`
 }
 function emptyHTML(t){return `<div class="empty"><div class="icon">◌</div><h3>${esc(t)}</h3><p>Add a guest or change your filter.</p></div>`}
@@ -1582,7 +1633,10 @@ function volunteersHTML(){
         <h2 style="margin:2px 0 0">👥 Volunteer Scanners &amp; Gate Control</h2>
         <p style="color:#7f8ba2;font-size:12.5px;margin:2px 0 0">গেট স্ক্যানার ভলেন্টিয়ার্স পরিচালনা, গেট নির্ধারণ এবং পাসওয়ার্ড নিয়ন্ত্রণ করুন।</p>
       </div>
-      <button class="primary" style="background:linear-gradient(135deg,#059669,#0d9488)" onclick="openAddVolunteer()">＋ Add Volunteer</button>
+      <div style="display:flex;gap:10px;align-items:center">
+        ${volunteers.length?`<button class="secondary" style="color:#f87171;border-color:#7f1d1d" onclick="clearAllVolunteers()">🗑️ Clear All (${volunteers.length})</button>`:''}
+        <button class="primary" style="background:linear-gradient(135deg,#059669,#0d9488)" onclick="openAddVolunteer()">＋ Add Volunteer</button>
+      </div>
     </div>
 
     <div class="stats" style="grid-template-columns:repeat(3,1fr)">
@@ -1845,6 +1899,17 @@ function deleteVolunteer(id){
     volunteers=volunteers.filter(x=>x.id!==id);
     saveVolunteers();
     toast(`Volunteer ${v.name} deleted`);
+    render();
+  }
+}
+
+function clearAllVolunteers(){
+  if(!isAdmin){toast('Admin access required','bad');return}
+  if(!volunteers.length){toast('No volunteers to delete');return}
+  if(confirm(`Are you sure you want to permanently delete ALL (${volunteers.length}) volunteers?`)){
+    volunteers=[];
+    saveVolunteers();
+    toast('All volunteers deleted');
     render();
   }
 }
@@ -2320,6 +2385,48 @@ async function confirmDelete(id){
   save();
   closeModal();
   toast('Guest deleted');
+  render();
+}
+
+function openClearAllGuestsModal(){
+  if(!isAdmin){toast('Admin access required to clear guests','bad');return}
+  if(!users.length){toast('No guests to clear');return}
+  openModal(`
+    <div class="modalHead">
+      <div><span class="eyebrow" style="color:#ef4444">DANGER ZONE</span><h2>Clear All Guests? (সব গেস্ট মুছুন)</h2></div>
+      <button class="close" onclick="closeModal()">×</button>
+    </div>
+    <p style="margin:0;color:#fca5a5;line-height:1.5">
+      <b>সতর্কবার্তা:</b> এটি ক্লাউড ডাটাবেজ এবং সকল ডিভাইস থেকে মোট <b>${users.length} জন গেস্টের</b> সমস্ত ডাটা ও কিউআর কোড স্থায়ীভাবে মুছে ফেলবে! এই কাজ রিভার্স করা যাবে না।
+    </p>
+    <div class="formGrid" style="margin-top:20px">
+      <label class="field">
+        <span>Admin password</span>
+        <div class="passwordWrap">
+          <input id="clearAllPassword" type="password" placeholder="Enter admin password (ডিফল্ট: 12345)">
+          <button type="button" class="toggleEyeBtn" onclick="togglePasswordVisibility('clearAllPassword', this)" title="Show/Hide password">${EYE_OPEN_SVG}</button>
+        </div>
+      </label>
+    </div>
+    <div class="formActions">
+      <button class="secondary" onclick="closeModal()">Cancel</button>
+      <button class="primary" style="background:#dc2626" onclick="confirmClearAllGuests()">Permanently Delete All Guests</button>
+    </div>
+  `);
+}
+
+async function confirmClearAllGuests(){
+  if(!isAdmin){toast('Admin access required to clear guests','bad');return}
+  const input=document.getElementById('clearAllPassword');
+  const value=input?.value||'';
+  if(!value){toast('Enter the admin password','bad');return}
+  const hash=await hashText(value);
+  const expected=settings.adminPasswordHash||'5994471abb01112afcc18159f6cc74b4f511b99806da59b3caf5a9c173cacfc5';
+  if(hash!==expected){toast('Incorrect admin password','bad');return}
+  users=[];
+  save();
+  closeModal();
+  toast('সকল গেস্টের ডাটা সফলভাবে মুছে ফেলা হয়েছে!','bad');
   render();
 }
 function idInitials(name){return String(name||'G').trim().split(/\s+/).slice(0,2).map(x=>x[0]).join('').toUpperCase()||'G'}
