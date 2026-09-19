@@ -37,7 +37,40 @@
 .stepBtn{background:#152238;border:0;color:#cbd5e1;width:42px;height:42px;font-size:18px;font-weight:900;display:grid;place-items:center;cursor:pointer;transition:all .15s;flex-shrink:0;user-select:none}
 .stepBtn:hover{background:#223659;color:#fff}
 .stepBtn:active{background:#2e4978}
-.scannerName{display:block;text-align:center;color:#69758c;font-size:10px;margin-top:22px}.formPanel{padding:25px;max-width:850px}.formPanel h2{margin-top:7px}.formGrid{display:grid;grid-template-columns:1fr 1fr;gap:17px;margin-top:22px}.field{display:grid;gap:7px}.field>span{font-size:11px;color:#9aa6bb;font-weight:700}.field small{font-size:10px;color:#69758c}.formActions{display:flex;justify-content:flex-end;gap:8px;margin-top:25px}.note{padding:18px;max-width:850px;border-style:dashed}.overlay{position:fixed;inset:0;background:#03050bd4;backdrop-filter:blur(8px);display:grid;place-items:center;padding:20px;z-index:90;overflow-y:auto}.modal{position:relative;width:min(720px,100%);max-height:92vh;overflow:auto;background:#0d1422;border:1px solid #293650;border-radius:18px;padding:24px;box-shadow:0 30px 80px #000a}.modal.idCardModal{width:min(880px,96vw);max-height:94vh;padding:22px 26px}.modalCloseFloating{position:absolute;top:16px;right:18px;width:36px;height:36px;border-radius:10px;background:#182338;border:1.5px solid #314366;color:#cbd5e1;font-size:18px;font-weight:900;display:grid;place-items:center;cursor:pointer;transition:all .2s;z-index:50}.modalCloseFloating:hover{background:#ef4444;border-color:#ef4444;color:#ffffff;transform:scale(1.06)}.modalHead{display:flex;justify-content:space-between;align-items:center;margin-bottom:18px;padding-right:45px}.modalHead h2{margin-top:5px}.close{background:#151e30;border:1px solid var(--line);color:#a9b4c8;width:34px;height:34px;border-radius:9px;font-size:21px}.passGrid{display:grid;grid-template-columns:260px 1fr;gap:25px}.qrBox{background:#fff;color:#0a0f19;border-radius:14px;padding:15px;text-align:center}.qrCanvas{display:flex;justify-content:center;min-height:230px}.qrBox code{display:block;font-family:ui-monospace,monospace;font-weight:900;font-size:13px;margin-top:5px}.qrBox small{display:block;font-size:8px;letter-spacing:1.5px;color:#667;margin-top:5px}.serialBadge{display:inline-block;margin-top:8px;padding:4px 8px;border-radius:20px;background:#e9eaff;color:#4e48a8;font-size:9px;font-weight:900;letter-spacing:.5px}.infoRow{display:flex;justify-content:space-between;padding:12px 0;border-bottom:1px solid var(--line);gap:20px}.infoRow span{color:#748199;font-size:11px}.infoRow b{font-size:12px;text-align:right}.greenText{color:var(--green)}.share{display:flex;flex-wrap:wrap;gap:7px;margin-top:18px}.share a{text-decoration:none;text-align:center}.danger{display:flex;justify-content:flex-end;gap:12px;margin-top:18px}.danger button:last-child{color:#ff7482}.delivery{margin-top:12px;padding:10px 12px;background:#0a111e;border:1px dashed #26334b;border-radius:9px;color:#718098;font-size:10px;line-height:1.55}.toast{position:fixed;right:25px;bottom:25px;background:#14251f;border:1px solid #245541;color:#72e4b5;padding:12px 15px;border-radius:10px;box-shadow:0 15px 40px #0006;z-index:30;font-size:12px;font-weight:800}.toast.bad{background:#34151d;border-color:#6d2634;color:#ff9aa5}.toast.info{background:#151c31;border-color:#2a3b5d;color:#aebcff}.modal.wide{width:min(900px,100%)}.settingsSection{max-width:980px}.settingsBlock{margin-top:20px;padding-top:20px;border-top:1px solid var(--line)}.settingsBlock h3{font-size:15px}.settingsBlock>p{max-width:780px}.passwordHint{font-size:10px;color:#69758c;margin-top:5px}
+.scannerName{display:block;text-align:center;color:#69758c;font-size:10px;margin-top:22px}.formPanel{padding:25px;width:100%}.formPanel h2{margin-top:7px}.formGrid{display:grid;grid-template-columns:1fr;gap:17px;margin-top:22px}.field{display:grid;gap:7px}.field>span{font-size:11px;color:#9aa6bb;font-weight:700}.field small{font-size:10px;color:#69758c}.formActions{display:flex;justify-content:flex-end;gap:8px;margin-top:25px}.note{padding:18px;width:100%;border-style:dashed}.overlay{position:fixed;inset:0;background:#03050bd4;backdrop-filter:blur(8px);display:grid;place-items:center;padding:20px;z-index:90;overflow-y:auto}.modal{position:relative;width:min(750px,100%);max-height:92vh;overflow:auto;background:#0d1422;border:1px solid #293650;border-radius:18px;padding:24px;box-shadow:0 30px 80px #000a}.modal.idCardModal{width:min(880px,96vw);max-height:94vh;padding:22px 26px}.modalCloseFloating{position:absolute;top:16px;right:18px;width:36px;height:36px;border-radius:10px;background:#182338;border:1.5px solid #314366;color:#cbd5e1;font-size:18px;font-weight:900;display:grid;place-items:center;cursor:pointer;transition:all .2s;z-index:50}.modalCloseFloating:hover{background:#ef4444;border-color:#ef4444;color:#ffffff;transform:scale(1.06)}.modalHead{display:flex;justify-content:space-between;align-items:center;margin-bottom:18px;padding-right:45px}.modalHead h2{margin-top:5px}.close{display:none!important}.passGrid{display:grid;grid-template-columns:260px 1fr;gap:25px}.qrBox{background:#fff;color:#0a0f19;border-radius:14px;padding:15px;text-align:center}.qrCanvas{display:flex;justify-content:center;min-height:230px}.qrBox code{display:block;font-family:ui-monospace,monospace;font-weight:900;font-size:13px;margin-top:5px}.qrBox small{display:block;font-size:8px;letter-spacing:1.5px;color:#667;margin-top:5px}.serialBadge{display:inline-block;margin-top:8px;padding:4px 8px;border-radius:20px;background:#e9eaff;color:#4e48a8;font-size:9px;font-weight:900;letter-spacing:.5px}.infoRow{display:flex;justify-content:space-between;padding:12px 0;border-bottom:1px solid var(--line);gap:20px}.infoRow span{color:#748199;font-size:11px}.infoRow b{font-size:12px;text-align:right}.greenText{color:var(--green)}.share{display:flex;flex-wrap:wrap;gap:7px;margin-top:18px}.share a{text-decoration:none;text-align:center}.danger{display:flex;justify-content:flex-end;gap:12px;margin-top:18px}.danger button:last-child{color:#ff7482}.delivery{margin-top:12px;padding:10px 12px;background:#0a111e;border:1px dashed #26334b;border-radius:9px;color:#718098;font-size:10px;line-height:1.55}.toast{position:fixed;right:25px;bottom:25px;background:#14251f;border:1px solid #245541;color:#72e4b5;padding:12px 15px;border-radius:10px;box-shadow:0 15px 40px #0006;z-index:30;font-size:12px;font-weight:800}.toast.bad{background:#34151d;border-color:#6d2634;color:#ff9aa5}.toast.info{background:#151c31;border-color:#2a3b5d;color:#aebcff}.modal.wide{width:min(900px,100%)}.settingsSection{max-width:1420px;width:100%}.settingsGrid{display:grid;grid-template-columns:1.08fr 0.92fr;gap:24px;align-items:start}@media(max-width:1150px){.settingsGrid{grid-template-columns:1fr}}.settingsBlock{margin-top:20px;padding-top:20px;border-top:1px solid var(--line)}.settingsBlock h3{font-size:15px}.settingsBlock>p{max-width:780px}.passwordHint{font-size:10px;color:#69758c;margin-top:5px}
+/* Form Field Builder Styles */
+.formSwitch{position:relative;display:inline-block;width:42px;height:22px;flex-shrink:0}.formSwitch input{opacity:0;width:0;height:0}.formSlider{position:absolute;cursor:pointer;inset:0;background-color:#1c273c;transition:.2s;border-radius:24px;border:1.5px solid #334466}.formSlider:before{position:absolute;content:"";height:14px;width:14px;left:3px;bottom:2.5px;background-color:#94a3b8;transition:.2s;border-radius:50%}input:checked+.formSlider{background:linear-gradient(135deg,#10b981,#059669);border-color:#10b981}input:checked+.formSlider:before{transform:translateX(19px);background-color:#ffffff}
+.fieldCard{background:#0e1626;border:1px solid #202d44;border-radius:13px;padding:14px 16px;display:flex;flex-direction:column;gap:10px;transition:transform .15s ease,border-color .2s,box-shadow .2s,opacity .2s;position:relative}
+.fieldCard:hover{border-color:#3b4d70}
+.fieldCard.disabled{opacity:.65;background:#0a0f1c;border-style:dashed}
+.fieldCard.isDragging{opacity:.35;border:1.5px dashed #6366f1!important;transform:scale(0.98)}
+.fieldCard.dragOver{border-color:#38bdf8!important;box-shadow:0 0 16px rgba(56,189,248,0.4);transform:translateY(-2px)}
+.dragHandle{display:inline-flex;align-items:center;gap:6px;cursor:grab;color:#94a3b8;padding:3px 8px;border-radius:6px;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);user-select:none}
+.dragHandle:active{cursor:grabbing}
+.dragGripIcon{font-size:14px;line-height:1;color:#64748b;letter-spacing:-1px}
+.fieldOrderNum{font-size:11px;font-weight:800;color:#cbd5e1}
+.fieldMoveBtns{display:inline-flex;align-items:center;gap:4px}
+.btnMove{background:#151f33;border:1px solid #283753;color:#94a3b8;border-radius:5px;width:24px;height:24px;display:inline-flex;align-items:center;justify-content:center;font-size:10px;cursor:pointer;transition:all .15s;padding:0}
+.btnMove:hover:not(:disabled){background:#1e293b;color:#38bdf8;border-color:#38bdf8}
+.btnMove:disabled{opacity:.25;cursor:not-allowed}
+.fieldCardTop{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap}
+.fieldTypeBadge{display:inline-flex;align-items:center;gap:5px;font-size:9.5px;font-weight:900;letter-spacing:.8px;text-transform:uppercase;padding:2px 8px;border-radius:6px;background:#18233c;color:#a5b4fc;border:1px solid #2d3e63}
+.fieldTypeBadge.custom{background:#1e1a38;color:#d8b4fe;border-color:#583d7a}
+.fieldIdBadge{display:inline-flex;align-items:center;gap:4px;font-size:10px;font-weight:800;padding:2.5px 8px;border-radius:6px;letter-spacing:0.3px}
+.fieldIdBadge.isTop{background:rgba(234,179,8,0.18);color:#facc15;border:1px solid rgba(250,204,21,0.5);box-shadow:0 0 8px rgba(234,179,8,0.25)}
+.fieldIdBadge.onCard{background:rgba(37,99,235,0.16);color:#60a5fa;border:1px solid rgba(96,165,250,0.4);box-shadow:0 0 8px rgba(37,99,235,0.18)}
+.fieldIdBadge.secKey{background:rgba(245,158,11,0.15);color:#fbbf24;border:1px solid rgba(251,191,36,0.4)}
+.fieldIdBadge.formOnly{background:rgba(100,116,139,0.12);color:#94a3b8;border:1px solid rgba(148,163,184,0.25)}
+.idCardLocationTag{display:flex;align-items:center;gap:6px;font-size:10.5px;color:#8da2c0;background:rgba(15,23,42,0.6);padding:5px 9px;border-radius:7px;border:1px solid rgba(255,255,255,0.05)}
+.idCardLocationTag b{color:#93c5fd}
+.idCardCustomToggle{display:inline-flex;align-items:center;gap:7px;font-size:11px;color:#93c5fd;cursor:pointer;user-select:none}
+.fieldLabelInput{width:100%;background:#090e1a;border:1px solid #24334f;border-radius:8px;padding:8px 12px;color:#fff;font-size:13px;font-weight:600;outline:none;transition:border-color .2s}
+.fieldLabelInput:focus{border-color:#6366f1}
+.fieldCardBottom{display:flex;justify-content:space-between;align-items:center;gap:10px;font-size:11px;color:#8996ad;flex-wrap:wrap}
+.fieldOptionsInput{width:100%;background:#090e1a;border:1px solid #24334f;border-radius:8px;padding:6px 10px;color:#cbd5e1;font-size:11.5px;outline:none}
+.fieldOptionsInput:focus{border-color:#6366f1}
+.fieldDeleteBtn{background:transparent;border:0;color:#f87171;font-size:11px;cursor:pointer;font-weight:700;padding:4px 8px;border-radius:6px;transition:background .15s}
+.fieldDeleteBtn:hover{background:#3f171c;color:#fca5a5}
 
 /* ==================== REUNION 2026 WHITE & BLUE WAVE ID CARD ==================== */
 .idCardPreview{display:flex;flex-wrap:wrap;justify-content:center;gap:24px;margin-top:16px;align-items:flex-start}
@@ -102,7 +135,7 @@
 
 .idCardScanBadge{display:inline-block;background:#2563eb;color:#ffffff;border-radius:999px;padding:3.5px 14px;font-size:8px;font-weight:900;letter-spacing:1.2px;margin:3px auto 0;text-align:center;box-shadow:0 3px 8px rgba(37,99,235,0.28)}
 
-.idCardBackDetails{background:#f4f7fb;border-radius:12px;padding:8px 12px;margin-top:6px;border:1px solid #e8eef6;text-align:left;display:flex;flex-direction:column;gap:6.5px}
+.idCardBackDetails{background:#f4f7fb;border-radius:12px;padding:6px 11px;margin-top:4px;border:1px solid #e8eef6;text-align:left;display:flex;flex-direction:column;gap:5px}
 .idCardBackDetailItem{display:flex;align-items:flex-start;gap:8px}
 .idCardBackDetailItem svg{width:13.5px;height:13.5px;color:#2563eb;flex-shrink:0;margin-top:1px}
 .idCardBackDetailText{display:flex;flex-direction:column;gap:1px}
@@ -281,6 +314,25 @@
 .configInputWrap{display:flex;flex-direction:column;gap:7px}
 .configInputWrap textarea{background:#0a111e;border:1.5px solid #23314d;border-radius:10px;color:#cbd5e1;font-family:ui-monospace,monospace;font-size:11.5px;padding:12px;height:110px;resize:vertical;outline:0;box-sizing:border-box;width:100%}
 .configInputWrap textarea:focus{border-color:#6366f1;box-shadow:0 0 0 3px rgba(99,102,241,0.25)}
+
+/* T-Shirt Distribution Styles */
+.tshirtStatusBtn{display:inline-flex;align-items:center;gap:4px;padding:3.5px 9px;border-radius:6px;font-size:11px;font-weight:800;border:1px solid transparent;cursor:pointer;transition:all 0.15s ease}
+.tshirtStatusBtn.claimed{background:#064e3b;border-color:#059669;color:#6ee7b7}
+.tshirtStatusBtn.claimed:hover{background:#047857;border-color:#10b981;color:#fff}
+.tshirtStatusBtn.pending{background:#362108;border-color:#92400e;color:#fcd34d}
+.tshirtStatusBtn.pending:hover{background:#78350f;border-color:#b45309;color:#fff}
+
+.volunteerNavSwitcher{display:inline-flex;background:#0b1324;border:1px solid #1f2f4c;border-radius:10px;padding:3px;gap:4px}
+.volunteerNavSwitcher button{background:transparent;border:none;color:#94a3b8;font-size:11.5px;font-weight:800;padding:6px 12px;border-radius:8px;cursor:pointer;transition:all 0.15s ease}
+.volunteerNavSwitcher button.active{background:linear-gradient(135deg,#6366f1,#8b5cf6);color:#fff;box-shadow:0 2px 8px rgba(99,102,241,0.35)}
+.volunteerNavSwitcher button:hover:not(.active){color:#fff;background:rgba(255,255,255,0.06)}
+
+.tshirtSizePill{background:#1e1b4b;border:1px solid #4338ca;color:#c7d2fe;padding:3px 8px;border-radius:6px;font-size:11px;font-weight:800;display:inline-flex;align-items:center;gap:4px}
+.tshirtSizeGrid{display:grid;grid-template-columns:repeat(auto-fit, minmax(min(130px, 100%), 1fr));gap:12px;margin:16px 0}
+.tshirtSizeCard{background:#0e172a;border:1px solid #1e2e4a;border-radius:12px;padding:12px;text-align:center;position:relative;overflow:hidden}
+.tshirtSizeCard.highlight{border-color:#6366f1;box-shadow:0 4px 16px rgba(99,102,241,0.15)}
+.tshirtSizeBadgeLg{font-size:18px;font-weight:900;color:#fff;margin-bottom:4px}
+.tshirtSizeMeta{display:flex;justify-content:space-between;font-size:11px;color:#94a3b8;margin-top:6px;padding-top:6px;border-top:1px solid #1e293b}
 </style>
 </head>
 <body>
@@ -403,7 +455,7 @@ function setupRealtimeDb(config){
       }else if(typeof val==='object'){
         cloudList=Object.values(val).filter(u=>u && !u._empty);
       }
-      users=cloudList.filter(u=>u && u.guestId && u.guestId!=='EP-B3002B18D7').map(u=>({...u,idCardPassword:u.idCardPassword||'1234',qrValue:u.qrValue||buildQrValue(u)})).sort((a,b)=>(a.serial||0)-(b.serial||0));
+      users=cloudList.filter(u=>u && u.guestId && u.guestId!=='EP-B3002B18D7').map(u=>({...u,idCardPassword:u.idCardPassword||'1234',qrValue:buildQrValue(u),tShirtClaimed:!!u.tShirtClaimed,tShirtClaimedAt:u.tShirtClaimedAt||null,tShirtClaimedBy:u.tShirtClaimedBy||null})).sort((a,b)=>(a.serial||0)-(b.serial||0));
       localStorage.setItem(USERS_KEY,JSON.stringify(users));
       refreshLiveViews();
       if(tab==='guests' || tab==='dashboard') render();
@@ -418,6 +470,19 @@ function setupRealtimeDb(config){
     firebaseDb.ref('eventpass/settings').on('value',(snap)=>{
       const val=snap.val();
       if(val && typeof val==='object' && !val._empty){
+        if(val.eventName === 'হীরক জয়ন্তী ২০২৭' || (typeof val.eventName === 'string' && val.eventName.includes('হীরক জয়ন্তী'))){
+          val.eventName = defaults.eventName;
+          val.instituteName = defaults.instituteName;
+          val.eventDate = defaults.eventDate;
+          val.eventTime = defaults.eventTime;
+          val.venue = defaults.venue;
+          val.organizedBy = defaults.organizedBy;
+          val.eventSlogan = defaults.eventSlogan;
+          val.eventQuote = defaults.eventQuote;
+          val.eventMotto = defaults.eventMotto;
+          val.scannerName = defaults.scannerName;
+          try{ firebaseDb.ref('eventpass/settings').update(val); }catch(e){}
+        }
         settings={...defaults,...settings,...val};
         localStorage.setItem(SETTINGS_KEY,JSON.stringify(settings));
       }
@@ -459,7 +524,7 @@ function setupFirestore(config){
         if(d) cloudList.push(d);
       });
       if(cloudList.length>0){
-        users=cloudList.map(u=>({...u,idCardPassword:u.idCardPassword||'1234',qrValue:u.qrValue||buildQrValue(u)})).sort((a,b)=>(a.serial||0)-(b.serial||0));
+        users=cloudList.map(u=>({...u,idCardPassword:u.idCardPassword||'1234',qrValue:buildQrValue(u),tShirtClaimed:!!u.tShirtClaimed,tShirtClaimedAt:u.tShirtClaimedAt||null,tShirtClaimedBy:u.tShirtClaimedBy||null})).sort((a,b)=>(a.serial||0)-(b.serial||0));
         localStorage.setItem(USERS_KEY,JSON.stringify(users));
         refreshLiveViews();
         if(tab==='guests' || tab==='dashboard') render();
@@ -565,7 +630,20 @@ function updateCloudStatusUI(){
 }
 
 const USERS_KEY='eventpass_users_v3', SETTINGS_KEY='eventpass_settings_v3', VOLUNTEERS_KEY='eventpass_volunteers_v1';
-const defaults={eventName:'হীরক জয়ন্তী ২০২৭',instituteName:'অলিপুর আমডাঙ্গা স্কুল এন্ড কলেজ',eventDate:'2027-02-15',eventTime:'10:00 AM',venue:'অলিপুর আমডাঙ্গা স্কুল এন্ড কলেজ',organizedBy:'SSC Batch 2018 Alumni',eventSlogan:'Reconnect · Remember · Relive',eventQuote:'Same Friends New Stories',eventMotto:'A GREATER TOMORROW THROUGH FRIENDSHIP',scannerName:'Front Desk',adminPasswordHash:'5994471abb01112afcc18159f6cc74b4f511b99806da59b3caf5a9c173cacfc5'};
+const defaultFormFields = [
+  { id: 'name', key: 'name', label: 'Full name', type: 'text', required: true, enabled: true, isDefault: true, placeholder: 'John Smith' },
+  { id: 'phone', key: 'phone', label: 'Phone number', type: 'tel', required: true, enabled: true, isDefault: true, placeholder: '+880 1XXXXXXXXX' },
+  { id: 'email', key: 'email', label: 'Email address', type: 'email', required: false, enabled: true, isDefault: true, placeholder: 'john@example.com' },
+  { id: 'tShirtSize', key: 'tShirtSize', label: 'T-Shirt Size', type: 'select', required: true, enabled: true, isDefault: true, options: ['S', 'M', 'L', 'XL', 'XXL', '3XL'], placeholder: 'Select size', showOnIdCard: true },
+  { id: 'sscBatch', key: 'sscBatch', label: 'Batch / Tag', type: 'text', required: false, enabled: false, isDefault: true, placeholder: 'e.g. 2021' },
+  { id: 'idCardPassword', key: 'idCardPassword', label: 'আইডি কার্ড ডাউনলোড পাসওয়ার্ড', type: 'password', required: true, enabled: true, isDefault: true, placeholder: 'যেমন: 1234', hint: 'আইডি কার্ড ডাউনলোড ও দেখার সময় এই পাসওয়ার্ডটি দিতে হবে।' },
+  { id: 'profilePhoto', key: 'profilePhoto', label: 'Profile Photo', type: 'file', required: true, enabled: true, isDefault: true, hint: 'Profile photo is required for the ID Card.' },
+  { id: 'entryType', key: 'entryType', label: 'Entry Type', type: 'select', required: true, enabled: true, isDefault: true, options: ['General', 'VIP', 'Guest', 'Speaker', 'Organizer', 'Staff', 'Media'] },
+  { id: 'guestType', key: 'guestType', label: 'Guest Type', type: 'select', required: true, enabled: true, isDefault: true, options: ['Individual', 'Couple', 'Family'] },
+  { id: 'personCount', key: 'personCount', label: 'Total Persons / Count', type: 'number', required: true, enabled: true, isDefault: true, hint: '১ জন মূল গেস্ট + সাথে সাব-গেস্ট (খাবার ও এন্ট্রি হিসাবের জন্য মোট সংখ্যা)।' }
+];
+
+const defaults={eventName:'WordPress Community Meetup 2026',instituteName:'WordPress Community Bangladesh',eventDate:'2026-11-11',eventTime:'06:00 AM',venue:'Dhaka, Bangladesh',organizedBy:'ThemeOri',eventSlogan:'Learn · Connect · Contribute',eventQuote:'Build Together, Grow Together',eventMotto:'OPEN SOURCE · COMMUNITY · WORDPRESS',scannerName:'Registration Desk',adminPasswordHash:'5994471abb01112afcc18159f6cc74b4f511b99806da59b3caf5a9c173cacfc5',idCardTopBadgeField:'none',formFields:defaultFormFields};
 const sampleUsers=[];
 const defaultVolunteers=[];
 let isAdmin=sessionStorage.getItem('eventpass_is_admin')==='true';
@@ -573,9 +651,114 @@ let currentVolunteer=JSON.parse(sessionStorage.getItem('eventpass_volunteer_sess
 let isGateMode=!!currentVolunteer;
 let volunteers=load(VOLUNTEERS_KEY,[]);
 function getGuestCount(u){return Math.max(1,Number(u?.personCount)||(u?.guestType==='Couple'?2:u?.guestType==='Family'?3:1))}
+function getGuestTShirtSize(u){
+  if(!u) return '—';
+  if(u.tShirtSize && String(u.tShirtSize).trim()) return String(u.tShirtSize).trim();
+  if(u.customFields && typeof u.customFields === 'object'){
+    const fields = (typeof getFormFields === 'function') ? getFormFields() : [];
+    for(const f of fields){
+      const lbl = (f.label || '').toLowerCase();
+      const key = (f.key || f.id || '').toLowerCase();
+      if(lbl.includes('t-shirt') || lbl.includes('tshirt') || lbl.includes('টি-শার্ট') || lbl.includes('size') || key.includes('tshirt') || key.includes('size')){
+        const val = u.customFields[f.id] || u.customFields[f.key];
+        if(val && String(val).trim()) return String(val).trim();
+      }
+    }
+    for(const k in u.customFields){
+      const kl = k.toLowerCase();
+      if(kl.includes('tshirt') || kl.includes('size')){
+        const val = u.customFields[k];
+        if(val && String(val).trim()) return String(val).trim();
+      }
+    }
+  }
+  return '—';
+}
+
+function claimGuestTShirt(guestId, scannerName){
+  const u = users.find(x => x.guestId === guestId);
+  if(!u) return null;
+  u.tShirtClaimed = true;
+  u.tShirtClaimedAt = new Date().toISOString();
+  u.tShirtClaimedBy = scannerName || (currentVolunteer ? currentVolunteer.name : (isAdmin ? 'Admin' : 'T-Shirt Desk'));
+  save();
+  return u;
+}
+
+function unclaimGuestTShirt(guestId){
+  const u = users.find(x => x.guestId === guestId);
+  if(!u) return null;
+  u.tShirtClaimed = false;
+  u.tShirtClaimedAt = null;
+  u.tShirtClaimedBy = null;
+  save();
+  return u;
+}
+
+function toggleTShirtClaim(guestId){
+  const u = users.find(x => x.guestId === guestId);
+  if(!u) return;
+  if(u.tShirtClaimed){
+    unclaimGuestTShirt(guestId);
+    toast(`"${u.name}" টি-শার্ট স্ট্যাটাস: বাকি (Pending) হিসেবে চিহ্নিত`);
+  } else {
+    claimGuestTShirt(guestId);
+    toast(`✓ "${u.name}"-কে টি-শার্ট দেওয়া হয়েছে (${getGuestTShirtSize(u)})`);
+  }
+  if(tab === 'tshirt') renderTShirtOnly();
+  else if(tab === 'guests') renderGuestsOnly();
+  else render();
+}
+
+function getTShirtStats(){
+  const total = users.length;
+  const claimed = users.filter(u => u.tShirtClaimed).length;
+  const pending = total - claimed;
+  const rate = total > 0 ? Math.round((claimed / total) * 100) : 0;
+
+  const standardSizes = ['S', 'M', 'L', 'XL', 'XXL', '3XL'];
+  const sizeMap = {};
+  standardSizes.forEach(s => {
+    sizeMap[s] = { total: 0, claimed: 0, pending: 0 };
+  });
+
+  users.forEach(u => {
+    const s = (getGuestTShirtSize(u) || '').trim().toUpperCase();
+    if(sizeMap[s]){
+      sizeMap[s].total++;
+      if(u.tShirtClaimed) sizeMap[s].claimed++;
+      else sizeMap[s].pending++;
+    } else if(s && s !== '—') {
+      if(!sizeMap['Other']) sizeMap['Other'] = { total: 0, claimed: 0, pending: 0 };
+      sizeMap['Other'].total++;
+      if(u.tShirtClaimed) sizeMap['Other'].claimed++;
+      else sizeMap['Other'].pending++;
+    }
+  });
+
+  return { total, claimed, pending, rate, sizeMap };
+}
+
 function buildQrValue(u){
-  const c=getGuestCount(u);
-  return `EVENTPASS|${u.guestId}|${encodeURIComponent(u.name||'')}|${encodeURIComponent(u.sscBatch||'')}|${c}|${u.code||''}|${encodeURIComponent(u.guestType||'Individual')}`;
+  if(!u) return '';
+  const c = getGuestCount(u);
+  const name = (u.name || 'Guest').trim();
+  let batchStr = '';
+  if(u.sscBatch && String(u.sscBatch).trim()){
+    const rawBatch = String(u.sscBatch).trim();
+    batchStr = rawBatch.toLowerCase().startsWith('batch') ? rawBatch : `Batch ${rawBatch}`;
+  } else {
+    batchStr = 'Batch —';
+  }
+  const guestCountStr = `Guest ${c}`;
+  const tShirt = getGuestTShirtSize(u);
+  const tShirtStr = (tShirt && tShirt !== '—') ? (String(tShirt).toLowerCase().startsWith('t-shirt') ? tShirt : `T-Shirt: ${tShirt}`) : 'T-Shirt: —';
+  const guestId = u.guestId || '';
+  const code = u.code || '';
+  const guestType = u.guestType || 'Individual';
+  const entryType = u.entryType || 'General';
+
+  return `EVENTPASS|${name}|${batchStr}|${guestCountStr}|${tShirtStr}|${guestId}|${code}|${guestType}|${entryType}`;
 }
 function formatBDTime(isoString){
   if(!isoString) return '—';
@@ -597,15 +780,374 @@ function formatBDDateTime(isoString){
     return new Date(isoString).toLocaleString([],{hour12:true});
   }
 }
-let users=load(USERS_KEY,[]).filter(u=>u && u.guestId && u.guestId!=='EP-B3002B18D7' && !u._empty), settings=load(SETTINGS_KEY,defaults), tab='dashboard', search='', publicSearch='', guestFilter='all', scanResult=null, validResult=null, scanner=null, scannerMode='entry', lastScan='', gateScanner=null, gateLastScan='', gateScanResult=null, gateSoundEnabled=true, gateScannerMode='entry';
-users=users.map(u=>({...u,idCardPassword:u.idCardPassword||'1234',qrValue:buildQrValue(u)}));
-settings={...defaults,...settings,instituteName:settings.instituteName||settings.venue||defaults.instituteName,eventTime:settings.eventTime||defaults.eventTime,organizedBy:settings.organizedBy||defaults.organizedBy,eventSlogan:settings.eventSlogan||defaults.eventSlogan,eventQuote:settings.eventQuote||defaults.eventQuote,eventMotto:settings.eventMotto||defaults.eventMotto,adminPasswordHash:settings.adminPasswordHash||'5994471abb01112afcc18159f6cc74b4f511b99806da59b3caf5a9c173cacfc5',ownerName:settings.ownerName||'',ownerEmail:settings.ownerEmail||'',ownerPhone:settings.ownerPhone||'',emailPublicKey:settings.emailPublicKey||'',emailServiceId:settings.emailServiceId||'',emailTemplateId:settings.emailTemplateId||'',qrSize:settings.qrSize||'400'};
+
+function renderScanGuestDetails(u){
+  if(!u) return '';
+  const count = getGuestCount(u);
+  const tShirt = getGuestTShirtSize(u);
+  const photo = u.profilePhoto
+    ? `<img src="${esc(u.profilePhoto)}" style="width:54px;height:54px;border-radius:12px;object-fit:cover;border:2px solid #3b82f6;flex-shrink:0" alt="${esc(u.name)}">`
+    : `<div style="width:54px;height:54px;border-radius:12px;background:#1e293b;border:2px solid #3b82f6;color:#60a5fa;display:flex;align-items:center;justify-content:center;font-weight:900;font-size:20px;flex-shrink:0">${esc(idInitials(u.name))}</div>`;
+
+  return `
+    <div class="scanGuestDetailsBox" style="background:#0b1329;border:1px solid #1e2e4a;border-radius:12px;padding:12px;margin-top:10px;text-align:left">
+      <!-- 1. নাম (Name) ও ছবি -->
+      <div style="display:flex;align-items:center;gap:12px;margin-bottom:12px;padding-bottom:10px;border-bottom:1px solid #1e2e4a">
+        ${photo}
+        <div style="overflow:hidden;flex:1">
+          <span style="font-size:9.5px;color:#94a3b8;font-weight:700;text-transform:uppercase;letter-spacing:0.5px">নাম (Name)</span>
+          <div style="font-size:18px;font-weight:900;color:#fff;line-height:1.25;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${esc(u.name)}</div>
+        </div>
+      </div>
+
+      <!-- 2 to 7 Details Grid -->
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px 10px;font-size:12px">
+        <!-- 2. গেস্ট নং -->
+        <div style="background:#131f38;border:1px solid #233554;border-radius:8px;padding:7px 10px">
+          <span style="color:#8ba0be;font-size:10px;font-weight:700;display:block;text-transform:uppercase">গেস্ট নং (Guest No)</span>
+          <b style="color:#60a5fa;font-size:14px">#${String(u.serial).padStart(2,'0')}</b>
+        </div>
+
+        <!-- 3. এন্ট্রি টাইপ -->
+        <div style="background:#131f38;border:1px solid #233554;border-radius:8px;padding:7px 10px">
+          <span style="color:#8ba0be;font-size:10px;font-weight:700;display:block;text-transform:uppercase">এন্ট্রি টাইপ (Entry Type)</span>
+          <b style="color:#f59e0b;font-size:13px">${esc(u.entryType || 'General')}</b>
+        </div>
+
+        <!-- 4. গেস্ট টাইপ বা কোয়ান্টিটি -->
+        <div style="background:#131f38;border:1px solid #233554;border-radius:8px;padding:7px 10px">
+          <span style="color:#8ba0be;font-size:10px;font-weight:700;display:block;text-transform:uppercase">গেস্ট টাইপ / কোয়ান্টিটি</span>
+          <b style="color:#34d399;font-size:12px">${esc(u.guestType || 'Individual')} (${count} Person${count>1?'s':''})</b>
+        </div>
+
+        <!-- 5. টি-শার্ট সাইজ -->
+        <div style="background:#131f38;border:1px solid #233554;border-radius:8px;padding:7px 10px">
+          <span style="color:#8ba0be;font-size:10px;font-weight:700;display:block;text-transform:uppercase">টি-শার্ট সাইজ (T-Shirt Size)</span>
+          <b style="color:#a78bfa;font-size:13px">${esc(tShirt)}</b>
+        </div>
+
+        <!-- 6. ফোন নাম্বার -->
+        <div style="grid-column:1 / -1;background:#131f38;border:1px solid #233554;border-radius:8px;padding:7px 10px">
+          <span style="color:#8ba0be;font-size:10px;font-weight:700;display:block;text-transform:uppercase">ফোন নাম্বার (Phone Number)</span>
+          <b style="color:#e2e8f0;font-size:13px">${esc(u.phone || 'N/A')}</b>
+        </div>
+
+        <!-- 7. এন্ট্রি কোড বা গেস্ট আইডি -->
+        <div style="grid-column:1 / -1;background:#131f38;border:1px solid #233554;border-radius:8px;padding:7px 10px">
+          <span style="color:#8ba0be;font-size:10px;font-weight:700;display:block;text-transform:uppercase">এন্ট্রি কোড ও গেস্ট আইডি</span>
+          <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-top:3px">
+            <span style="color:#94a3b8;font-size:11px">Entry Code:</span> <code style="background:#0a101d;color:#38bdf8;padding:2px 8px;border-radius:5px;font-size:12px;font-weight:800">${esc(u.code)}</code>
+            <span style="color:#94a3b8;font-size:11px">Guest ID:</span> <code style="background:#0a101d;color:#cbd5e1;padding:2px 8px;border-radius:5px;font-size:11.5px">${esc(u.guestId)}</code>
+          </div>
+        </div>
+      </div>
+    </div>
+  `;
+}
+
+let users=load(USERS_KEY,[]).filter(u=>u && u.guestId && u.guestId!=='EP-B3002B18D7' && !u._empty), settings=load(SETTINGS_KEY,defaults), tab='dashboard', search='', publicSearch='', guestFilter='all', scanResult=null, validResult=null, scanner=null, scannerMode='entry', lastScan='', gateScanner=null, gateLastScan='', gateScanResult=null, gateSoundEnabled=true, gateScannerMode='entry', tshirtScanner=null, tshirtLastScan='', tshirtScanResult=null, tshirtSoundEnabled=true, tshirtScannerMode='distribute', tshirtFilter='all', tshirtSearch='', activeVolunteerTab=sessionStorage.getItem('eventpass_volunteer_tab')||'gate', pendingVolunteerTarget='gate';
+users=users.map(u=>({...u,idCardPassword:u.idCardPassword||'1234',qrValue:buildQrValue(u),tShirtClaimed:!!u.tShirtClaimed,tShirtClaimedAt:u.tShirtClaimedAt||null,tShirtClaimedBy:u.tShirtClaimedBy||null}));
+settings={...defaults,...settings,instituteName:settings.instituteName||settings.venue||defaults.instituteName,eventTime:settings.eventTime||defaults.eventTime,organizedBy:settings.organizedBy||defaults.organizedBy,eventSlogan:settings.eventSlogan||defaults.eventSlogan,eventQuote:settings.eventQuote||defaults.eventQuote,eventMotto:settings.eventMotto||defaults.eventMotto,adminPasswordHash:settings.adminPasswordHash||'5994471abb01112afcc18159f6cc74b4f511b99806da59b3caf5a9c173cacfc5',ownerName:settings.ownerName||'',ownerEmail:settings.ownerEmail||'',ownerPhone:settings.ownerPhone||'',emailPublicKey:settings.emailPublicKey||'',emailServiceId:settings.emailServiceId||'',emailTemplateId:settings.emailTemplateId||'',qrSize:settings.qrSize||'400',idCardTopBadgeField:settings.idCardTopBadgeField!==undefined?settings.idCardTopBadgeField:'none',formFields:(Array.isArray(settings.formFields)&&settings.formFields.length)?settings.formFields:JSON.parse(JSON.stringify(defaultFormFields))};
+
+if(!settings.eventName || settings.eventName === 'হীরক জয়ন্তী ২০২৭' || (typeof settings.eventName==='string' && settings.eventName.includes('হীরক জয়ন্তী')) || settings.venue === 'অলিপুর আমডাঙ্গা স্কুল এন্ড কলেজ'){
+  settings.eventName = defaults.eventName;
+  settings.instituteName = defaults.instituteName;
+  settings.eventDate = defaults.eventDate;
+  settings.eventTime = defaults.eventTime;
+  settings.venue = defaults.venue;
+  settings.organizedBy = defaults.organizedBy;
+  settings.eventSlogan = defaults.eventSlogan;
+  settings.eventQuote = defaults.eventQuote;
+  settings.eventMotto = defaults.eventMotto;
+  settings.scannerName = defaults.scannerName;
+  try{ localStorage.setItem(SETTINGS_KEY, JSON.stringify(settings)); }catch(e){}
+}
+
+function getFormFields(){
+  if(!Array.isArray(settings.formFields) || !settings.formFields.length){
+    settings.formFields = JSON.parse(JSON.stringify(defaultFormFields));
+  } else {
+    if(!settings.formFields.some(f => f.id === 'tShirtSize')){
+      const defTshirt = defaultFormFields.find(f => f.id === 'tShirtSize');
+      if(defTshirt){
+        const passIdx = settings.formFields.findIndex(f => f.id === 'idCardPassword');
+        if(passIdx >= 0) settings.formFields.splice(passIdx, 0, JSON.parse(JSON.stringify(defTshirt)));
+        else settings.formFields.push(JSON.parse(JSON.stringify(defTshirt)));
+      }
+    }
+  }
+  return settings.formFields;
+}
+function toggleFieldEnabled(id, enabled){
+  const fields = getFormFields();
+  const f = fields.find(x => x.id === id);
+  if(f){
+    f.enabled = !!enabled;
+    save();
+    toast(`${f.label} ফিল্ড ${f.enabled ? 'চালু (Active)' : 'বন্ধ (Disabled)'} করা হয়েছে ✓`);
+    if(tab === 'settings') render();
+  }
+}
+function updateFieldLabel(id, newLabel){
+  const fields = getFormFields();
+  const f = fields.find(x => x.id === id);
+  if(f && String(newLabel).trim()){
+    f.label = String(newLabel).trim();
+    save();
+    toast(`লেবেল পরিবর্তন সম্পন্ন: "${f.label}" ✓`);
+  }
+}
+function updateFieldRequired(id, required){
+  const fields = getFormFields();
+  const f = fields.find(x => x.id === id);
+  if(f){
+    f.required = !!required;
+    save();
+    toast(`"${f.label}" এখন ${f.required ? 'বাধ্যতামূলক' : 'ঐচ্ছিক'} করা হয়েছে ✓`);
+  }
+}
+function updateFieldOptions(id, optionsStr){
+  const fields = getFormFields();
+  const f = fields.find(x => x.id === id);
+  if(f){
+    const opts = String(optionsStr).split(',').map(s => s.trim()).filter(Boolean);
+    if(opts.length){
+      f.options = opts;
+      save();
+      toast(`"${f.label}" এর অপশনসমূহ আপডেট হয়েছে ✓`);
+    }
+  }
+}
+function openAddCustomFieldModal(){
+  openModal(`
+    <div class="modalHead">
+      <div>
+        <span class="eyebrow">FORM BUILDER</span>
+        <h2>নতুন ইনপুট ফিল্ড যোগ করুন (Add Field)</h2>
+      </div>
+    </div>
+    <form onsubmit="submitNewCustomField(event)">
+      <div class="formGrid">
+        <label class="field" style="grid-column: 1 / -1">
+          <span>ফিল্ডের নাম / লেবেল (Field Label) <b style="color:#ff8a8a">*</b></span>
+          <input name="fieldLabel" required placeholder="যেমন: T-Shirt Size, Blood Group, Institution Name">
+        </label>
+        <label class="field">
+          <span>ইনপুট টাইপ (Field Type) <b style="color:#ff8a8a">*</b></span>
+          <select name="fieldType" required onchange="onCustomFieldTypeChange(this)">
+            <option value="text">Text (সাধারণ লেখা)</option>
+            <option value="select">Select Dropdown (তালিকা থেকে পছন্দ)</option>
+            <option value="number">Number (সংখ্যা)</option>
+            <option value="tel">Phone / Mobile (মোবাইল নম্বর)</option>
+            <option value="email">Email (ইমেইল)</option>
+            <option value="textarea">Textarea (বড় বিবরণ)</option>
+          </select>
+        </label>
+        <label class="field">
+          <span>বাধ্যতামূলক কি না (Required?)</span>
+          <select name="fieldRequired">
+            <option value="true">হ্যাঁ, বাধ্যতামূলক (Required)</option>
+            <option value="false" selected>না, ঐচ্ছিক (Optional)</option>
+          </select>
+        </label>
+        <div id="customSelectOptionsWrap" class="field" style="grid-column: 1 / -1; display: none;">
+          <span>ড্রপডাউন অপশনসমূহ (কমা দিয়ে আলাদা করুন) <b style="color:#ff8a8a">*</b></span>
+          <input name="fieldOptions" placeholder="যেমন: S, M, L, XL, XXL অথবা A+, B+, AB+, O+">
+          <small>ব্যবহারকারী এই তালিকা থেকে যেকোনো একটি সিলেক্ট করতে পারবে।</small>
+        </div>
+        <label class="field" style="grid-column: 1 / -1; display:flex; align-items:center; gap:8px; cursor:pointer; background:rgba(59,130,246,0.08); padding:10px 14px; border-radius:10px; border:1px solid rgba(59,130,246,0.25)">
+          <input type="checkbox" name="fieldShowOnIdCard" value="true" checked style="accent-color:#3b82f6; width:18px; height:18px">
+          <span style="color:#93c5fd; font-weight:700">🪪 আইডি কার্ডের ব্যাক পেজে এই ফিল্ড প্রদর্শন করুন (Show on ID Card Back Side)</span>
+        </label>
+        <label class="field" style="grid-column: 1 / -1">
+          <span>প্লেসহোল্ডার (Placeholder Text - ঐচ্ছিক)</span>
+          <input name="fieldPlaceholder" placeholder="যেমন: Select your size or Enter details">
+        </label>
+      </div>
+      <div class="formActions" style="margin-top:24px">
+        <button type="button" class="secondary" onclick="closeModal()">বাতিল (Cancel)</button>
+        <button type="submit" class="primary">ফিল্ড যোগ করুন (Add Field)</button>
+      </div>
+    </form>
+  `);
+}
+function onCustomFieldTypeChange(sel){
+  const wrap = document.getElementById('customSelectOptionsWrap');
+  if(!wrap) return;
+  const isSelect = sel.value === 'select';
+  wrap.style.display = isSelect ? 'grid' : 'none';
+  const inp = wrap.querySelector('input');
+  if(inp) inp.required = isSelect;
+}
+function submitNewCustomField(e){
+  e.preventDefault();
+  const f = new FormData(e.target);
+  const label = (f.get('fieldLabel') || '').trim();
+  if(!label){ toast('দয়া করে ফিল্ডের লেবেল দিন','bad'); return; }
+  const type = f.get('fieldType') || 'text';
+  const required = f.get('fieldRequired') === 'true';
+  const showOnIdCard = f.get('fieldShowOnIdCard') === 'true';
+  const placeholder = (f.get('fieldPlaceholder') || '').trim();
+  let options = [];
+  if(type === 'select'){
+    const rawOpts = f.get('fieldOptions') || '';
+    options = rawOpts.split(',').map(s => s.trim()).filter(Boolean);
+    if(!options.length){ toast('দয়া করে ড্রপডাউনের জন্য অন্তত একটি অপশন দিন','bad'); return; }
+  }
+  const id = 'cf_' + Date.now().toString(36) + Math.random().toString(36).slice(2, 6);
+  const fields = getFormFields();
+  fields.push({
+    id,
+    key: id,
+    label,
+    type,
+    required,
+    enabled: true,
+    isDefault: false,
+    showOnIdCard,
+    placeholder,
+    options
+  });
+  save();
+  closeModal();
+  toast(`নতুন ফিল্ড "${label}" সফলভাবে যোগ করা হয়েছে! 🚀`);
+  if(tab === 'settings') render();
+}
+function deleteCustomField(id){
+  const fields = getFormFields();
+  const f = fields.find(x => x.id === id);
+  if(!f) return;
+  if(f.isDefault){ toast('সিস্টেম ডিফল্ট ফিল্ড মুছে ফেলা যাবে না (সুইচ অফ করতে পারেন)','bad'); return; }
+  if(confirm(`আপনি কি নিশ্চিত যে "${f.label}" ফিল্ডটি চিরতরে মুছে ফেলতে চান?`)){
+    settings.formFields = fields.filter(x => x.id !== id);
+    save();
+    toast(`ফিল্ড "${f.label}" মুছে ফেলা হয়েছে ✓`);
+    if(tab === 'settings') render();
+  }
+}
+function resetFormFieldsToDefault(){
+  if(confirm('আপনি কি সব ফর্ম ফিল্ড ডিফল্ট অবস্থায় ফিরিয়ে নিতে চান? কাস্টম ফিল্ডগুলো মুছে যাবে।')){
+    settings.formFields = JSON.parse(JSON.stringify(defaultFormFields));
+    save();
+    toast('ফর্ম ফিল্ডসমূহ সফলভাবে ডিফল্টে রিসেট করা হয়েছে ✓');
+    if(tab === 'settings') render();
+  }
+}
+
+function getFieldIdCardMeta(f){
+  if(settings.idCardTopBadgeField === f.id && f.enabled !== false){
+    return { onCard: true, isTop: true, text: '📌 FRONT TOP BADGE', desc: 'আইডি কার্ড ফ্রন্ট: হেডার টপে VIP ব্যাজের পাশে প্রদর্শিত হবে' };
+  }
+  if(f.id === 'name') return { onCard: true, text: '🪪 ID Card Field', desc: 'আইডি কার্ড ফ্রন্ট: বড় মূল নাম ও QR ভেরিফিকেশন' };
+  if(f.id === 'profilePhoto') return { onCard: true, text: '🪪 ID Card Field', desc: 'আইডি কার্ড ফ্রন্ট: গোল ফ্রেমের রঙিন ছবি' };
+  if(f.id === 'tShirtSize') return { onCard: true, text: '🪪 ID Card Field', desc: 'আইডি কার্ড ফ্রন্ট ও স্ক্যান রেজাল্ট: টি-শার্ট সাইজ' };
+  if(f.id === 'sscBatch') return { onCard: false, text: '📝 Form / Batch Field', desc: 'রেজিস্ট্রেশন ফর্মের ফিল্ড (টপ ব্যাজ সিলেক্ট করলে কার্ডে দেখাবে)' };
+  if(f.id === 'entryType') return { onCard: true, text: '🪪 ID Card Field', desc: 'আইডি কার্ড ফ্রন্ট ও ব্যাক: ক্যাটাগরি ব্যাজ' };
+  if(f.id === 'guestType') return { onCard: true, text: '🪪 ID Card Field', desc: 'আইডি কার্ড ফ্রন্ট ও ব্যাক: গেস্ট ধরণ ও ইনফো' };
+  if(f.id === 'personCount') return { onCard: true, text: '🪪 ID Card Field', desc: 'আইডি কার্ড ব্যাক: Valid For অনুমোদিত ব্যক্তি সংখ্যা' };
+  if(f.id === 'phone') return { onCard: true, text: '🪪 ID Card Field', desc: 'আইডি কার্ড ফ্রন্ট: ফোন নম্বর ইনফো সারি' };
+  if(f.id === 'email') return { onCard: true, text: '🪪 ID Card Field', desc: 'আইডি কার্ড ফ্রন্ট: ইমেইল এড্রেস সারি' };
+  if(f.id === 'idCardPassword') return { onCard: false, isSec: true, text: '🔒 Card Security Key', desc: 'আইডি কার্ড সিকিউরিটি: কার্ড ডাউনলোড ও ভিউয়ের পাসওয়ার্ড' };
+  if(f.showOnIdCard) return { onCard: true, text: '🪪 ID Card Field', desc: 'আইডি কার্ড ব্যাক: ডিটেইলস ইনফো সারিতে প্রদর্শিত হবে' };
+  return { onCard: false, text: '📝 Form Only', desc: 'শুধুমাত্র রেজিস্ট্রেশন ফর্মে সংরক্ষিত থাকবে (আইডি কার্ডে যাবে না)' };
+}
+
+function setFieldAsTopBadge(id, isSet){
+  if(isSet && id !== 'none'){
+    settings.idCardTopBadgeField = id;
+    const f = getFormFields().find(x => x.id === id);
+    toast(`"${f ? f.label : id}" ফিল্ডটি আইডি কার্ডের ফ্রন্ট টপ ব্যাজ নির্ধারণ করা হয়েছে 📌`);
+  } else {
+    settings.idCardTopBadgeField = 'none';
+    toast('টপ ব্যাজ ফিল্ড বন্ধ করা হয়েছে (শুধুমাত্র VIP ব্যাজ ডানে থাকবে) ✓');
+  }
+  save();
+  if(tab === 'settings') render();
+}
+
+function toggleFieldShowOnIdCard(id, show){
+  const fields = getFormFields();
+  const f = fields.find(x => x.id === id);
+  if(f){
+    f.showOnIdCard = !!show;
+    save();
+    toast(`"${f.label}" ফিল্ড আইডি কার্ডে ${f.showOnIdCard ? 'যুক্ত করা হয়েছে' : 'থেকে বাদ দেওয়া হয়েছে'} ✓`);
+    if(tab === 'settings') render();
+  }
+}
+
+let draggedFieldId = null;
+
+function handleFieldDragStart(e, id){
+  draggedFieldId = id;
+  e.dataTransfer.effectAllowed = 'move';
+  e.dataTransfer.setData('text/plain', id);
+  const card = e.currentTarget;
+  setTimeout(() => { if(card) card.classList.add('isDragging'); }, 0);
+}
+
+function handleFieldDragOver(e){
+  e.preventDefault();
+  e.dataTransfer.dropEffect = 'move';
+}
+
+function handleFieldDragEnter(e, targetId){
+  e.preventDefault();
+  if(!draggedFieldId || draggedFieldId === targetId) return;
+  const card = document.querySelector(`.fieldCard[data-field-id="${targetId}"]`);
+  if(card) card.classList.add('dragOver');
+}
+
+function handleFieldDragLeave(e){
+  const card = e.currentTarget;
+  if(card) card.classList.remove('dragOver');
+}
+
+function handleFieldDrop(e, targetId){
+  e.preventDefault();
+  document.querySelectorAll('.fieldCard').forEach(c => c.classList.remove('dragOver', 'isDragging'));
+  if(!draggedFieldId || draggedFieldId === targetId){
+    draggedFieldId = null;
+    return;
+  }
+  const fields = getFormFields();
+  const fromIdx = fields.findIndex(x => x.id === draggedFieldId);
+  const toIdx = fields.findIndex(x => x.id === targetId);
+  if(fromIdx !== -1 && toIdx !== -1){
+    const [item] = fields.splice(fromIdx, 1);
+    fields.splice(toIdx, 0, item);
+    settings.formFields = fields;
+    save();
+    toast(`"${item.label}" ফিল্ডের অবস্থান পরিবর্তন করা হয়েছে ✓`);
+    if(tab === 'settings') render();
+  }
+  draggedFieldId = null;
+}
+
+function handleFieldDragEnd(e){
+  document.querySelectorAll('.fieldCard').forEach(c => c.classList.remove('dragOver', 'isDragging'));
+  draggedFieldId = null;
+}
+
+function moveFormField(id, delta){
+  const fields = getFormFields();
+  const idx = fields.findIndex(x => x.id === id);
+  if(idx === -1) return;
+  const newIdx = idx + delta;
+  if(newIdx < 0 || newIdx >= fields.length) return;
+  const [item] = fields.splice(idx, 1);
+  fields.splice(newIdx, 0, item);
+  settings.formFields = fields;
+  save();
+  toast(`"${item.label}" ${delta < 0 ? 'উপরে' : 'নিচে'} নেওয়া হয়েছে ✓`);
+  if(tab === 'settings') render();
+}
 function load(k,f){try{return JSON.parse(localStorage.getItem(k))??f}catch{return f}}
 function reloadUsersFromStorage(){
   try{
     const stored=JSON.parse(localStorage.getItem(USERS_KEY));
     if(Array.isArray(stored)){
-      users=stored.filter(u=>u && u.guestId && u.guestId!=='EP-B3002B18D7' && !u._empty).map(u=>({...u,idCardPassword:u.idCardPassword||'1234',qrValue:u.qrValue||buildQrValue(u)}));
+      users=stored.filter(u=>u && u.guestId && u.guestId!=='EP-B3002B18D7' && !u._empty).map(u=>({...u,idCardPassword:u.idCardPassword||'1234',qrValue:buildQrValue(u),tShirtClaimed:!!u.tShirtClaimed,tShirtClaimedAt:u.tShirtClaimedAt||null,tShirtClaimedBy:u.tShirtClaimedBy||null}));
     }
   }catch(e){}
 }
@@ -676,7 +1218,7 @@ function playScanSound(kind){if(kind==='valid'||kind==='success'){playTone(880,0
 window.addEventListener('pointerdown',initAudio,{once:true,passive:true});
 window.addEventListener('keydown',initAudio,{once:true,passive:true});
 function toast(msg,type='ok'){const el=document.getElementById('toastRoot');const icon=type==='bad'?'!':type==='info'?'i':'✓';el.innerHTML='<div class="toast '+type+'">'+icon+' '+esc(msg)+'</div>';setTimeout(()=>el.innerHTML='',3200)}
-function navigate(t){stopScanner();tab=t;scanResult=null;render()}
+function navigate(t){stopScanner();stopGateScanner();stopTShirtScanner();tab=t;scanResult=null;render()}
 
 /* Eye toggle icons & password helper */
 const EYE_OPEN_SVG=`<svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>`;
@@ -698,7 +1240,6 @@ function openAdminLoginModal(){
   openModal(`
     <div class="modalHead">
       <div><span class="eyebrow">SECURITY CHECK</span><h2>Admin Login</h2></div>
-      <button class="close" onclick="closeModal()">×</button>
     </div>
     <p style="color:#8ba0be;font-size:13px;margin:0 0 18px">কন্ট্রোল সেন্টার, কিউআর স্ক্যানার ও গেস্ট ডিরেক্টরিতে প্রবেশ করতে অ্যাডমিন পাসওয়ার্ড দিন।</p>
     <form onsubmit="submitAdminLogin(event)">
@@ -762,6 +1303,7 @@ function publicLandingHTML(){
       <div class="publicNav">
         <button class="primary" onclick="openAdd()">📝 Fill Up the Form</button>
         <button class="volunteerScannerBtn" onclick="openVolunteerGate()">⚡ Gate Scanner (গেট স্ক্যান)</button>
+        <button class="volunteerScannerBtn" style="background:linear-gradient(135deg,#7c3aed,#6366f1);border-color:#818cf8" onclick="openVolunteerTShirt()">🎽 T-Shirt Scanner (টি-শার্ট স্ক্যান)</button>
         <button class="adminLoginBtn" onclick="openAdminLoginModal()">🔐 Admin Login</button>
       </div>
     </header>
@@ -828,7 +1370,7 @@ function renderPublicGuestGrid(list){
               <b>${esc(u.name)}</b>
               <span class="status ${u.checkedIn?'checked':'pending'}" style="font-size:9.5px;padding:3px 8px">${u.checkedIn?'✓ চেক ইন':'◷ পেন্ডিং'}</span>
             </div>
-            <small>SSC Batch: ${esc(u.sscBatch||'—')} · ID: <code>${esc(u.guestId)}</code></small>
+            <small>${(u.sscBatch && (getFormFields().find(x=>x.id==='sscBatch')?.enabled!==false)) ? `Batch: ${esc(u.sscBatch)} · ` : ''}ID: <code>${esc(u.guestId)}</code></small>
             <div style="display:inline-flex;align-items:center;gap:6px;margin-top:4px">
               <span style="background:#17223b;border:1px solid #283756;color:#a5b4fc;font-size:9.5px;padding:2px 7px;border-radius:6px;font-weight:800">${c} জন (${sub>0?`১ মূল + ${sub} সাব`:'একক'})</span>
               <span style="color:#71819d;font-size:10px">${esc(u.guestType||'Individual')}</span>
@@ -853,7 +1395,6 @@ function promptIDCardAccess(id){
         <span class="eyebrow">SECURITY CHECK</span>
         <h2>আইডি কার্ড ডাউনলোড সিকিউরিটি</h2>
       </div>
-      <button class="close" onclick="closeModal()">×</button>
     </div>
     <p style="color:#8ba0be;font-size:13px;margin:0 0 16px">
       <b style="color:#fff">${esc(u.name)}</b>-এর আইডি কার্ড দেখতে বা ডাউনলোড করতে রেজিস্ট্রেশনের সময় দেওয়া পাসওয়ার্ডটি দিন।
@@ -908,6 +1449,19 @@ function renderPublicLookup(){
 function showPublicRegistrationSuccess(u){
   const count=getGuestCount(u);
   const sub=Math.max(0,count-1);
+  const allFields = getFormFields();
+  const fMap = {};
+  allFields.forEach(f => { fMap[f.id] = f; });
+  const batchField = fMap['sscBatch'];
+  const batchLabel = batchField ? batchField.label : 'SSC Batch';
+  const showBatch = batchField ? batchField.enabled !== false : true;
+  const customEntries = Object.entries(u.customFields || {});
+  const customRowsHTML = customEntries.map(([cfId, cfVal]) => {
+    if(!cfVal) return '';
+    const cfDef = allFields.find(x => x.id === cfId);
+    const label = cfDef ? cfDef.label : cfId;
+    return `<div style="display:flex;justify-content:space-between"><span style="color:#7888a3;font-size:11.5px">${esc(label)}</span><b style="color:#fff;font-size:12px">${esc(cfVal)}</b></div>`;
+  }).join('');
   openModal(`
     <div style="text-align:center;padding:12px 8px 6px">
       <div style="width:64px;height:64px;border-radius:50%;background:#103028;color:#38d39b;font-size:30px;display:grid;place-items:center;margin:0 auto 14px">✓</div>
@@ -924,10 +1478,17 @@ function showPublicRegistrationSuccess(u){
           <span style="color:#7888a3;font-size:11.5px">Permanent Guest ID</span>
           <code style="color:#fff;font-size:12px">${esc(u.guestId)}</code>
         </div>
+        ${showBatch ? `
         <div style="display:flex;justify-content:space-between">
-          <span style="color:#7888a3;font-size:11.5px">SSC Batch</span>
+          <span style="color:#7888a3;font-size:11.5px">${esc(batchLabel)}</span>
           <b style="color:#fff;font-size:12px">${esc(u.sscBatch||'—')}</b>
-        </div>
+        </div>` : ''}
+        ${fMap['tShirtSize'] && fMap['tShirtSize'].enabled !== false ? `
+        <div style="display:flex;justify-content:space-between">
+          <span style="color:#7888a3;font-size:11.5px">${esc(fMap['tShirtSize'].label || 'T-Shirt Size')}</span>
+          <b style="color:#a78bfa;font-size:12px">${esc(getGuestTShirtSize(u))}</b>
+        </div>` : ''}
+        ${customRowsHTML}
         <div style="display:flex;justify-content:space-between">
           <span style="color:#7888a3;font-size:11.5px">Total Persons</span>
           <b style="color:#52e2ab;font-size:12px">${count} জন ${sub>0?`(১ মূল + ${sub} সাব)`:'(একক)'}</b>
@@ -951,24 +1512,46 @@ function showPublicRegistrationSuccess(u){
 }
 
 function openVolunteerGate(){
+  activeVolunteerTab='gate';
+  sessionStorage.setItem('eventpass_volunteer_tab','gate');
   if(currentVolunteer){
     isGateMode=true;
     render();
   }else{
-    openVolunteerLoginModal();
+    openVolunteerLoginModal('gate');
   }
 }
 
-function openVolunteerLoginModal(){
+function openVolunteerTShirt(){
+  activeVolunteerTab='tshirt';
+  sessionStorage.setItem('eventpass_volunteer_tab','tshirt');
+  if(currentVolunteer){
+    isGateMode=true;
+    render();
+  }else{
+    openVolunteerLoginModal('tshirt');
+  }
+}
+
+function switchVolunteerTab(target){
+  stopGateScanner();
+  stopTShirtScanner();
+  activeVolunteerTab=target;
+  sessionStorage.setItem('eventpass_volunteer_tab',target);
+  render();
+}
+
+function openVolunteerLoginModal(targetTab='gate'){
+  pendingVolunteerTarget=targetTab;
+  const isTShirt=targetTab==='tshirt';
   const activeVols=volunteers.filter(v=>v.active!==false);
   openModal(`
     <div class="modalHead">
       <div>
-        <span class="eyebrow" style="color:#34d399">GATE ACCESS CONTROL</span>
-        <h2>⚡ Volunteer Gate Scanner Login</h2>
-        <p>গেট স্ক্যানার চালু করতে ভলেন্টিয়ার আইডি/নাম ও পাসওয়ার্ড দিন।</p>
+        <span class="eyebrow" style="color:${isTShirt?'#a78bfa':'#34d399'}">${isTShirt?'T-SHIRT COUNTER ACCESS':'GATE ACCESS CONTROL'}</span>
+        <h2>${isTShirt?'🎽 Volunteer T-Shirt Scanner Login':'⚡ Volunteer Gate Scanner Login'}</h2>
+        <p>${isTShirt?'টি-শার্ট বিতরণ স্ক্যানার চালু করতে ভলেন্টিয়ার নির্বাচন ও পাসওয়ার্ড দিন।':'গেট স্ক্যানার চালু করতে ভলেন্টিয়ার আইডি/নাম ও পাসওয়ার্ড দিন।'}</p>
       </div>
-      <button class="close" onclick="closeModal()">×</button>
     </div>
     <form onsubmit="submitVolunteerLogin(event)">
       <div class="formGrid">
@@ -984,12 +1567,12 @@ function openVolunteerLoginModal(){
             <input type="password" id="volLoginPassword" required placeholder="পাসওয়ার্ড দিন (ডিফল্ট: 1234)">
             <button type="button" class="toggleEyeBtn" onclick="togglePasswordVisibility('volLoginPassword', this)" title="Show/Hide password">${EYE_OPEN_SVG}</button>
           </div>
-          <small style="color:#7888a3;margin-top:4px">ডিফল্ট পাসওয়ার্ড: <b>1234</b>। অ্যাডমিন প্যানেল থেকে যেকোনো পাসওয়ার্ড দেখা ও পরিবর্তন করা যায়।</small>
+          <small style="color:#7888a3;margin-top:4px">ডিফল্ট পাসওয়ার্ড: <b>1234</b>। গেট স্ক্যানার ও টি-শার্ট স্ক্যানারে একই পাসওয়ার্ড কাজ করবে।</small>
         </label>
       </div>
       <div class="formActions" style="margin-top:22px">
         <button type="button" class="secondary" onclick="closeModal()">Cancel</button>
-        <button class="primary" type="submit" style="background:linear-gradient(135deg,#059669,#0d9488)">⚡ Launch Gate Scanner</button>
+        <button class="primary" type="submit" style="background:${isTShirt?'linear-gradient(135deg,#7c3aed,#6366f1)':'linear-gradient(135deg,#059669,#0d9488)'}">${isTShirt?'🎽 Launch T-Shirt Scanner':'⚡ Launch Gate Scanner'}</button>
       </div>
     </form>
   `);
@@ -1007,17 +1590,21 @@ function submitVolunteerLogin(e){
   }
   currentVolunteer=v;
   isGateMode=true;
+  activeVolunteerTab=pendingVolunteerTarget||'gate';
+  sessionStorage.setItem('eventpass_volunteer_tab',activeVolunteerTab);
   sessionStorage.setItem('eventpass_volunteer_session',JSON.stringify(v));
   closeModal();
   render();
-  toast(`Welcome, ${v.name}! Gate Scanner is live. ✓`);
+  toast(`Welcome, ${v.name}! ${activeVolunteerTab==='tshirt'?'T-Shirt':'Gate'} Scanner is live. ✓`);
 }
 
 function logoutVolunteer(){
   stopGateScanner();
+  stopTShirtScanner();
   currentVolunteer=null;
   isGateMode=false;
   sessionStorage.removeItem('eventpass_volunteer_session');
+  sessionStorage.removeItem('eventpass_volunteer_tab');
   render();
   toast('Volunteer logged out. Returned to Public Portal.');
 }
@@ -1042,6 +1629,10 @@ function gateScannerHTML(){
         </div>
       </div>
       <div class="gateHeaderActions">
+        <div class="volunteerNavSwitcher">
+          <button type="button" class="active" onclick="switchVolunteerTab('gate')">🚪 Gate Entry</button>
+          <button type="button" onclick="switchVolunteerTab('tshirt')">🎽 T-Shirt</button>
+        </div>
         <div style="display:flex;align-items:center;gap:8px">
           ${volAvatar}
           <span class="gateVolunteerBadge">🟢 ${esc(v.name)} · <b>${esc(v.gate||'Gate')}</b></span>
@@ -1109,7 +1700,7 @@ function gateScannerHTML(){
                 <div class="gateRecentItem">
                   <div>
                     <b style="color:#fff;display:block">${esc(u.name)}</b>
-                    <small style="color:#94a3b8">#${String(u.serial).padStart(2,'0')} · Batch ${esc(u.sscBatch||'—')}</small>
+                    <small style="color:#94a3b8">#${String(u.serial).padStart(2,'0')} · ${esc(u.entryType||'General')}</small>
                   </div>
                   <div style="text-align:right">
                     <span style="background:#064e3b;color:#6ee7b7;padding:2px 7px;border-radius:6px;font-size:10px;font-weight:800;display:inline-block">👥 ${count} জন</span>
@@ -1140,7 +1731,7 @@ function gateResultHTML(){
       <div class="gateWaitBox">
         <div class="gateWaitIcon">📷</div>
         <h3 style="font-size:17px;color:#fff;margin:0 0 6px">${gateScannerMode==='valid'?'Ready to Validate Guest':'Ready for Guest Check-in'}</h3>
-        <p style="font-size:12.5px;color:#7e8ea6;margin:0">${gateScannerMode==='valid'?'অতিথির কিউআর কোড স্ক্যান করে ভ্যালিড কিনা যাচাই করুন।':'অতিথির কিউআর কোড স্ক্যান করুন। তাৎক্ষণিক ছবি, ব্যাচ ও ব্যক্তি সংখ্যা দেখতে পাবেন।'}</p>
+        <p style="font-size:12.5px;color:#7e8ea6;margin:0">${gateScannerMode==='valid'?'অতিথির কিউআর কোড স্ক্যান করে ভ্যালিড কিনা যাচাই করুন।':'অতিথির কিউআর কোড স্ক্যান করুন। তাৎক্ষণিক নাম, গেস্ট নং, ধরন ও টি-শার্ট সাইজ দেখতে পাবেন।'}</p>
       </div>
     `;
   }
@@ -1159,27 +1750,11 @@ function gateResultHTML(){
       `;
     }
     const u=res.user;
-    const count=getGuestCount(u);
-    const sub=Math.max(0,count-1);
-    const photo=u.profilePhoto?`<img class="gateGuestPhoto" src="${esc(u.profilePhoto)}" alt="${esc(u.name)}">`:`<div class="gateGuestAvatar">${esc(idInitials(u.name))}</div>`;
     return `
-      <div class="gateResultCard ok" style="border-color:#10b981;background:linear-gradient(180deg,#064e3b,#022c22)">
+      <div class="gateResultCard ok" style="border-color:#10b981;background:linear-gradient(180deg,#064e3b,#022c22);padding:16px">
         <div style="font-size:30px;margin-bottom:6px">✓</div>
         <span style="background:#059669;color:#fff;font-size:11px;font-weight:900;letter-spacing:1px;padding:4px 14px;border-radius:999px;text-transform:uppercase">✓ VALID USER (নিবন্ধিত অতিথি)</span>
-        <div style="margin-top:12px">
-          ${photo}
-          <h3 style="font-size:22px;margin:0;color:#fff;font-weight:900">${esc(u.name)}</h3>
-          <div style="display:flex;justify-content:center;align-items:center;gap:8px;margin-top:6px;flex-wrap:wrap">
-            <span style="background:#065f46;border:1px solid #10b981;color:#a7f3d0;font-size:11px;font-weight:800;padding:3px 9px;border-radius:6px">SSC Batch ${esc(u.sscBatch||'—')}</span>
-            <span style="background:#022c22;border:1px solid #34d399;color:#6ee7b7;font-size:12px;font-weight:900;padding:3px 10px;border-radius:6px">👥 মোট ${count} জন (${sub>0?`১ মূল + ${sub} সাব`:'একক'})</span>
-          </div>
-        </div>
-        <div style="background:rgba(0,0,0,0.35);border-radius:10px;padding:10px 14px;margin-top:14px;font-size:11.5px;display:flex;flex-direction:column;gap:6px;color:#a7f3d0;text-align:left">
-          <div style="display:flex;justify-content:space-between"><span>Guest ID:</span> <code>${esc(u.guestId)}</code></div>
-          <div style="display:flex;justify-content:space-between"><span>Entry Code:</span> <b>${esc(u.code)}</b></div>
-          <div style="display:flex;justify-content:space-between"><span>হাজিরা স্ট্যাটাস:</span> <b style="color:${u.checkedIn?'#6ee7b7':'#fde047'}">${u.checkedIn?'✓ অলরেডি চেক ইন সম্পন্ন':'◷ এখনও প্রবেশ করেনি (Pending)'}</b></div>
-          ${u.checkedIn?`<div style="display:flex;justify-content:space-between"><span>চেক-ইন সময়:</span> <b>${formatBDTime(u.checkedAt)} (${esc(u.scanner||'Gate')})</b></div>`:''}
-        </div>
+        ${renderScanGuestDetails(u)}
         <div style="background:#064e3b;border:1px dashed #34d399;color:#a7f3d0;border-radius:8px;padding:8px;font-size:11px;margin-top:10px">
           ℹ️ ভ্যালিড ইউজার মোড: এটি শুধুমাত্র অতিথি যাচাইয়ের জন্য, কোনো চেক-ইন করা হয়নি।
         </div>
@@ -1195,12 +1770,11 @@ function gateResultHTML(){
         <div class="gateResultCard duplicate">
           <div style="font-size:32px;margin-bottom:6px">⚠️</div>
           <span style="background:#b45309;color:#fff;font-size:10.5px;font-weight:900;letter-spacing:1px;padding:3px 10px;border-radius:6px;text-transform:uppercase">ALREADY ATTENDED / পূর্বে প্রবেশ করেছে</span>
-          <h3 style="font-size:20px;margin:8px 0 4px;color:#fff">${esc(u.name)}</h3>
-          <p style="font-size:12px;color:#fde68a;margin:0 0 10px">এই কিউআর কোডটি ইতিমধ্যে ব্যবহার করা হয়েছে।</p>
-          <div style="background:rgba(0,0,0,0.35);border-radius:9px;padding:10px;font-size:11.5px;color:#fef3c7;text-align:left;display:flex;flex-direction:column;gap:4px">
-            <div><span>Guest No:</span> <b>#${String(u.serial).padStart(2,'0')}</b></div>
-            <div><span>First Verified:</span> <b>${formatBDTime(u.checkedAt)}</b></div>
-            <div><span>Verified By:</span> <b>${esc(u.scanner||'Unknown')}</b></div>
+          <p style="font-size:12px;color:#fde68a;margin:8px 0 6px">এই কিউআর কোডটি ইতিমধ্যে ব্যবহার করা হয়েছে।</p>
+          ${renderScanGuestDetails(u)}
+          <div style="background:rgba(0,0,0,0.35);border-radius:9px;padding:8px 10px;font-size:11px;color:#fef3c7;text-align:left;display:flex;justify-content:space-between;margin-top:8px">
+            <span>First Verified: <b>${formatBDTime(u.checkedAt)}</b></span>
+            <span>By: <b>${esc(u.scanner||'Unknown')}</b></span>
           </div>
           <button type="button" class="secondary" style="margin-top:12px;font-size:11px;padding:6px 14px" onclick="gateScanResult=null;updateGateResult()">Dismiss</button>
         </div>
@@ -1218,28 +1792,12 @@ function gateResultHTML(){
   }
 
   const u=res.user;
-  const count=getGuestCount(u);
-  const sub=Math.max(0,count-1);
-  const photo=u.profilePhoto?`<img class="gateGuestPhoto" src="${esc(u.profilePhoto)}" alt="${esc(u.name)}">`:`<div class="gateGuestAvatar">${esc(idInitials(u.name))}</div>`;
-
   if(!res.confirmed){
     return `
       <div class="gateResultCard pending">
         <div style="font-size:26px;margin-bottom:6px">📋</div>
         <span style="background:#1d4ed8;color:#fff;font-size:10.5px;font-weight:900;letter-spacing:1px;padding:3px 12px;border-radius:999px;text-transform:uppercase">অতিথি ভেরিফিকেশন · PENDING</span>
-        <div style="margin-top:12px">
-          ${photo}
-          <h3 style="font-size:22px;margin:0;color:#fff;font-weight:900">${esc(u.name)}</h3>
-          <div style="display:flex;justify-content:center;align-items:center;gap:8px;margin-top:6px;flex-wrap:wrap">
-            <span style="background:#1e3a8a;border:1px solid #3b82f6;color:#93c5fd;font-size:11px;font-weight:800;padding:3px 9px;border-radius:6px">SSC Batch ${esc(u.sscBatch||'—')}</span>
-            <span style="background:#022c22;border:1px solid #34d399;color:#6ee7b7;font-size:12px;font-weight:900;padding:3px 10px;border-radius:6px">👥 মোট ${count} জন (${sub>0?`১ মূল + ${sub} সাব`:'একক'})</span>
-          </div>
-        </div>
-        <div style="background:rgba(0,0,0,0.35);border-radius:10px;padding:8px 12px;margin-top:12px;font-size:11.5px;display:flex;justify-content:space-between;color:#cbd5e1">
-          <span>Guest #${String(u.serial).padStart(2,'0')}</span>
-          <span>${esc(u.guestType||'Individual')}</span>
-          <code>${esc(u.code)}</code>
-        </div>
+        ${renderScanGuestDetails(u)}
         <button type="button" class="gateConfirmBtn" onclick="confirmGateCheckIn('${u.guestId}')">
           <span style="font-size:18px">✓</span> <span>গেস্ট চেক ইন (Confirm Check-In)</span>
         </button>
@@ -1252,18 +1810,10 @@ function gateResultHTML(){
     <div class="gateResultCard ok">
       <div style="font-size:26px;margin-bottom:6px">✓</div>
       <span style="background:#059669;color:#fff;font-size:11px;font-weight:900;letter-spacing:1px;padding:4px 12px;border-radius:999px;text-transform:uppercase">✓ চেক ইন সম্পন্ন · ACCESS GRANTED</span>
-      <div style="margin-top:12px">
-        ${photo}
-        <h3 style="font-size:22px;margin:0;color:#fff;font-weight:900">${esc(u.name)}</h3>
-        <div style="display:flex;justify-content:center;align-items:center;gap:8px;margin-top:6px;flex-wrap:wrap">
-          <span style="background:#065f46;border:1px solid #10b981;color:#a7f3d0;font-size:11px;font-weight:800;padding:3px 9px;border-radius:6px">SSC Batch ${esc(u.sscBatch||'—')}</span>
-          <span style="background:#022c22;border:1px solid #34d399;color:#6ee7b7;font-size:12px;font-weight:900;padding:3px 10px;border-radius:6px">👥 মোট ${count} জন (${sub>0?`১ মূল + ${sub} সাব`:'একক'})</span>
-        </div>
-      </div>
-      <div style="background:rgba(0,0,0,0.3);border-radius:10px;padding:8px 12px;margin-top:12px;font-size:11.5px;display:flex;justify-content:space-between;color:#a7f3d0">
-        <span>Guest #${String(u.serial).padStart(2,'0')}</span>
-        <span>${formatBDTime(u.checkedAt||Date.now())}</span>
-        <code>${esc(u.code)}</code>
+      ${renderScanGuestDetails(u)}
+      <div style="background:rgba(0,0,0,0.3);border-radius:9px;padding:6px 12px;margin-top:8px;font-size:11px;color:#a7f3d0;display:flex;justify-content:space-between">
+        <span>চেক-ইন সময়: <b>${formatBDTime(u.checkedAt||Date.now())}</b></span>
+        <span>স্ক্যানার: <b>${esc(u.scanner||'Gate')}</b></span>
       </div>
       <button type="button" class="secondary" style="margin-top:12px;font-size:11.5px;padding:7px 16px;background:rgba(255,255,255,0.12);border:1px solid rgba(255,255,255,0.25);color:#fff;border-radius:8px;cursor:pointer" onclick="gateScanResult=null;updateGateResult()">পরবর্তী স্ক্যান / Next Scan ➔</button>
     </div>
@@ -1544,6 +2094,459 @@ async function scanGateImage(input){
   input.value = '';
 }
 
+function stopTShirtScanner(){
+  try{
+    if(tshirtScanner){
+      tshirtScanner.stop().then(()=>tshirtScanner.clear()).catch(()=>{});
+      tshirtScanner=null;
+    }
+  }catch(e){}
+}
+
+function toggleTShirtSound(){
+  tshirtSoundEnabled=!tshirtSoundEnabled;
+  const btn=document.getElementById('tshirtSoundToggleBtn');
+  if(btn) btn.textContent=tshirtSoundEnabled?'🔊 Sound ON':'🔇 Sound OFF';
+  toast(`T-Shirt Scanner sound: ${tshirtSoundEnabled?'ON':'OFF'}`);
+}
+
+function renderTShirtRecentListHTML(recent){
+  if(!recent||!recent.length){
+    return `<div style="text-align:center;padding:24px;color:#64748b;font-size:12px">No T-shirts handed over yet. Scan a QR code to begin.</div>`;
+  }
+  return recent.map(u=>{
+    const sz=getGuestTShirtSize(u);
+    return `
+      <div class="gateRecentItem" style="border-left:3px solid #8b5cf6">
+        <div>
+          <b style="color:#fff;display:block">${esc(u.name)}</b>
+          <small style="color:#94a3b8">#${String(u.serial).padStart(2,'0')} · ${esc(u.entryType||'General')}</small>
+        </div>
+        <div style="text-align:right">
+          <span style="background:#1e1b4b;border:1px solid #4338ca;color:#c7d2fe;padding:2px 8px;border-radius:6px;font-size:11px;font-weight:900;display:inline-block">🎽 ${esc(sz)}</span>
+          <small style="display:block;color:#818cf8;margin-top:2px">${formatBDTime(u.tShirtClaimedAt)}</small>
+        </div>
+      </div>
+    `;
+  }).join('');
+}
+
+function refreshTShirtRecentList(){
+  const container=document.getElementById('tshirtRecentListContainer');
+  if(container){
+    const claimedList=users.filter(u=>u.tShirtClaimed);
+    const recentClaimed=[...claimedList].sort((a,b)=>new Date(b.tShirtClaimedAt||0)-new Date(a.tShirtClaimedAt||0)).slice(0,8);
+    container.innerHTML=renderTShirtRecentListHTML(recentClaimed);
+  }
+}
+
+function updateTShirtResult(){
+  const b=document.getElementById('tshirtResultBox');
+  if(b) b.innerHTML=tshirtResultHTML();
+}
+
+function tshirtProcessScan(raw){
+  const u=resolveGuest(raw);
+  if(!u){
+    tshirtScanResult={ok:false,message:'QR Code Not Found',detail:'এই কিউআর কোডটি কোনো নিবন্ধিত অতিথির পাস নয়।'};
+    updateTShirtResult();
+    if(tshirtSoundEnabled) playScanSound('invalid');
+    toast('QR not recognized / গেস্ট পাওয়া যায়নি','bad');
+    return false;
+  }
+  const tShirt=getGuestTShirtSize(u);
+  if(u.tShirtClaimed){
+    tshirtScanResult={
+      ok:false,
+      duplicate:true,
+      user:u,
+      message:'ALREADY CLAIMED / পূর্বে নেওয়া হয়েছে',
+      detail:`এই গেস্ট ইতিমধ্যে টি-শার্ট গ্রহণ করেছেন (${formatBDTime(u.tShirtClaimedAt)} - ${esc(u.tShirtClaimedBy||'Counter')})`
+    };
+    updateTShirtResult();
+    if(tshirtSoundEnabled) playScanSound('duplicate');
+    toast(`⚠️ ${u.name} — ইতিমধ্যে টি-শার্ট নিয়েছেন!`,'bad');
+    return false;
+  }
+
+  tshirtScanResult={
+    ok:true,
+    user:u,
+    confirmed:false,
+    message:'T-Shirt Ready for Handover',
+    detail:`সাইজ: ${tShirt} · গেস্ট: ${u.name}`
+  };
+  updateTShirtResult();
+  if(tshirtSoundEnabled) playScanSound('valid');
+  toast(`🎽 ${u.name} (${tShirt}) — টি-শার্ট হস্তান্তর করুন`);
+  return true;
+}
+
+function confirmTShirtClaim(id){
+  const u=users.find(x=>x.guestId===id);
+  if(!u) return;
+  const scannerName=(currentVolunteer?currentVolunteer.name:(isAdmin?'Admin':'T-Shirt Desk'));
+  claimGuestTShirt(id,scannerName);
+  tshirtScanResult={
+    ok:true,
+    confirmed:true,
+    user:u,
+    message:'টি-শার্ট বিতরণ সম্পন্ন!',
+    detail:`${u.name} (${getGuestTShirtSize(u)}) টি-শার্ট গ্রহণ করেছেন।`
+  };
+  updateTShirtResult();
+  refreshTShirtRecentList();
+  if(tshirtSoundEnabled) playScanSound('valid');
+  toast(`✓ "${u.name}"-কে টি-শার্ট দেওয়া হয়েছে!`);
+}
+
+function revertTShirtClaim(id){
+  unclaimGuestTShirt(id);
+  const u=users.find(x=>x.guestId===id);
+  tshirtScanResult={
+    ok:true,
+    user:u,
+    confirmed:false,
+    message:'Claim Reverted / রিসেট করা হয়েছে',
+    detail:'এখন এই গেস্টকে আবার টি-শার্ট প্রদান করা যাবে।'
+  };
+  updateTShirtResult();
+  refreshTShirtRecentList();
+  toast('টি-শার্ট বিতরণ স্ট্যাটাস রিসেট করা হয়েছে');
+}
+
+function tshirtResultHTML(){
+  if(!tshirtScanResult){
+    return `
+      <div style="background:#0a1224;border:1px dashed #233554;border-radius:14px;padding:32px 18px;text-align:center">
+        <div style="font-size:46px;margin-bottom:12px;opacity:0.9">🎽</div>
+        <h3 style="color:#f1f5f9;margin:0 0 6px;font-size:17px">Ready to Scan T-Shirt</h3>
+        <p style="color:#94a3b8;font-size:13px;margin:0;line-height:1.5">ক্যামেরার সামনে অতিথির আইডি কার্ডের কিউআর কোডটি ধরুন।</p>
+        <div style="margin-top:16px;background:#131d36;border:1px dashed #273859;padding:10px 14px;border-radius:10px;font-size:11.5px;color:#a5b4fc">
+          💡 স্ক্যান করার সাথে সাথে স্ক্রিনে বড় আকারে সাইজ ফুটে উঠবে এবং ডুপ্লিকেট ডেলিভারি রোধ হবে।
+        </div>
+      </div>
+    `;
+  }
+
+  const u=tshirtScanResult.user;
+  if(!tshirtScanResult.ok && !tshirtScanResult.duplicate){
+    return `
+      <div class="gateResultCard bad">
+        <div style="font-size:32px;margin-bottom:6px">❌</div>
+        <span style="background:#b91c1c;color:#fff;font-size:10.5px;font-weight:900;letter-spacing:1px;padding:3px 10px;border-radius:6px;text-transform:uppercase">QR NOT FOUND / অনিবন্ধিত</span>
+        <h3 style="font-size:18px;margin:8px 0 4px;color:#fff">${esc(tshirtScanResult.message)}</h3>
+        <p style="font-size:12px;color:#fca5a5;margin:0">${esc(tshirtScanResult.detail)}</p>
+        <button type="button" class="secondary" style="margin-top:14px;font-size:11px;padding:6px 14px" onclick="tshirtScanResult=null;updateTShirtResult()">Dismiss / পরর্বতী স্ক্যান</button>
+      </div>
+    `;
+  }
+
+  const tShirt=getGuestTShirtSize(u);
+
+  // ALREADY CLAIMED WARNING
+  if(tshirtScanResult.duplicate){
+    return `
+      <div style="background:#200f14;border:2px solid #ef4444;border-radius:14px;padding:18px;text-align:center">
+        <div style="width:52px;height:52px;border-radius:50%;background:#ef4444;color:#fff;display:grid;place-items:center;font-size:26px;margin:0 auto 10px;box-shadow:0 0 20px rgba(239,68,68,0.5)">⚠️</div>
+        <span style="background:#dc2626;color:#fff;font-size:11px;font-weight:900;letter-spacing:1px;padding:4px 14px;border-radius:999px;text-transform:uppercase">ALREADY CLAIMED · পূর্বে নেওয়া হয়েছে</span>
+        <h2 style="color:#fca5a5;font-size:20px;margin:10px 0 4px">${esc(u.name)}</h2>
+        <div style="font-size:13px;color:#cbd5e1;margin-bottom:12px">Guest #${String(u.serial).padStart(2,'0')} · ID: <code style="color:#fca5a5">${esc(u.guestId)}</code></div>
+
+        <div style="background:#2d1319;border:1px solid #7f1d1d;border-radius:10px;padding:12px;margin-bottom:14px;text-align:left">
+          <div style="display:flex;justify-content:space-between;margin-bottom:6px;font-size:12px">
+            <span style="color:#f87171">হস্তান্তর সময়:</span>
+            <b style="color:#fff">${formatBDDateTime(u.tShirtClaimedAt)}</b>
+          </div>
+          <div style="display:flex;justify-content:space-between;margin-bottom:6px;font-size:12px">
+            <span style="color:#f87171">বিতরণকারী:</span>
+            <b style="color:#fff">${esc(u.tShirtClaimedBy||'Counter Desk')}</b>
+          </div>
+          <div style="display:flex;justify-content:space-between;font-size:12px">
+            <span style="color:#f87171">টি-শার্ট সাইজ:</span>
+            <b style="color:#fde047;font-size:15px">🎽 ${esc(tShirt)}</b>
+          </div>
+        </div>
+
+        <div style="color:#f87171;font-size:12.5px;font-weight:700;margin-bottom:14px">
+          🚫 এই গেস্টকে দ্বিতীয়বার টি-শার্ট দেওয়া যাবে না।
+        </div>
+
+        <div style="display:flex;gap:8px;justify-content:center;flex-wrap:wrap">
+          <button type="button" class="secondary" style="padding:8px 16px;background:#371c23;border-color:#7f1d1d;color:#fca5a5" onclick="revertTShirtClaim('${u.guestId}')">↩ Revert Claim (ভুল হলে বাতিল)</button>
+          <button type="button" class="primary" style="padding:8px 20px;background:#475569" onclick="tshirtScanResult=null;updateTShirtResult()">পরবর্তী স্ক্যান / Next ➔</button>
+        </div>
+      </div>
+    `;
+  }
+
+  // READY TO DELIVER OR JUST CONFIRMED
+  const isConfirmed=tshirtScanResult.confirmed;
+  return `
+    <div style="background:${isConfirmed?'#072418':'#0c1a38'};border:2px solid ${isConfirmed?'#10b981':'#6366f1'};border-radius:16px;padding:18px;text-align:center">
+      <div style="display:inline-block;background:${isConfirmed?'#059669':'#4f46e5'};color:#fff;font-size:11px;font-weight:900;letter-spacing:1px;padding:4px 14px;border-radius:999px;text-transform:uppercase;margin-bottom:10px">
+        ${isConfirmed?'✓ টি-শার্ট বিতরণ সম্পন্ন':'🎽 টি-শার্ট হ্যান্ডওভার প্রস্তুত'}
+      </div>
+
+      <!-- Massive glowing size box -->
+      <div style="background:linear-gradient(135deg,rgba(99,102,241,0.25),rgba(139,92,246,0.35));border:2px solid #818cf8;border-radius:14px;padding:12px;margin:8px 0 14px;box-shadow:0 0 25px rgba(99,102,241,0.2)">
+        <span style="font-size:11px;font-weight:800;color:#c7d2fe;letter-spacing:1px;text-transform:uppercase;display:block">T-SHIRT SIZE TO GIVE</span>
+        <b style="font-size:40px;font-weight:900;color:#ffffff;line-height:1.1;letter-spacing:1px;display:block;margin-top:2px">🎽 ${esc(tShirt)}</b>
+      </div>
+
+      <!-- Guest Info summary -->
+      <div style="display:flex;align-items:center;gap:12px;background:rgba(0,0,0,0.3);border-radius:12px;padding:10px 14px;margin-bottom:12px;text-align:left">
+        ${u.profilePhoto?`<img src="${esc(u.profilePhoto)}" style="width:48px;height:48px;border-radius:10px;object-fit:cover;border:1.5px solid #818cf8;flex-shrink:0" alt="${esc(u.name)}">`:`<div style="width:48px;height:48px;border-radius:10px;background:#1e293b;border:1.5px solid #818cf8;color:#818cf8;display:grid;place-items:center;font-weight:900;font-size:18px;flex-shrink:0">${esc(idInitials(u.name))}</div>`}
+        <div style="overflow:hidden;flex:1">
+          <b style="font-size:17px;color:#fff;display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${esc(u.name)}</b>
+          <div style="font-size:11.5px;color:#94a3b8;margin-top:2px">
+            <span>Guest #${String(u.serial).padStart(2,'0')}</span> · <span>${esc(u.entryType||'General')}</span> · <code style="color:#a5b4fc">${esc(u.code)}</code>
+          </div>
+        </div>
+      </div>
+
+      <!-- Gate check-in status badge -->
+      <div style="display:flex;justify-content:space-between;align-items:center;background:rgba(0,0,0,0.2);padding:6px 12px;border-radius:8px;margin-bottom:14px;font-size:11.5px">
+        <span style="color:#94a3b8">Gate Attendance:</span>
+        <span style="color:${u.checkedIn?'#34d399':'#fbbf24'};font-weight:800">${u.checkedIn?'✓ Verified at Gate':'⚠️ Gate Entry Pending'}</span>
+      </div>
+
+      ${!isConfirmed?`
+        <button type="button" class="primary" style="width:100%;padding:14px;font-size:15px;font-weight:900;background:linear-gradient(135deg,#059669,#10b981);border:none;border-radius:12px;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;box-shadow:0 6px 20px rgba(16,185,129,0.35)" onclick="confirmTShirtClaim('${u.guestId}')">
+          <span style="font-size:20px">✓</span> <span>টি-শার্ট হস্তান্তর নিশ্চিত করুন (Confirm Delivery)</span>
+        </button>
+        <button type="button" class="ghost" style="margin-top:8px;font-size:12px;color:#94a3b8;padding:6px" onclick="tshirtScanResult=null;updateTShirtResult()">✕ বাতিল / Dismiss</button>
+      `:`
+        <div style="background:#064e3b;border:1px solid #059669;color:#6ee7b7;padding:8px 12px;border-radius:8px;font-size:12.5px;font-weight:800;margin-bottom:10px">
+          ✓ হস্তান্তর সময়: ${formatBDTime(u.tShirtClaimedAt)} (${esc(u.tShirtClaimedBy||'Scanner')})
+        </div>
+        <button type="button" class="secondary" style="width:100%;padding:11px;font-size:13.5px;font-weight:800" onclick="tshirtScanResult=null;updateTShirtResult()">পরবর্তী স্ক্যান / Next Guest ➔</button>
+      `}
+    </div>
+  `;
+}
+
+function tshirtScannerHTML(isAdminMode=false){
+  const v=currentVolunteer||{name:isAdminMode?'Admin':'Volunteer',gate:'T-Shirt Counter'};
+  const claimedList=users.filter(u=>u.tShirtClaimed);
+  const recentClaimed=[...claimedList].sort((a,b)=>new Date(b.tShirtClaimedAt||0)-new Date(a.tShirtClaimedAt||0)).slice(0,8);
+  const stats=getTShirtStats();
+
+  return `
+  <div class="gateContainer">
+    <header class="gateHeader" style="background:#090d1a;border-bottom:1px solid #1e2540">
+      <div class="gateHeaderBrand">
+        <div class="mark" style="background:linear-gradient(135deg,#7c3aed,#6366f1)">🎽</div>
+        <div class="gateHeaderTitle">
+          <b>${esc(settings.eventName)} · T-Shirt Counter</b>
+          <small>${esc(settings.instituteName||defaults.instituteName)}</small>
+        </div>
+      </div>
+      <div class="gateHeaderActions">
+        ${!isAdminMode?`
+          <div class="volunteerNavSwitcher">
+            <button type="button" onclick="switchVolunteerTab('gate')">🚪 Gate Entry</button>
+            <button type="button" class="active" onclick="switchVolunteerTab('tshirt')">🎽 T-Shirt</button>
+          </div>
+          <span class="gateVolunteerBadge" style="background:#1e153b;border-color:#6366f1;color:#c7d2fe">🟢 ${esc(v.name)} · <b>T-Shirt Desk</b></span>
+        `:`
+          <button type="button" class="secondary" style="padding:6px 14px;font-size:12px" onclick="navigate('tshirt')">← Back to Dashboard</button>
+          <span class="adminBadge" style="background:#1e1b4b;border-color:#6366f1;color:#a5b4fc">🔐 ADMIN SCANNER</span>
+        `}
+        <span class="gateStatsPill" style="background:#1e1b4b;border-color:#4338ca;color:#c7d2fe">🎽 Handed: <b>${stats.claimed}</b> / ${stats.total}</span>
+        <button type="button" id="tshirtSoundToggleBtn" class="gateSoundBtn" onclick="toggleTShirtSound()">${tshirtSoundEnabled?'🔊 Sound ON':'🔇 Sound OFF'}</button>
+        ${!isAdminMode?`<button type="button" class="gateExitBtn" onclick="logoutVolunteer()">🚪 Exit / Logout</button>`:''}
+      </div>
+    </header>
+
+    <main class="gateMain">
+      <div class="gateCameraCard" style="border-color:#2a2356">
+        <div style="display:flex;justify-content:space-between;align-items:center">
+          <div>
+            <span class="eyebrow" style="color:#a78bfa">CAMERA SCANNER</span>
+            <h2 style="font-size:18px;margin-top:2px">Point Camera at Guest QR Code</h2>
+          </div>
+          <span style="background:#2e1065;color:#c4b5fd;font-size:10.5px;font-weight:900;padding:3px 10px;border-radius:999px;border:1px solid #7c3aed">● T-SHIRT BOOTH</span>
+        </div>
+
+        <div class="gateCameraBox" style="margin-top:12px;border-color:#4338ca">
+          <div id="tshirtReader" style="width:100%;height:100%"></div>
+          <div class="gateScanFrame">
+            <div class="gateLaserLine" style="background:linear-gradient(90deg,transparent,#8b5cf6,#a78bfa,#8b5cf6,transparent);box-shadow:0 0 15px #8b5cf6"></div>
+          </div>
+        </div>
+
+        <div style="display:flex;gap:8px;margin-top:10px;margin-bottom:14px;flex-wrap:wrap">
+          <button type="button" class="gateSoundBtn" style="flex:1;min-width:130px;justify-content:center;background:#151c36;border:1.5px solid #818cf8;color:#a5b4fc;font-weight:900" onclick="switchTShirtCamera()">🔄 ক্যামেরা ঘোরান (Flip Camera)</button>
+          <button type="button" class="gateSoundBtn" style="flex:1;min-width:130px;justify-content:center" onclick="document.getElementById('tshirtGalleryInput').click()">📁 ছবি থেকে স্ক্যান (Gallery)</button>
+          <input type="file" id="tshirtGalleryInput" accept="image/*" style="display:none" onchange="scanTShirtImage(this)">
+        </div>
+
+        <div>
+          <label style="font-size:11px;color:#8fa0be;font-weight:700;display:block;margin-bottom:6px">Manual Entry Code or Guest ID (ম্যানুয়াল কোড বা আইডি):</label>
+          <div class="gateManualWrap">
+            <input id="tshirtManualCode" placeholder="যেমন: EVT-0003-18D7 বা EP-9952724336" onkeydown="if(event.key==='Enter')tshirtManualScan()">
+            <button type="button" style="background:linear-gradient(135deg,#7c3aed,#6366f1)" onclick="tshirtManualScan()">Verify T-Shirt</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="gateCardRight">
+        <div class="gateResultBox" id="tshirtResultBox">
+          ${tshirtResultHTML()}
+        </div>
+
+        <div class="gateRecentCard">
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px">
+            <b style="font-size:13px;color:#cbd5e1">Recent T-Shirt Distributions</b>
+            <span style="font-size:11px;color:#a78bfa;font-weight:800">${recentClaimed.length} recent</span>
+          </div>
+          <div class="gateRecentList" id="tshirtRecentListContainer">
+            ${renderTShirtRecentListHTML(recentClaimed)}
+          </div>
+        </div>
+      </div>
+    </main>
+  </div>
+  `;
+}
+
+function tshirtManualScan(){
+  const input=document.getElementById('tshirtManualCode');
+  const val=(input?.value||'').trim();
+  if(!val){toast('কোড বা আইডি টাইপ করুন','bad');return}
+  tshirtProcessScan(val);
+  if(input) input.value='';
+}
+
+async function startTShirtScanner(){
+  if(!window.Html5Qrcode) return;
+  const el=document.getElementById('tshirtReader');
+  if(!el) return;
+  stopTShirtScanner();
+  try{
+    tshirtScanner=new Html5Qrcode('tshirtReader');
+    const onScanSuccess=(decoded)=>{
+      if(decoded&&decoded!==tshirtLastScan){
+        tshirtLastScan=decoded;
+        tshirtProcessScan(decoded);
+        setTimeout(()=>tshirtLastScan='',2200);
+      }
+    };
+    const scanConfig={
+      fps:15,
+      qrbox:(w,h)=>{
+        const edge=Math.max(180,Math.floor(Math.min(w,h)*0.72));
+        return {width:edge,height:edge};
+      }
+    };
+
+    if(!availableCameras.length){
+      try{ availableCameras=await Html5Qrcode.getCameras(); }catch(e){ availableCameras=[]; }
+    }
+
+    const hasLabels=availableCameras.some(c=>!!(c.label&&c.label.trim()));
+    if(availableCameras.length>0&&hasLabels){
+      if(currentCameraIndex<0||currentCameraIndex>=availableCameras.length){
+        currentCameraIndex=findBackCameraIndex(availableCameras);
+      }
+      const cam=availableCameras[currentCameraIndex];
+      await tshirtScanner.start(cam.id,scanConfig,onScanSuccess,()=>{});
+    }else{
+      await tshirtScanner.start({facingMode:tshirtFacingMode||"environment"},scanConfig,onScanSuccess,()=>{});
+      try{
+        const refreshed=await Html5Qrcode.getCameras();
+        if(refreshed&&refreshed.length){
+          availableCameras=refreshed;
+          if(currentCameraIndex<0) currentCameraIndex=findBackCameraIndex(availableCameras);
+        }
+      }catch(e){}
+    }
+  }catch(err){
+    console.warn('T-Shirt primary camera start failed, fallback to environment facingMode...',err);
+    try{
+      const scanConfig={fps:15,qrbox:{width:220,height:220}};
+      await tshirtScanner.start({facingMode:"environment"},scanConfig,(decoded)=>{
+        if(decoded&&decoded!==tshirtLastScan){
+          tshirtLastScan=decoded;
+          tshirtProcessScan(decoded);
+          setTimeout(()=>tshirtLastScan='',2200);
+        }
+      },()=>{});
+    }catch(err2){
+      try{
+        const scanConfig={fps:15,qrbox:{width:220,height:220}};
+        await tshirtScanner.start({facingMode:"user"},scanConfig,(decoded)=>{
+          if(decoded&&decoded!==tshirtLastScan){
+            tshirtLastScan=decoded;
+            tshirtProcessScan(decoded);
+            setTimeout(()=>tshirtLastScan='',2200);
+          }
+        },()=>{});
+      }catch(err3){
+        console.error('All T-Shirt camera attempts failed:',err3);
+      }
+    }
+  }
+}
+
+async function switchTShirtCamera(){
+  if(!window.Html5Qrcode) return;
+  try{
+    if(!availableCameras.length){
+      try{ availableCameras=await Html5Qrcode.getCameras(); }catch(e){ availableCameras=[]; }
+    }
+
+    if(availableCameras&&availableCameras.length>1){
+      currentCameraIndex=(currentCameraIndex+1)%availableCameras.length;
+      const cam=availableCameras[currentCameraIndex];
+      const lbl=(cam.label||'').toLowerCase();
+      const isFront=lbl.includes('front')||lbl.includes('selfie')||lbl.includes('user');
+      const isBack=lbl.includes('back')||lbl.includes('rear')||lbl.includes('environment');
+      let camDesc=cam.label||('Camera '+(currentCameraIndex+1));
+      if(isFront) camDesc=`🤳 সামনের ক্যামেরা (${camDesc})`;
+      else if(isBack) camDesc=`📷 পেছনের ক্যামেরা (${camDesc})`;
+      toast(camDesc);
+      startTShirtScanner();
+    }else{
+      tshirtFacingMode=(tshirtFacingMode==='environment'?'user':'environment');
+      toast(tshirtFacingMode==='environment'?'📷 পেছনের ক্যামেরা চালু হচ্ছে...':'🤳 সামনের ক্যামেরা চালু হচ্ছে...');
+      stopTShirtScanner();
+      setTimeout(startTShirtScanner,120);
+    }
+  }catch(e){
+    toast('ক্যামেরা পরিবর্তন করা যায়নি: '+(e.message||''),'bad');
+  }
+}
+
+async function scanTShirtImage(input){
+  const file=input?.files?.[0];
+  if(!file) return;
+  toast('ছবি থেকে কিউআর রিড করা হচ্ছে...','info');
+  try{
+    const tempScanner=new Html5Qrcode('tshirtReader');
+    const decoded=await tempScanner.scanFile(file,true);
+    if(decoded){
+      tshirtProcessScan(decoded);
+    }else{
+      toast('ছবিতে কোনো কিউআর কোড পাওয়া যায়নি','bad');
+    }
+  }catch(err){
+    try{
+      if(tshirtScanner){
+        const decoded=await tshirtScanner.scanFile(file,true);
+        if(decoded) tshirtProcessScan(decoded);
+        else toast('ছবিতে কিউআর পাওয়া যায়নি','bad');
+      }else{
+        toast('কিউআর রিড করা যায়নি: '+(err.message||'Invalid image'),'bad');
+      }
+    }catch(e2){
+      toast('কিউআর রিড করা যায়নি: '+(e2.message||'Invalid image'),'bad');
+    }
+  }
+  input.value='';
+}
+
 function stopGateScanner(){
   try{
     if(gateScanner){
@@ -1556,6 +2559,13 @@ function stopGateScanner(){
 function render(){
  if(isGateMode && currentVolunteer){
   stopScanner();
+  if(activeVolunteerTab === 'tshirt'){
+    stopGateScanner();
+    document.getElementById('root').innerHTML=tshirtScannerHTML(false);
+    setTimeout(startTShirtScanner,150);
+    return;
+  }
+  stopTShirtScanner();
   document.getElementById('root').innerHTML=gateScannerHTML();
   setTimeout(startGateScanner,150);
   return;
@@ -1563,18 +2573,27 @@ function render(){
  if(!isAdmin){
   stopScanner();
   stopGateScanner();
+  stopTShirtScanner();
   document.getElementById('root').innerHTML=publicLandingHTML();
   return;
  }
  stopGateScanner();
+ stopTShirtScanner();
+ if(tab === 'tshirt_scanner'){
+  stopScanner();
+  document.getElementById('root').innerHTML=tshirtScannerHTML(true);
+  setTimeout(startTShirtScanner,150);
+  return;
+ }
  const h=getHeadcounts();
- const title=tab==='dashboard'?'Dashboard':tab==='guests'?'Guest Directory':tab==='volunteers'?'Scan Volunteers':tab==='scanner'?'QR Check-in Scanner':'Event Settings';
-    document.getElementById('root').innerHTML=`<div class="app"><aside class="sidebar"><div class="brand"><div class="mark">EP</div><div><b>EventPass</b><small>ADMIN CONTROL</small></div></div><nav>${[['dashboard','▦','Dashboard'],['guests','◉','Guests'],['volunteers','👥','Volunteers'],['scanner','⌁','QR Scanner'],['settings','⚙','Event Settings']].map(x=>`<button class="${tab===x[0]?'active':''}" onclick="navigate('${x[0]}')"><span>${x[1]}</span>${x[2]}</button>`).join('')}</nav><div class="sideBottom" style="display:flex;flex-direction:column;gap:12px"><button class="secondary logoutBtn" style="width:100%;display:flex;align-items:center;justify-content:center;gap:8px" onclick="logoutAdmin()"><span>🔓</span> Logout Admin</button><div class="secure">● Admin Session<small>Full control active. Guest data in this browser.</small></div></div></aside><main class="main"><header><div><span class="eyebrow">EVENT CONTROL CENTER</span><h1>${title}</h1></div><div class="headerActions"><div class="cloudStatusContainer"></div><span class="adminBadge">🔐 ADMIN</span><div class="eventChip"><span>EVENT</span><b>${esc(settings.eventName)}</b></div><button class="secondary" onclick="openCloudModal()" title="ক্লাউড ডাটাবেজ সেটিংস">☁️ Cloud Sync</button><button class="primary" onclick="openAdd()">＋ Add Guest</button><button class="secondary logoutBtn" onclick="logoutAdmin()" title="Logout Admin">🔓 Logout</button></div></header>${tab==='dashboard'?dashboardHTML(h):tab==='guests'?guestsHTML(h):tab==='volunteers'?volunteersHTML():tab==='scanner'?scannerHTML():settingsHTML()}</main></div>`;
+ const title=tab==='dashboard'?'Dashboard':tab==='guests'?'Guest Directory':tab==='tshirt'?'T-Shirt Distribution Hub':tab==='volunteers'?'Scan Volunteers':tab==='scanner'?'QR Check-in Scanner':'Event Settings';
+    document.getElementById('root').innerHTML=`<div class="app"><aside class="sidebar"><div class="brand"><div class="mark">EP</div><div><b>EventPass</b><small>ADMIN CONTROL</small></div></div><nav>${[['dashboard','▦','Dashboard'],['guests','◉','Guests'],['tshirt','🎽','T-Shirt Hub'],['volunteers','👥','Volunteers'],['scanner','⌁','QR Scanner'],['settings','⚙','Event Settings']].map(x=>`<button class="${tab===x[0]?'active':''}" onclick="navigate('${x[0]}')"><span>${x[1]}</span>${x[2]}</button>`).join('')}</nav><div class="sideBottom" style="display:flex;flex-direction:column;gap:12px"><button class="secondary logoutBtn" style="width:100%;display:flex;align-items:center;justify-content:center;gap:8px" onclick="logoutAdmin()"><span>🔓</span> Logout Admin</button><div class="secure">● Admin Session<small>Full control active. Guest data in this browser.</small></div></div></aside><main class="main"><header><div><span class="eyebrow">EVENT CONTROL CENTER</span><h1>${title}</h1></div><div class="headerActions"><div class="cloudStatusContainer"></div><span class="adminBadge">🔐 ADMIN</span><div class="eventChip"><span>EVENT</span><b>${esc(settings.eventName)}</b></div><button class="secondary" onclick="openCloudModal()" title="ক্লাউড ডাটাবেজ সেটিংস">☁️ Cloud Sync</button><button class="primary" onclick="openAdd()">＋ Add Guest</button><button class="secondary logoutBtn" onclick="logoutAdmin()" title="Logout Admin">🔓 Logout</button></div></header>${tab==='dashboard'?dashboardHTML(h):tab==='guests'?guestsHTML(h):tab==='tshirt'?tshirtHTML(h):tab==='volunteers'?volunteersHTML():tab==='scanner'?scannerHTML():settingsHTML()}</main></div>`;
     if(tab==='scanner')setTimeout(startScanner,150);
 }
 function dashboardHTML(h){
  if(!h)h=getHeadcounts();
  const recent=[...users].sort((a,b)=>new Date(b.createdAt)-new Date(a.createdAt)).slice(0,6);
+ const tStats=getTShirtStats();
  const cloudBannerHTML=cloudSyncStatus==='connected'?`
    <div id="dashboardCloudBanner" class="cloudBanner ok" style="margin-bottom:16px;display:flex;justify-content:space-between;align-items:center;cursor:pointer" onclick="openCloudModal()">
      <div style="display:flex;align-items:center;gap:10px">
@@ -1592,31 +2611,263 @@ function dashboardHTML(h){
      <button class="primary" style="padding:6px 14px;font-size:11px" onclick="event.stopPropagation();openCloudModal()">⚡ ক্লাউড কানেক্ট করুন</button>
    </div>
  `;
- return `<section class="content">${cloudBannerHTML}<div class="stats"><div class="stat"><div class="statIcon">◉</div><div><span>Total Registrations</span><strong>${h.totalProfiles} <small style="font-size:13px;color:#8996ad;font-weight:600">Profiles</small></strong><div class="statSub">সাব গেস্ট: <b>${h.totalSub}</b> জন · মোট: <b>${h.totalPersons}</b> জন</div></div></div><div class="stat"><div class="statIcon green">✓</div><div><span>Checked In</span><strong>${h.checkedProfiles} <small style="font-size:13px;color:#52e2ab;font-weight:600">Profiles</small></strong><div class="statSub">উপস্থিত: <b>${h.checkedPersons}</b> জন (সাব: <b>${h.checkedSub}</b>)</div></div></div><div class="stat"><div class="statIcon yellow">◷</div><div><span>Pending Entry</span><strong>${h.pendingProfiles} <small style="font-size:13px;color:#f1c95d;font-weight:600">Profiles</small></strong><div class="statSub">বাকি: <b>${h.pendingPersons}</b> জন (সাব: <b>${h.pendingSub}</b>)</div></div></div><div class="stat"><div class="statIcon">↗</div><div><span>Check-in Rate</span><strong>${h.rate}%</strong><div class="statSub">উপস্থিত: <b>${h.checkedPersons}</b> / ${h.totalPersons} জন</div></div></div></div><div class="heroGrid"><div class="panel scannerCard"><div class="panelTop"><div><span class="eyebrow">FAST CHECK-IN</span><h2>Scan a guest QR code</h2><p>One QR code = one successful entry. Automatic headcount &amp; sub-guest calculation.</p></div><div class="scanIcon">⌁</div></div><button class="primary big" onclick="navigate('scanner')">Open Scanner <span>→</span></button></div><div class="panel eventCard"><span class="eyebrow">EVENT OVERVIEW</span><h2>${esc(settings.eventName)}</h2><div class="eventMeta"><div><small>Date & Time</small><b>${fmtDateTime(settings.eventDate,settings.eventTime)}</b></div><div><small>Guests &amp; Headcount</small><b>${h.totalProfiles} Profiles (${h.totalPersons} Persons)</b></div><div><small>Venue</small><b>${esc(settings.venue)}</b></div></div></div></div><div class="panel tablePanel"><div class="panelHead"><div><h2>Recent guests</h2><p>Registration and check-in activity</p></div><button class="ghost" onclick="navigate('guests')">View all →</button></div>${recent.length?tableHTML(recent,false):emptyHTML('No guests yet')}</div></section>`
+ return `<section class="content">${cloudBannerHTML}<div class="stats"><div class="stat"><div class="statIcon">◉</div><div><span>Total Registrations</span><strong>${h.totalProfiles} <small style="font-size:13px;color:#8996ad;font-weight:600">Profiles</small></strong><div class="statSub">সাব গেস্ট: <b>${h.totalSub}</b> জন · মোট: <b>${h.totalPersons}</b> জন</div></div></div><div class="stat"><div class="statIcon green">✓</div><div><span>Checked In</span><strong>${h.checkedProfiles} <small style="font-size:13px;color:#52e2ab;font-weight:600">Profiles</small></strong><div class="statSub">উপস্থিত: <b>${h.checkedPersons}</b> জন (সাব: <b>${h.checkedSub}</b>)</div></div></div><div class="stat"><div class="statIcon yellow">◷</div><div><span>Pending Entry</span><strong>${h.pendingProfiles} <small style="font-size:13px;color:#f1c95d;font-weight:600">Profiles</small></strong><div class="statSub">বাকি: <b>${h.pendingPersons}</b> জন (সাব: <b>${h.pendingSub}</b>)</div></div></div><div class="stat"><div class="statIcon" style="background:#1e1b4b;color:#a5b4fc">🎽</div><div><span>T-Shirts Handed</span><strong>${tStats.claimed} / ${tStats.total}</strong><div class="statSub">বিতরণ: <b>${tStats.rate}%</b> (বাকি: ${tStats.pending})</div></div></div></div><div class="heroGrid"><div class="panel scannerCard"><div class="panelTop"><div><span class="eyebrow">FAST CHECK-IN</span><h2>Scan a guest QR code</h2><p>One QR code = one successful entry. Automatic headcount &amp; sub-guest calculation.</p></div><div class="scanIcon">⌁</div></div><button class="primary big" onclick="navigate('scanner')">Open Scanner <span>→</span></button></div><div class="panel eventCard"><span class="eyebrow">EVENT OVERVIEW</span><h2>${esc(settings.eventName)}</h2><div class="eventMeta"><div><small>Date & Time</small><b>${fmtDateTime(settings.eventDate,settings.eventTime)}</b></div><div><small>Guests &amp; Headcount</small><b>${h.totalProfiles} Profiles (${h.totalPersons} Persons)</b></div><div><small>T-Shirt Distribution</small><b style="color:#a78bfa">${tStats.claimed} / ${tStats.total} Handed (${tStats.rate}%)</b></div></div></div></div><div class="panel tablePanel"><div class="panelHead"><div><h2>Recent guests</h2><p>Registration and check-in activity</p></div><button class="ghost" onclick="navigate('guests')">View all →</button></div>${recent.length?tableHTML(recent,false):emptyHTML('No guests yet')}</div></section>`
 }
 function guestsHTML(h){
  if(!h)h=getHeadcounts();
- let list=users.filter(u=>guestFilter==='all'||u.checkedIn).filter(u=>[u.name,u.email,u.phone,u.code,u.guestId,u.sscBatch,String(u.serial)].join(' ').toLowerCase().includes(search.toLowerCase())).sort((a,b)=>a.serial-b.serial);
- return `<section class="content"><div class="toolbar"><div class="search"><span>⌕</span><input id="search" value="${esc(search)}" oninput="search=this.value;renderGuestsOnly()" placeholder="Search name, ID, serial, phone or email..."></div><button class="secondary" onclick="exportCSV()">↓ Export CSV</button>${users.length?`<button class="secondary" style="color:#f87171;border-color:#7f1d1d" onclick="openClearAllGuestsModal()">🗑️ Clear All (${users.length})</button>`:''}<button class="primary" onclick="openAdd()">＋ Add Guest</button></div><div class="panel tablePanel"><div class="panelHead guestTabsHead"><div><h2>Guest Directory</h2><p>${guestFilter==='all'?`${h.totalProfiles} profiles (${h.totalPersons} মোট ব্যক্তি, ${h.totalSub} সাব-গেস্ট)`:`${h.checkedProfiles} profiles checked in (${h.checkedPersons} জন উপস্থিত)`}${search?' · filtered':''}</p></div><div class="segmented"><button class="${guestFilter==='all'?'active':''}" onclick="guestFilter='all';renderGuestsOnly()">All Profiles <b>${h.totalProfiles} (${h.totalPersons} জন)</b></button><button class="${guestFilter==='checked'?'active':''}" onclick="guestFilter='checked';renderGuestsOnly()">Checked In <b>${h.checkedProfiles} (${h.checkedPersons} জন)</b></button></div></div><div id="guestTableArea">${list.length?tableHTML(list,true):emptyHTML(guestFilter==='checked'?'No guests checked in yet':'No guests found')}</div></div></section>`
+ const tStats=getTShirtStats();
+ let list=users.filter(u=>{
+   if(guestFilter==='checked') return u.checkedIn;
+   if(guestFilter==='tshirt_yes') return u.tShirtClaimed;
+   if(guestFilter==='tshirt_no') return !u.tShirtClaimed;
+   return true;
+ }).filter(u=>[u.name,u.email,u.phone,u.code,u.guestId,u.sscBatch,getGuestTShirtSize(u),String(u.serial)].join(' ').toLowerCase().includes(search.toLowerCase())).sort((a,b)=>a.serial-b.serial);
+ return `<section class="content"><div class="toolbar"><div class="search"><span>⌕</span><input id="search" value="${esc(search)}" oninput="search=this.value;renderGuestsOnly()" placeholder="Search name, ID, serial, phone, size or email..."></div><button class="secondary" onclick="exportCSV()">↓ Export CSV</button>${users.length?`<button class="secondary" style="color:#f87171;border-color:#7f1d1d" onclick="openClearAllGuestsModal()">🗑️ Clear All (${users.length})</button>`:''}<button class="primary" onclick="openAdd()">＋ Add Guest</button></div><div class="panel tablePanel"><div class="panelHead guestTabsHead"><div><h2>Guest Directory</h2><p>${guestFilter==='all'?`${h.totalProfiles} profiles (${h.totalPersons} মোট ব্যক্তি, ${h.totalSub} সাব-গেস্ট)`:guestFilter==='checked'?`${h.checkedProfiles} profiles checked in (${h.checkedPersons} জন উপস্থিত)`:guestFilter==='tshirt_yes'?`${tStats.claimed} জন অতিথি টি-শার্ট পেয়েছেন`:`${tStats.pending} জন অতিথির টি-শার্ট বাকি`}${search?' · filtered':''}</p></div><div class="segmented"><button class="${guestFilter==='all'?'active':''}" onclick="guestFilter='all';renderGuestsOnly()">All Profiles <b>${h.totalProfiles}</b></button><button class="${guestFilter==='checked'?'active':''}" onclick="guestFilter='checked';renderGuestsOnly()">Checked In <b>${h.checkedProfiles}</b></button><button class="${guestFilter==='tshirt_yes'?'active':''}" onclick="guestFilter='tshirt_yes';renderGuestsOnly()">🎽 T-Shirt Yes <b>${tStats.claimed}</b></button><button class="${guestFilter==='tshirt_no'?'active':''}" onclick="guestFilter='tshirt_no';renderGuestsOnly()">🎽 T-Shirt No <b>${tStats.pending}</b></button></div></div><div id="guestTableArea">${list.length?tableHTML(list,true):emptyHTML(guestFilter==='checked'?'No guests checked in yet':guestFilter==='tshirt_yes'?'No guests received T-Shirt yet':guestFilter==='tshirt_no'?'All guests have received T-Shirts!':'No guests found')}</div></div></section>`
 }
 function renderGuestsOnly(){
  const area=document.getElementById('guestTableArea');
  if(!area)return render();
  const h=getHeadcounts();
- let list=users.filter(u=>guestFilter==='all'||u.checkedIn).filter(u=>[u.name,u.email,u.phone,u.code,u.guestId,u.sscBatch,String(u.serial)].join(' ').toLowerCase().includes(search.toLowerCase())).sort((a,b)=>a.serial-b.serial);
- area.innerHTML=list.length?tableHTML(list,true):emptyHTML(guestFilter==='checked'?'No guests checked in yet':'No guests found');
+ const tStats=getTShirtStats();
+ let list=users.filter(u=>{
+   if(guestFilter==='checked') return u.checkedIn;
+   if(guestFilter==='tshirt_yes') return u.tShirtClaimed;
+   if(guestFilter==='tshirt_no') return !u.tShirtClaimed;
+   return true;
+ }).filter(u=>[u.name,u.email,u.phone,u.code,u.guestId,u.sscBatch,getGuestTShirtSize(u),String(u.serial)].join(' ').toLowerCase().includes(search.toLowerCase())).sort((a,b)=>a.serial-b.serial);
+ area.innerHTML=list.length?tableHTML(list,true):emptyHTML(guestFilter==='checked'?'No guests checked in yet':guestFilter==='tshirt_yes'?'No guests received T-Shirt yet':guestFilter==='tshirt_no'?'All guests have received T-Shirts!':'No guests found');
  const headP=document.querySelector('.guestTabsHead p');
- if(headP)headP.textContent=(guestFilter==='all'?`${h.totalProfiles} profiles (${h.totalPersons} মোট ব্যক্তি, ${h.totalSub} সাব-গেস্ট)`:`${h.checkedProfiles} profiles checked in (${h.checkedPersons} জন উপস্থিত)`)+(search?' · filtered':'');
+ if(headP)headP.textContent=(guestFilter==='all'?`${h.totalProfiles} profiles (${h.totalPersons} মোট ব্যক্তি, ${h.totalSub} সাব-গেস্ট)`:guestFilter==='checked'?`${h.checkedProfiles} profiles checked in (${h.checkedPersons} জন উপস্থিত)`:guestFilter==='tshirt_yes'?`${tStats.claimed} জন অতিথি টি-শার্ট পেয়েছেন`:`${tStats.pending} জন অতিথির টি-শার্ট বাকি`)+(search?' · filtered':'');
 }
 function tableHTML(list,actions){
- return `<div class="tableWrap"><table><thead><tr><th>#</th><th>Guest</th><th>Total Persons</th><th>Permanent ID / Entry Code</th><th>ID Card Pass</th><th>Contact</th><th>Status</th><th>Check-in</th><th></th></tr></thead><tbody>${list.map(u=>{
+ return `<div class="tableWrap"><table><thead><tr><th>#</th><th>Guest</th><th>Total Persons</th><th>Permanent ID / Entry Code</th><th>ID Card Pass</th><th>Contact</th><th>Status</th><th>🎽 T-Shirt</th><th>Check-in</th><th></th></tr></thead><tbody>${list.map(u=>{
   const c=getGuestCount(u);
   const sub=Math.max(0,c-1);
+  const tSize=getGuestTShirtSize(u);
   const avatarHTML=u.profilePhoto
     ? `<img class="avatar" src="${esc(u.profilePhoto)}" alt="${esc(u.name)}" style="object-fit:cover;width:34px;height:34px;border-radius:10px;border:1.5px solid #6366f1;flex-shrink:0" />`
     : `<span class="avatar">${esc(u.name.slice(0,1).toUpperCase())}</span>`;
-  return `<tr><td><span class="serial">${String(u.serial).padStart(2,'0')}</span></td><td><button class="nameBtn" onclick="openGuest('${u.guestId}')">${avatarHTML}<span><b>${esc(u.name)}</b><small>${esc(u.email||u.phone)}</small></span></button></td><td><div style="display:inline-flex;align-items:center;gap:6px"><span style="font-weight:900;color:#fff;font-size:13px">${c} জন</span><span style="background:#17223b;border:1px solid #283756;color:#a5b4fc;font-size:9.5px;padding:2px 6px;border-radius:6px;font-weight:800">${sub>0?`১ মূল + ${sub} সাব`:'একক'}</span></div><small style="color:#7888a3;display:block;margin-top:2px">${esc(u.guestType||'Individual')}</small></td><td><span class="guestId">${esc(u.guestId)}</span><small>${esc(u.code)}</small></td><td><span style="background:#141f36;border:1px solid #293b5d;color:#f3c65b;font-weight:800;font-size:11px;padding:3px 8px;border-radius:6px;display:inline-flex;align-items:center;gap:4px">🔑 ${esc(u.idCardPassword||'1234')}</span></td><td>${esc(u.phone)}<small>${esc(u.email||'—')}</small></td><td><span class="status ${u.checkedIn?'checked':'pending'}">${u.checkedIn?'✓ Verified':'◷ Pending'}</span></td><td>${u.checkedAt?`<b>${formatBDTime(u.checkedAt)}</b><small>${esc(u.scanner||'—')}</small>`:'—'}</td><td>${actions?`<div class="rowActions"><button style="color:#a59cff;font-weight:800" onclick="openIDCard('${u.guestId}')">ID Card</button><button onclick="openEdit('${u.guestId}')">Edit</button><button onclick="deleteUser('${u.guestId}')">Delete</button></div>`:''}</td></tr>`;
+  return `<tr><td><span class="serial">${String(u.serial).padStart(2,'0')}</span></td><td><button class="nameBtn" onclick="openGuest('${u.guestId}')">${avatarHTML}<span><b>${esc(u.name)}</b><small>${esc(u.email||u.phone)}</small></span></button></td><td><div style="display:inline-flex;align-items:center;gap:6px"><span style="font-weight:900;color:#fff;font-size:13px">${c} জন</span><span style="background:#17223b;border:1px solid #283756;color:#a5b4fc;font-size:9.5px;padding:2px 6px;border-radius:6px;font-weight:800">${sub>0?`১ মূল + ${sub} সাব`:'একক'}</span></div><small style="color:#7888a3;display:block;margin-top:2px">${esc(u.guestType||'Individual')}</small></td><td><span class="guestId">${esc(u.guestId)}</span><small>${esc(u.code)}</small></td><td><span style="background:#141f36;border:1px solid #293b5d;color:#f3c65b;font-weight:800;font-size:11px;padding:3px 8px;border-radius:6px;display:inline-flex;align-items:center;gap:4px">🔑 ${esc(u.idCardPassword||'1234')}</span></td><td>${esc(u.phone)}<small>${esc(u.email||'—')}</small></td><td><span class="status ${u.checkedIn?'checked':'pending'}">${u.checkedIn?'✓ Verified':'◷ Pending'}</span></td><td><div style="display:flex;flex-direction:column;gap:3px;align-items:flex-start"><span class="tshirtSizePill">🎽 ${esc(tSize)}</span><button type="button" class="tshirtStatusBtn ${u.tShirtClaimed?'claimed':'pending'}" onclick="toggleTShirtClaim('${u.guestId}')" title="ক্লিক করে স্ট্যাটাস পরিবর্তন করুন">${u.tShirtClaimed?'✓ Yes':'✕ No'}</button></div></td><td>${u.checkedAt?`<b>${formatBDTime(u.checkedAt)}</b><small>${esc(u.scanner||'—')}</small>`:'—'}</td><td>${actions?`<div class="rowActions"><button style="color:#a59cff;font-weight:800" onclick="openIDCard('${u.guestId}')">ID Card</button><button onclick="openEdit('${u.guestId}')">Edit</button><button onclick="deleteUser('${u.guestId}')">Delete</button></div>`:''}</td></tr>`;
  }).join('')}</tbody></table></div>`
+}
+function openAdminTShirtScanner(){
+  navigate('tshirt_scanner');
+}
+function tshirtHTML(h){
+  const stats=getTShirtStats();
+  const searchLower=(tshirtSearch||'').toLowerCase().trim();
+  let list=users.filter(u=>{
+    if(tshirtFilter==='claimed') return u.tShirtClaimed;
+    if(tshirtFilter==='pending') return !u.tShirtClaimed;
+    if(tshirtFilter.startsWith('size_')){
+      const targetSize=tshirtFilter.replace('size_','');
+      return (getGuestTShirtSize(u)||'').toUpperCase()===targetSize.toUpperCase();
+    }
+    return true;
+  }).filter(u=>{
+    if(!searchLower) return true;
+    const tSize=getGuestTShirtSize(u);
+    return [u.name,u.email,u.phone,u.code,u.guestId,u.sscBatch,tSize,String(u.serial)].join(' ').toLowerCase().includes(searchLower);
+  }).sort((a,b)=>(a.serial||0)-(b.serial||0));
+
+  const standardSizes=['S','M','L','XL','XXL','3XL'];
+
+  return `
+  <section class="content">
+    <div class="toolbar" style="justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px">
+      <div style="display:flex;gap:10px;align-items:center;flex:1;min-width:260px">
+        <div class="search" style="flex:1">
+          <span>⌕</span>
+          <input id="tshirtSearchInput" value="${esc(tshirtSearch)}" oninput="tshirtSearch=this.value;renderTShirtOnly()" placeholder="Search guest name, size, ID, phone...">
+        </div>
+      </div>
+      <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap">
+        <button type="button" class="secondary" onclick="exportCSV()">↓ Export CSV</button>
+        <button type="button" class="primary" style="background:linear-gradient(135deg,#7c3aed,#6366f1);border:none;box-shadow:0 4px 14px rgba(124,58,237,0.3)" onclick="openAdminTShirtScanner()">🎽 Open T-Shirt Scanner ➔</button>
+      </div>
+    </div>
+
+    <!-- T-Shirt Summary Metrics -->
+    <div class="stats" style="grid-template-columns:repeat(auto-fit,minmax(200px,1fr))">
+      <div class="stat">
+        <div class="statIcon" style="background:#1e1b4b;color:#a5b4fc">🎽</div>
+        <div>
+          <span>Total T-Shirts</span>
+          <strong>${stats.total} <small style="font-size:13px;color:#8996ad;font-weight:600">Pcs</small></strong>
+          <div class="statSub">মোট প্রয়োজনীয় টি-শার্ট</div>
+        </div>
+      </div>
+      <div class="stat">
+        <div class="statIcon green">✓</div>
+        <div>
+          <span>Handed / Claimed</span>
+          <strong>${stats.claimed} <small style="font-size:13px;color:#52e2ab;font-weight:600">Pcs</small></strong>
+          <div class="statSub">টি-শার্ট নিয়েছে: <b>${stats.rate}%</b></div>
+        </div>
+      </div>
+      <div class="stat">
+        <div class="statIcon yellow">◷</div>
+        <div>
+          <span>Pending Handover</span>
+          <strong>${stats.pending} <small style="font-size:13px;color:#f1c95d;font-weight:600">Pcs</small></strong>
+          <div class="statSub">বাকি রয়েছে বিতরণ</div>
+        </div>
+      </div>
+      <div class="stat">
+        <div class="statIcon" style="background:#172554;color:#60a5fa">📊</div>
+        <div>
+          <span>Checked In Guests</span>
+          <strong>${users.filter(u=>u.checkedIn).length} <small style="font-size:13px;color:#93c5fd;font-weight:600">Present</small></strong>
+          <div class="statSub">গেটে উপস্থিতি নিশ্চিত</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Size Breakdown Grid -->
+    <div class="panel" style="padding:16px 20px;margin-bottom:16px">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;flex-wrap:wrap;gap:8px">
+        <div>
+          <span class="eyebrow" style="color:#a78bfa">INVENTORY BY SIZE</span>
+          <h3 style="margin:2px 0 0;font-size:16px">সাইজ অনুযায়ী টি-শার্ট চাহিদা ও বিতরণ রিপোর্ট</h3>
+        </div>
+        <div style="font-size:12px;color:#94a3b8">কার্ডে ক্লিক করে ফিল্টার করুন</div>
+      </div>
+      <div class="tshirtSizeGrid">
+        ${standardSizes.map(sz=>{
+          const item=stats.sizeMap[sz]||{total:0,claimed:0};
+          const remain=item.total-item.claimed;
+          const isFilterActive=tshirtFilter==='size_'+sz;
+          return `
+            <div class="tshirtSizeCard ${isFilterActive?'highlight':''}" style="cursor:pointer;${isFilterActive?'border-color:#818cf8;background:#1e1b4b':''}" onclick="tshirtFilter='${isFilterActive?'all':'size_'+sz}';renderTShirtOnly()">
+              <div class="tshirtSizeBadgeLg">${sz}</div>
+              <div style="font-size:13px;font-weight:800;color:#fff;margin-bottom:2px">মোট: ${item.total} টি</div>
+              <div class="tshirtSizeMeta">
+                <span style="color:#34d399">বিতরণ: ${item.claimed}</span>
+                <span style="color:${remain>0?'#f59e0b':'#64748b'}">বাকি: ${remain}</span>
+              </div>
+            </div>
+          `;
+        }).join('')}
+        ${stats.sizeMap['Other']&&stats.sizeMap['Other'].total>0?`
+          <div class="tshirtSizeCard ${tshirtFilter==='size_Other'?'highlight':''}" style="cursor:pointer" onclick="tshirtFilter='${tshirtFilter==='size_Other'?'all':'size_Other'}';renderTShirtOnly()">
+            <div class="tshirtSizeBadgeLg" style="font-size:15px">Other</div>
+            <div style="font-size:13px;font-weight:800;color:#fff;margin-bottom:2px">মোট: ${stats.sizeMap['Other'].total} টি</div>
+            <div class="tshirtSizeMeta">
+              <span style="color:#34d399">বিতরণ: ${stats.sizeMap['Other'].claimed}</span>
+              <span style="color:#f59e0b">বাকি: ${stats.sizeMap['Other'].total-stats.sizeMap['Other'].claimed}</span>
+            </div>
+          </div>
+        `:''}
+      </div>
+    </div>
+
+    <!-- T-Shirt Guests Table Panel -->
+    <div class="panel tablePanel">
+      <div class="panelHead guestTabsHead">
+        <div>
+          <h2>T-Shirt Distribution List</h2>
+          <p id="tshirtCountSummary">${tshirtFilter==='all'?`মোট ${stats.total} জন অতিথি`:tshirtFilter==='claimed'?`বিতরণ সম্পন্ন ${stats.claimed} জন`:tshirtFilter==='pending'?`বিতরণ বাকি ${stats.pending} জন`:`সাইজ ${tshirtFilter.replace('size_','')}: ${list.length} জন`}${tshirtSearch?' · ফিল্টার করা হয়েছে':''}</p>
+        </div>
+        <div class="segmented">
+          <button type="button" class="${tshirtFilter==='all'?'active':''}" onclick="tshirtFilter='all';renderTShirtOnly()">All <b>${stats.total}</b></button>
+          <button type="button" class="${tshirtFilter==='claimed'?'active':''}" onclick="tshirtFilter='claimed';renderTShirtOnly()">✓ Handed / Yes <b>${stats.claimed}</b></button>
+          <button type="button" class="${tshirtFilter==='pending'?'active':''}" onclick="tshirtFilter='pending';renderTShirtOnly()">◷ Pending / No <b>${stats.pending}</b></button>
+        </div>
+      </div>
+      <div id="tshirtTableArea">
+        ${list.length?tshirtTableHTML(list):emptyHTML('No guests match this T-shirt filter')}
+      </div>
+    </div>
+  </section>
+  `;
+}
+function renderTShirtOnly(){
+  const area=document.getElementById('tshirtTableArea');
+  if(!area) return render();
+  const stats=getTShirtStats();
+  const searchLower=(tshirtSearch||'').toLowerCase().trim();
+  let list=users.filter(u=>{
+    if(tshirtFilter==='claimed') return u.tShirtClaimed;
+    if(tshirtFilter==='pending') return !u.tShirtClaimed;
+    if(tshirtFilter.startsWith('size_')){
+      const targetSize=tshirtFilter.replace('size_','');
+      return (getGuestTShirtSize(u)||'').toUpperCase()===targetSize.toUpperCase();
+    }
+    return true;
+  }).filter(u=>{
+    if(!searchLower) return true;
+    const tSize=getGuestTShirtSize(u);
+    return [u.name,u.email,u.phone,u.code,u.guestId,u.sscBatch,tSize,String(u.serial)].join(' ').toLowerCase().includes(searchLower);
+  }).sort((a,b)=>(a.serial||0)-(b.serial||0));
+
+  area.innerHTML=list.length?tshirtTableHTML(list):emptyHTML('No guests match this T-shirt filter');
+  const sumEl=document.getElementById('tshirtCountSummary');
+  if(sumEl){
+    sumEl.textContent=(tshirtFilter==='all'?`মোট ${stats.total} জন অতিথি`:tshirtFilter==='claimed'?`বিতরণ সম্পন্ন ${stats.claimed} জন`:tshirtFilter==='pending'?`বিতরণ বাকি ${stats.pending} জন`:`সাইজ ${tshirtFilter.replace('size_','')}: ${list.length} জন`)+(tshirtSearch?' · ফিল্টার করা হয়েছে':'');
+  }
+}
+function tshirtTableHTML(list){
+  return `
+  <div class="tableWrap">
+    <table>
+      <thead>
+        <tr>
+          <th>#</th>
+          <th>Guest</th>
+          <th>Permanent ID</th>
+          <th>🎽 Size</th>
+          <th>🚪 Gate Status</th>
+          <th>🎽 T-Shirt Status</th>
+          <th>Handover Info</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        ${list.map(u=>{
+          const tSize=getGuestTShirtSize(u);
+          const avatarHTML=u.profilePhoto
+            ? `<img class="avatar" src="${esc(u.profilePhoto)}" alt="${esc(u.name)}" style="object-fit:cover;width:34px;height:34px;border-radius:10px;border:1.5px solid #6366f1;flex-shrink:0" />`
+            : `<span class="avatar">${esc(u.name.slice(0,1).toUpperCase())}</span>`;
+          return `
+            <tr>
+              <td><span class="serial">${String(u.serial).padStart(2,'0')}</span></td>
+              <td>
+                <button type="button" class="nameBtn" onclick="openGuest('${u.guestId}')">
+                  ${avatarHTML}
+                  <span><b>${esc(u.name)}</b><small>${esc(u.phone||u.email)}</small></span>
+                </button>
+              </td>
+              <td><span class="guestId">${esc(u.guestId)}</span><small>${esc(u.code)}</small></td>
+              <td>
+                <span class="tshirtSizePill" style="font-size:12px;font-weight:900">🎽 ${esc(tSize)}</span>
+              </td>
+              <td>
+                <span class="status ${u.checkedIn?'checked':'pending'}">${u.checkedIn?'✓ Entered':'◷ Not Entered'}</span>
+              </td>
+              <td>
+                <button type="button" class="tshirtStatusBtn ${u.tShirtClaimed?'claimed':'pending'}" onclick="toggleTShirtClaim('${u.guestId}')" title="ক্লিক করে স্ট্যাটাস পরিবর্তন করুন (Yes / No)">
+                  ${u.tShirtClaimed?'✓ Yes (হস্তান্তরিত)':'✕ No (বাকি)'}
+                </button>
+              </td>
+              <td>
+                ${u.tShirtClaimed?`
+                  <b style="font-size:11.5px;color:#6ee7b7;display:block">${formatBDTime(u.tShirtClaimedAt)}</b>
+                  <small style="color:#94a3b8">${esc(u.tShirtClaimedBy||'Volunteer')}</small>
+                `:'<span style="color:#64748b">—</span>'}
+              </td>
+              <td>
+                <div class="rowActions">
+                  <button type="button" style="color:#a59cff;font-weight:800" onclick="openIDCard('${u.guestId}')">ID Card</button>
+                  <button type="button" onclick="openEdit('${u.guestId}')">Edit</button>
+                </div>
+              </td>
+            </tr>
+          `;
+        }).join('')}
+      </tbody>
+    </table>
+  </div>
+  `;
 }
 function emptyHTML(t){return `<div class="empty"><div class="icon">◌</div><h3>${esc(t)}</h3><p>Add a guest or change your filter.</p></div>`}
 function volunteersHTML(){
@@ -1751,7 +3002,6 @@ function openAddVolunteer(){
         <h2>Add Gate Volunteer</h2>
         <p>নতুন ভলেন্টিয়ার যুক্ত করুন এবং গেট, পাসওয়ার্ড ও প্রোফাইল ছবি নির্ধারণ করুন।</p>
       </div>
-      <button class="close" onclick="closeModal()">×</button>
     </div>
     <form onsubmit="submitVolunteer(event)">
       <div class="formGrid">
@@ -1802,7 +3052,6 @@ function openEditVolunteer(id){
         <span class="eyebrow" style="color:#34d399">UPDATE ACCESS</span>
         <h2>Edit Volunteer · ${esc(v.name)}</h2>
       </div>
-      <button class="close" onclick="closeModal()">×</button>
     </div>
     <form onsubmit="submitVolunteer(event, '${esc(v.id)}')">
       <div class="formGrid">
@@ -1927,12 +3176,9 @@ function scannerHTML(){const isValid=scannerMode==='valid';return `<section clas
 function switchScannerMode(mode){if(scannerMode===mode)return;stopScanner();scannerMode=mode;scanResult=null;validResult=null;lastScan='';render()}
 
 function resultHTML(){
- if(!scanResult)return `<div class="waiting"><div class="waitingIcon">⌁</div><h2>Waiting for a scan</h2><p>Scan once to verify. A second or third attempt will be rejected.</p></div>`;
- const u=scanResult.user;
- const count=u?getGuestCount(u):1;
- const sub=Math.max(0,count-1);
- const countDesc=sub>0?`সাব এ ${sub} জন, মোট ${count} জন`:`মোট ১ জন`;
- return `<div class="result"><div class="resultIcon ${scanResult.ok?'ok':'bad'}">${scanResult.ok?'✓':'!'}</div><h2>${esc(scanResult.message)}</h2><p>${esc(scanResult.detail)}</p>${u?`<div class="resultGuest"><div style="display:flex;justify-content:space-between;align-items:center"><span>Guest #${String(u.serial).padStart(2,'0')}</span><span class="status ${u.checkedIn?'checked':'pending'}">${u.checkedIn?'✓ Verified':'◷ Pending'}</span></div><div style="display:flex;align-items:center;gap:12px;margin:8px 0">${u.profilePhoto?`<img src="${esc(u.profilePhoto)}" style="width:48px;height:48px;border-radius:12px;object-fit:cover;border:1.5px solid #6366f1;flex-shrink:0" alt="${esc(u.name)}">`:''}<div style="text-align:left"><b style="font-size:16px;display:block">${esc(u.name)}</b><code>${esc(u.guestId)}</code></div></div><div style="background:#131f38;border:1px solid #243555;border-radius:9px;padding:9px 12px;margin-top:6px;display:flex;justify-content:space-between;align-items:center"><div style="text-align:left"><small style="color:#8ba0be;font-size:10px;display:block">হাজিরা ও সাব-গেস্ট বিবরণ</small><b style="color:#52e2ab;font-size:13px">${countDesc}</b></div><span style="background:#1e2a4a;color:#a5b4fc;font-size:11px;padding:3px 9px;border-radius:6px;font-weight:800">👥 ${count} জন এন্ট্রি</span></div>${scanResult.duplicate?'<small style="color:#ff7885;margin-top:4px">Already attended — this QR code has already been used and cannot be accepted again.</small>':''}${!u.checkedIn&&!scanResult.duplicate?`<button type="button" class="primary" style="margin-top:12px;background:linear-gradient(135deg,#059669,#10b981);width:100%;font-size:14px;padding:12px;font-weight:900;border:none;border-radius:10px;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;gap:8px" onclick="confirmAdminCheckIn('${u.guestId}')"><span style="font-size:16px">✓</span> <span>গেস্ট চেক ইন (Confirm Check-In)</span></button>`:''}</div>`:''}<button class="secondary" onclick="scanResult=null;updateResult()">Clear result</button></div>`
+  if(!scanResult)return `<div class="waiting"><div class="waitingIcon">⌁</div><h2>Waiting for a scan</h2><p>Scan once to verify. A second or third attempt will be rejected.</p></div>`;
+  const u=scanResult.user;
+  return `<div class="result"><div class="resultIcon ${scanResult.ok?'ok':'bad'}">${scanResult.ok?'✓':'!'}</div><h2>${esc(scanResult.message)}</h2><p>${esc(scanResult.detail)}</p>${u?`<div class="resultGuest"><div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px"><span style="color:#94a3b8;font-weight:800">Guest #${String(u.serial).padStart(2,'0')}</span><span class="status ${u.checkedIn?'checked':'pending'}">${u.checkedIn?'✓ Verified':'◷ Pending'}</span></div>${renderScanGuestDetails(u)}${scanResult.duplicate?`<div style="background:rgba(239,68,68,0.12);border:1px solid #ef4444;border-radius:8px;padding:8px 10px;color:#fca5a5;font-size:11.5px;margin-top:10px">⚠️ <b>Already attended:</b> এই কিউআর কোডটি ইতিমধ্যে ব্যবহার করা হয়েছে (${formatBDTime(u.checkedAt)} - ${esc(u.scanner||'Scanner')})।</div>`:''}${!u.checkedIn&&!scanResult.duplicate?`<button type="button" class="primary" style="margin-top:12px;background:linear-gradient(135deg,#059669,#10b981);width:100%;font-size:14px;padding:12px;font-weight:900;border:none;border-radius:10px;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;gap:8px" onclick="confirmAdminCheckIn('${u.guestId}')"><span style="font-size:16px">✓</span> <span>গেস্ট চেক ইন (Confirm Check-In)</span></button>`:''}</div>`:''}<button class="secondary" onclick="scanResult=null;updateResult()" style="margin-top:12px">Clear result</button></div>`;
 }
 function updateResult(){const a=document.getElementById('scanResultArea');if(a)a.innerHTML=scannerMode==='valid'?validResultHTML():resultHTML()}
 
@@ -2100,32 +3346,67 @@ function resolveGuest(raw){
   // 2. Parse EVENTPASS format
   if(clean.toUpperCase().startsWith('EVENTPASS|')){
     const parts = clean.split('|');
-    const guestId = (parts[1] || '').trim();
-    const guestIdLower = guestId.toLowerCase();
+    const epPart = parts.find(p => p.trim().toUpperCase().startsWith('EP-'));
+    let guestId = epPart ? epPart.trim() : (parts[1] && parts[1].trim().toUpperCase().startsWith('EP-') ? parts[1].trim() : (parts[5] && parts[5].trim().toUpperCase().startsWith('EP-') ? parts[5].trim() : ''));
 
     // Match by guestId in existing database
     if(guestId){
-      found = users.find(u=>u.guestId && u.guestId.trim().toLowerCase()===guestIdLower);
+      found = users.find(u=>u.guestId && u.guestId.trim().toLowerCase()===guestId.toLowerCase());
       if(found) return found;
     }
     // Match by code in existing database
-    if(parts[5]){
-      const c = parts[5].trim().toLowerCase();
-      found = users.find(u=>u.code && u.code.trim().toLowerCase()===c);
+    for(const p of parts){
+      const trimmed = p.trim().toLowerCase();
+      if(!trimmed) continue;
+      found = users.find(u=>u.code && u.code.trim().toLowerCase()===trimmed);
       if(found) return found;
     }
 
     // IF NOT IN LOCAL DATABASE, BUT HAS SELF-CONTAINED GUEST DATA:
     // (This happens when guest was registered on a Laptop, and scanned on a Mobile Phone!)
-    if(parts.length >= 3 && guestId){
+    if(parts.length >= 3){
       let name = 'Registered Guest';
-      try{ name = decodeURIComponent(parts[2] || 'Registered Guest'); }catch(e){ name = parts[2] || 'Registered Guest'; }
       let sscBatch = '';
-      try{ sscBatch = decodeURIComponent(parts[3] || ''); }catch(e){ sscBatch = parts[3] || ''; }
-      const personCount = Math.max(1, parseInt(parts[4] || '1', 10) || 1);
-      const code = (parts[5] || `EVT-${guestId.slice(-4)}`).trim();
+      let personCount = 1;
+      let tShirtSize = '';
+      let code = '';
       let guestType = 'Individual';
-      try{ guestType = decodeURIComponent(parts[6] || 'Individual'); }catch(e){ guestType = parts[6] || 'Individual'; }
+      let entryType = 'Guest';
+
+      if(parts[1] && parts[1].trim().toUpperCase().startsWith('EP-')){
+        // Legacy format: EVENTPASS|EP-...|Name|Batch|Count|Code|GuestType
+        guestId = parts[1].trim();
+        try{ name = decodeURIComponent(parts[2] || 'Registered Guest'); }catch(e){ name = parts[2] || 'Registered Guest'; }
+        try{ sscBatch = decodeURIComponent(parts[3] || ''); }catch(e){ sscBatch = parts[3] || ''; }
+        personCount = Math.max(1, parseInt(parts[4] || '1', 10) || 1);
+        code = (parts[5] || `EVT-${guestId.slice(-4)}`).trim();
+        try{ guestType = decodeURIComponent(parts[6] || 'Individual'); }catch(e){ guestType = parts[6] || 'Individual'; }
+      } else {
+        // New format: EVENTPASS|Name|Batch ...|Guest ...|T-Shirt: ...|EP-...|Code|GuestType|EntryType
+        name = (parts[1] || 'Registered Guest').trim();
+        const bRaw = (parts[2] || '').trim();
+        sscBatch = bRaw.replace(/^Batch\s*:?\s*/i, '').trim();
+        if(sscBatch === '—') sscBatch = '';
+
+        const cntRaw = (parts[3] || '').trim();
+        const numMatch = cntRaw.match(/\d+/);
+        personCount = numMatch ? Math.max(1, parseInt(numMatch[0], 10)) : 1;
+
+        const tshRaw = (parts[4] || '').trim();
+        tShirtSize = tshRaw.replace(/^T-Shirt\s*:?\s*/i, '').trim();
+        if(tShirtSize === '—') tShirtSize = '';
+
+        guestId = guestId || (parts[5] ? parts[5].trim() : `EP-${Date.now()}`);
+        code = (parts[6] || `EVT-${guestId.slice(-4)}`).trim();
+        guestType = (parts[7] || 'Individual').trim();
+        entryType = (parts[8] || 'General').trim();
+      }
+
+      // Check one more time if guestId already exists
+      if(guestId){
+        found = users.find(u=>u.guestId && u.guestId.trim().toLowerCase()===guestId.toLowerCase());
+        if(found) return found;
+      }
 
       // Auto-register this guest into this device's storage so it is recognized!
       const autoImported = {
@@ -2135,10 +3416,11 @@ function resolveGuest(raw){
         phone: '',
         email: '',
         sscBatch: sscBatch,
+        tShirtSize: tShirtSize,
         idCardPassword: '1234',
         personCount: personCount,
         profilePhoto: '',
-        entryType: 'Guest',
+        entryType: entryType,
         guestType: guestType,
         code: code,
         qrValue: clean,
@@ -2151,11 +3433,6 @@ function resolveGuest(raw){
       save();
       toast(`গেস্ট ডাটা লোড হয়েছে: ${name} (${personCount} জন) ✓`,'info');
       return autoImported;
-    }
-
-    if(guestId){
-      found = users.find(u=>u.guestId && u.guestId.trim().toLowerCase()===guestIdLower);
-      if(found) return found;
     }
   }
 
@@ -2204,12 +3481,9 @@ function confirmAdminCheckIn(id){
 }
 function manualScan(){const e=document.getElementById('manualCode');if(!e||!e.value.trim())return;if(scannerMode==='valid')validateUser(e.value.trim());else checkIn(e.value.trim());e.value=''}
 function validResultHTML(){
- if(!validResult)return `<div class="waiting"><div class="waitingIcon">✓</div><h2>Waiting for validation</h2><p>Scan a registered EventPass QR. This mode checks authenticity only and does not affect entry status.</p></div>`;
- const u=validResult.user;
- const count=u?getGuestCount(u):1;
- const sub=Math.max(0,count-1);
- const countDesc=sub>0?`সাব এ ${sub} জন, মোট ${count} জন`:`মোট ১ জন`;
- return `<div class="result"><div class="resultIcon ${validResult.ok?'ok':'bad'}">${validResult.ok?'✓':'!'}</div><h2>${esc(validResult.message)}</h2><p>${esc(validResult.detail)}</p>${u?`<div class="resultGuest"><div style="display:flex;justify-content:space-between;align-items:center"><span>Guest #${String(u.serial).padStart(2,'0')}</span><span class="validBadge">✓ VALID USER</span></div><div style="display:flex;align-items:center;gap:12px;margin:8px 0">${u.profilePhoto?`<img src="${esc(u.profilePhoto)}" style="width:48px;height:48px;border-radius:12px;object-fit:cover;border:1.5px solid #6366f1;flex-shrink:0" alt="${esc(u.name)}">`:''}<div style="text-align:left"><b style="font-size:16px;display:block">${esc(u.name)}</b><code>${esc(u.guestId)}</code></div></div><div style="background:#131f38;border:1px solid #243555;border-radius:9px;padding:9px 12px;margin-top:6px;display:flex;justify-content:space-between;align-items:center"><div style="text-align:left"><small style="color:#8ba0be;font-size:10px;display:block">নিবন্ধিত ব্যক্তি ও সাব-গেস্ট</small><b style="color:#52e2ab;font-size:13px">${countDesc}</b></div><span style="background:#1e2a4a;color:#a5b4fc;font-size:11px;padding:3px 9px;border-radius:6px;font-weight:800">👥 ${count} জন</span></div><span>Entry Code: ${esc(u.code)}</span><small style="color:#52e2ab">Validation only — attendance status was not changed.</small></div>`:''}<button class="secondary" onclick="validResult=null;updateResult()">Clear result</button></div>`
+  if(!validResult)return `<div class="waiting"><div class="waitingIcon">✓</div><h2>Waiting for validation</h2><p>Scan a registered EventPass QR. This mode checks authenticity only and does not affect entry status.</p></div>`;
+  const u=validResult.user;
+  return `<div class="result"><div class="resultIcon ${validResult.ok?'ok':'bad'}">${validResult.ok?'✓':'!'}</div><h2>${esc(validResult.message)}</h2><p>${esc(validResult.detail)}</p>${u?`<div class="resultGuest"><div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px"><span style="color:#94a3b8;font-weight:800">Guest #${String(u.serial).padStart(2,'0')}</span><span class="validBadge">✓ VALID USER</span></div>${renderScanGuestDetails(u)}<small style="color:#52e2ab;margin-top:8px;display:block">Validation only — attendance status was not changed.</small></div>`:''}<button class="secondary" onclick="validResult=null;updateResult()" style="margin-top:12px">Clear result</button></div>`;
 }
 function validateUser(raw){
  reloadUsersFromStorage();
@@ -2223,14 +3497,177 @@ function validateUser(raw){
 }
 function stepPersonCount(delta){const el=document.getElementById('guestPersonCount');if(!el)return;let val=parseInt(el.value||'1',10);if(isNaN(val))val=1;val=Math.max(1,Math.min(20,val+delta));el.value=val}
 function onGuestTypeChange(sel){const el=document.getElementById('guestPersonCount');if(!el)return;const v=sel.value;if(v==='Individual')el.value='1';else if(v==='Couple')el.value='2';else if(v==='Family')el.value='3'}
-function openAdd(){openModal(`<div class="modalHead"><div><span class="eyebrow">${isAdmin?'GUEST MANAGEMENT':'EVENT REGISTRATION'}</span><h2>${isAdmin?'Add Guest':'Fill Up the Form (রেজিস্ট্রেশন)'}</h2></div><button class="close" onclick="closeModal()">×</button></div>${formHTML()}`)}
+function openAdd(){
+  openModal(`
+    <div class="modalHead">
+      <div>
+        <span class="eyebrow">${isAdmin?'GUEST MANAGEMENT':'EVENT REGISTRATION'}</span>
+        <h2>${isAdmin?'Add Guest':'Fill Up the Form (রেজিস্ট্রেশন)'}</h2>
+      </div>
+    </div>
+    ${formHTML()}
+  `);
+}
 function formHTML(u){
   const edit=!!u;
   if(edit&&!isAdmin)return '';
-  const entryTypes=['General','VIP','Guest','Speaker','Organizer','Staff','Media'];
-  const guestTypes=['Individual','Couple','Family'];
+  const fields = getFormFields();
   const currentCount=u?.personCount||(u?.guestType==='Couple'?2:u?.guestType==='Family'?3:1);
-  return `<form onsubmit="submitGuest(event,'${edit?u.guestId:''}')"><div class="formGrid"><label class="field"><span>Full name <b style="color:#ff8a8a">*</b></span><input name="name" required value="${esc(u?.name||'')}" placeholder="John Smith"></label><label class="field"><span>Phone number <b style="color:#ff8a8a">*</b></span><input name="phone" required value="${esc(u?.phone||'')}" placeholder="+880 1XXXXXXXXX"></label><label class="field"><span>Email address</span><input type="email" name="email" value="${esc(u?.email||'')}" placeholder="john@example.com"></label><label class="field"><span>SSC Batch <b style="color:#ff8a8a">*</b></span><input name="sscBatch" required value="${esc(u?.sscBatch||'')}" placeholder="e.g. 2018" inputmode="numeric" maxlength="4"></label><label class="field"><span>আইডি কার্ড ডাউনলোড পাসওয়ার্ড <b style="color:#ff8a8a">*</b></span><div class="passwordWrap"><input type="password" name="idCardPassword" id="guestIdCardPass" required value="${esc(u?.idCardPassword||'')}" placeholder="যেমন: 1234"><button type="button" class="toggleEyeBtn" onclick="togglePasswordVisibility('guestIdCardPass', this)" title="Show/Hide password">${EYE_OPEN_SVG}</button></div><small>আইডি কার্ড ডাউনলোড ও দেখার সময় এই পাসওয়ার্ডটি দিতে হবে।</small></label><label class="field"><span>Profile Photo <b style="color:#ff8a8a">*</b></span><input name="profilePhoto" type="file" accept="image/*" ${edit&&u?.profilePhoto?'':'required'} onchange="previewProfilePhoto(this)"><small>${edit&&u?.profilePhoto?'Choose a new photo only if you want to replace the current one.':'Profile photo is required for the ID Card.'}</small><img id="profilePhotoPreview" src="${esc(u?.profilePhoto||'')}" style="${u?.profilePhoto?'display:block;':'display:none;'}width:70px;height:70px;object-fit:cover;border-radius:50%;margin-top:8px;border:2px solid #39445e"></label><label class="field"><span>Entry Type <b style="color:#ff8a8a">*</b></span><select name="entryType" required>${entryTypes.map(t=>`<option value="${t}" ${(u?.entryType||'Guest')===t?'selected':''}>${t}</option>`).join('')}</select></label><label class="field"><span>Guest Type <b style="color:#ff8a8a">*</b></span><select name="guestType" required onchange="onGuestTypeChange(this)">${guestTypes.map(t=>`<option value="${t}" ${(u?.guestType||'Individual')===t?'selected':''}>${t}</option>`).join('')}</select></label><label class="field"><span>Total Persons / Count <b style="color:#ff8a8a">*</b></span><div class="countStepper"><button type="button" class="stepBtn" onclick="stepPersonCount(-1)">−</button><input type="number" id="guestPersonCount" name="personCount" min="1" max="20" value="${currentCount}" required><button type="button" class="stepBtn" onclick="stepPersonCount(1)">+</button></div><small>১ জন মূল গেস্ট + সাথে সাব-গেস্ট (খাবার ও এন্ট্রি হিসাবের জন্য মোট সংখ্যা)।</small></label>${edit?`<label class="field"><span>Permanent Guest ID · Locked</span><input value="${esc(u.guestId)}" disabled><small>This permanent ID, serial number and QR entry value cannot be changed.</small></label>`:`<label class="field"><span>QR / Entry ID</span><div class="lockedPreview">Auto-generated after creation</div><small>Serial # and permanent Guest ID are assigned automatically.</small></label>`}</div><div class="formActions">${edit?`<button type="button" class="secondary idCardButton" onclick="openIDCard('${u.guestId}')">ID Card</button>`:''}<button type="button" class="secondary" onclick="closeModal()">Cancel</button><button class="primary">${edit?'Save changes':isAdmin?'Create guest & Generate QR':'Complete Registration & Get Pass (রেজিস্ট্রেশন সম্পন্ন করুন)'}</button></div></form>`
+
+  let fieldsHTML = '';
+
+  fields.forEach(f => {
+    if(f.enabled === false) return;
+    const reqMark = f.required ? '<b style="color:#ff8a8a">*</b>' : '';
+    const reqAttr = f.required ? 'required' : '';
+
+    if(f.id === 'name'){
+      fieldsHTML += `
+        <label class="field">
+          <span>${esc(f.label || 'Full name')} ${reqMark}</span>
+          <input name="name" ${reqAttr} value="${esc(u?.name||'')}" placeholder="${esc(f.placeholder || 'John Smith')}">
+        </label>
+      `;
+    } else if(f.id === 'phone'){
+      fieldsHTML += `
+        <label class="field">
+          <span>${esc(f.label || 'Phone number')} ${reqMark}</span>
+          <input name="phone" ${reqAttr} value="${esc(u?.phone||'')}" placeholder="${esc(f.placeholder || '+880 1XXXXXXXXX')}">
+        </label>
+      `;
+    } else if(f.id === 'email'){
+      fieldsHTML += `
+        <label class="field">
+          <span>${esc(f.label || 'Email address')} ${reqMark}</span>
+          <input type="email" name="email" ${reqAttr} value="${esc(u?.email||'')}" placeholder="${esc(f.placeholder || 'john@example.com')}">
+        </label>
+      `;
+    } else if(f.id === 'tShirtSize'){
+      const tShirtSizes = f.options || ['S','M','L','XL','XXL','3XL'];
+      const val = u?.tShirtSize || getGuestTShirtSize(u) || '';
+      fieldsHTML += `
+        <label class="field">
+          <span>${esc(f.label || 'T-Shirt Size')} ${reqMark}</span>
+          <select name="tShirtSize" ${reqAttr}>
+            <option value="">-- সাইজ নির্বাচন করুন (Select Size) --</option>
+            ${tShirtSizes.map(sz => `<option value="${esc(sz)}" ${val===sz?'selected':''}>${esc(sz)}</option>`).join('')}
+          </select>
+        </label>
+      `;
+    } else if(f.id === 'sscBatch'){
+      fieldsHTML += `
+        <label class="field">
+          <span>${esc(f.label || 'SSC Batch')} ${reqMark}</span>
+          <input name="sscBatch" ${reqAttr} value="${esc(u?.sscBatch||'')}" placeholder="${esc(f.placeholder || 'e.g. 2018')}" inputmode="numeric" maxlength="4">
+        </label>
+      `;
+    } else if(f.id === 'idCardPassword'){
+      fieldsHTML += `
+        <label class="field">
+          <span>${esc(f.label || 'আইডি কার্ড ডাউনলোড পাসওয়ার্ড')} ${reqMark}</span>
+          <div class="passwordWrap">
+            <input type="password" name="idCardPassword" id="guestIdCardPass" ${reqAttr} value="${esc(u?.idCardPassword||'')}" placeholder="${esc(f.placeholder || 'যেমন: 1234')}">
+            <button type="button" class="toggleEyeBtn" onclick="togglePasswordVisibility('guestIdCardPass', this)" title="Show/Hide password">${EYE_OPEN_SVG}</button>
+          </div>
+          <small>${esc(f.hint || 'আইডি কার্ড ডাউনলোড ও দেখার সময় এই পাসওয়ার্ডটি দিতে হবে।')}</small>
+        </label>
+      `;
+    } else if(f.id === 'profilePhoto'){
+      const photoReq = f.required && (!edit || !u?.profilePhoto);
+      fieldsHTML += `
+        <label class="field">
+          <span>${esc(f.label || 'Profile Photo')} ${photoReq ? '<b style="color:#ff8a8a">*</b>' : ''}</span>
+          <input name="profilePhoto" type="file" accept="image/*" ${photoReq ? 'required' : ''} onchange="previewProfilePhoto(this)">
+          <small>${edit && u?.profilePhoto ? 'Choose a new photo only if you want to replace the current one.' : (f.hint || 'Profile photo is required for the ID Card.')}</small>
+          <img id="profilePhotoPreview" src="${esc(u?.profilePhoto||'')}" style="${u?.profilePhoto ? 'display:block;' : 'display:none;'}width:70px;height:70px;object-fit:cover;border-radius:50%;margin-top:8px;border:2px solid #39445e">
+        </label>
+      `;
+    } else if(f.id === 'entryType'){
+      const entryTypes = f.options || ['General','VIP','Guest','Speaker','Organizer','Staff','Media'];
+      fieldsHTML += `
+        <label class="field">
+          <span>${esc(f.label || 'Entry Type')} ${reqMark}</span>
+          <select name="entryType" ${reqAttr}>
+            ${entryTypes.map(t => `<option value="${esc(t)}" ${(u?.entryType||'Guest')===t?'selected':''}>${esc(t)}</option>`).join('')}
+          </select>
+        </label>
+      `;
+    } else if(f.id === 'guestType'){
+      const guestTypes = f.options || ['Individual','Couple','Family'];
+      fieldsHTML += `
+        <label class="field">
+          <span>${esc(f.label || 'Guest Type')} ${reqMark}</span>
+          <select name="guestType" ${reqAttr} onchange="onGuestTypeChange(this)">
+            ${guestTypes.map(t => `<option value="${esc(t)}" ${(u?.guestType||'Individual')===t?'selected':''}>${esc(t)}</option>`).join('')}
+          </select>
+        </label>
+      `;
+    } else if(f.id === 'personCount'){
+      fieldsHTML += `
+        <label class="field">
+          <span>${esc(f.label || 'Total Persons / Count')} ${reqMark}</span>
+          <div class="countStepper">
+            <button type="button" class="stepBtn" onclick="stepPersonCount(-1)">−</button>
+            <input type="number" id="guestPersonCount" name="personCount" min="1" max="20" value="${currentCount}" ${reqAttr}>
+            <button type="button" class="stepBtn" onclick="stepPersonCount(1)">+</button>
+          </div>
+          <small>${esc(f.hint || '১ জন মূল গেস্ট + সাথে সাব-গেস্ট (খাবার ও এন্ট্রি হিসাবের জন্য মোট সংখ্যা)।')}</small>
+        </label>
+      `;
+    } else {
+      // Custom Fields
+      const cfVal = u?.customFields?.[f.id] || '';
+      if(f.type === 'select'){
+        fieldsHTML += `
+          <label class="field">
+            <span>${esc(f.label)} ${reqMark}</span>
+            <select name="custom_${f.id}" ${reqAttr}>
+              <option value="">-- নির্বাচন করুন --</option>
+              ${(f.options || []).map(opt => `<option value="${esc(opt)}" ${cfVal===opt?'selected':''}>${esc(opt)}</option>`).join('')}
+            </select>
+            ${f.placeholder ? `<small>${esc(f.placeholder)}</small>` : ''}
+          </label>
+        `;
+      } else if(f.type === 'textarea'){
+        fieldsHTML += `
+          <label class="field" style="grid-column: 1 / -1">
+            <span>${esc(f.label)} ${reqMark}</span>
+            <textarea name="custom_${f.id}" ${reqAttr} placeholder="${esc(f.placeholder||'')}" style="width:100%;min-height:70px;background:#0d1422;border:1px solid var(--line);border-radius:10px;color:#fff;padding:10px;font:inherit">${esc(cfVal)}</textarea>
+          </label>
+        `;
+      } else if(f.type === 'number'){
+        fieldsHTML += `
+          <label class="field">
+            <span>${esc(f.label)} ${reqMark}</span>
+            <input type="number" name="custom_${f.id}" value="${esc(cfVal)}" placeholder="${esc(f.placeholder||'')}" ${reqAttr}>
+          </label>
+        `;
+      } else if(f.type === 'tel'){
+        fieldsHTML += `
+          <label class="field">
+            <span>${esc(f.label)} ${reqMark}</span>
+            <input type="tel" name="custom_${f.id}" value="${esc(cfVal)}" placeholder="${esc(f.placeholder||'')}" ${reqAttr}>
+          </label>
+        `;
+      } else if(f.type === 'email'){
+        fieldsHTML += `
+          <label class="field">
+            <span>${esc(f.label)} ${reqMark}</span>
+            <input type="email" name="custom_${f.id}" value="${esc(cfVal)}" placeholder="${esc(f.placeholder||'')}" ${reqAttr}>
+          </label>
+        `;
+      } else {
+        fieldsHTML += `
+          <label class="field">
+            <span>${esc(f.label)} ${reqMark}</span>
+            <input type="${f.type || 'text'}" name="custom_${f.id}" value="${esc(cfVal)}" placeholder="${esc(f.placeholder||'')}" ${reqAttr}>
+          </label>
+        `;
+      }
+    }
+  });
+
+  return `<form onsubmit="submitGuest(event,'${edit?u.guestId:''}')"><div class="formGrid">${fieldsHTML}${edit?`<label class="field"><span>Permanent Guest ID · Locked</span><input value="${esc(u.guestId)}" disabled><small>This permanent ID, serial number and QR entry value cannot be changed.</small></label>`:`<label class="field"><span>QR / Entry ID</span><div class="lockedPreview">Auto-generated after creation</div><small>Serial # and permanent Guest ID are assigned automatically.</small></label>`}</div><div class="formActions">${edit?`<button type="button" class="secondary idCardButton" onclick="openIDCard('${u.guestId}')">ID Card</button>`:''}<button type="button" class="secondary" onclick="closeModal()">Cancel</button><button class="primary">${edit?'Save changes':isAdmin?'Create guest & Generate QR':'Complete Registration & Get Pass (রেজিস্ট্রেশন সম্পন্ন করুন)'}</button></div></form>`;
 }
 function previewProfilePhoto(input){
   const file=input?.files?.[0],img=document.getElementById('profilePhotoPreview');
@@ -2296,20 +3733,34 @@ async function submitGuest(e,id){
   e.preventDefault();
   const f=new FormData(e.target);
   const file=f.get('profilePhoto');
-  if(!id&&!file){toast('Profile photo is required','bad');return}
+  const fields=getFormFields();
+  const photoField=fields.find(x=>x.id==='profilePhoto');
+  const photoRequired=photoField ? (photoField.enabled!==false && photoField.required!==false) : true;
+  if(!id && photoRequired && !file){toast('Profile photo is required','bad');return}
   const personCount=Math.max(1,parseInt(f.get('personCount')||'1',10)||1);
+
+  const customFieldsData={};
+  fields.filter(x=>!x.isDefault).forEach(cf=>{
+    const v=f.get('custom_'+cf.id);
+    if(v!==null && v!==undefined && String(v).trim()){
+      customFieldsData[cf.id]=String(v).trim();
+    }
+  });
+
   if(id){
     if(!isAdmin){toast('Admin access required to edit guests','bad');return}
     const u=users.find(x=>x.guestId===id);
     if(!u)return;
-    u.name=f.get('name');
-    u.phone=f.get('phone');
-    u.email=f.get('email');
-    u.sscBatch=f.get('sscBatch')||'';
-    u.idCardPassword=f.get('idCardPassword')||u.idCardPassword||'1234';
-    u.entryType=f.get('entryType')||'Guest';
-    u.guestType=f.get('guestType')||'Individual';
-    u.personCount=personCount;
+    if(f.get('name')!==null) u.name=f.get('name');
+    if(f.get('phone')!==null) u.phone=f.get('phone');
+    if(f.get('email')!==null) u.email=f.get('email');
+    if(f.get('tShirtSize')!==null) u.tShirtSize=f.get('tShirtSize')||'';
+    if(f.get('sscBatch')!==null) u.sscBatch=f.get('sscBatch')||'';
+    if(f.get('idCardPassword')!==null) u.idCardPassword=f.get('idCardPassword')||u.idCardPassword||'1234';
+    if(f.get('entryType')!==null) u.entryType=f.get('entryType')||'Guest';
+    if(f.get('guestType')!==null) u.guestType=f.get('guestType')||'Individual';
+    if(f.get('personCount')!==null) u.personCount=personCount;
+    u.customFields={...(u.customFields||{}), ...customFieldsData};
     if(file&&file.size)u.profilePhoto=await resizeImage(file);
     u.qrValue=buildQrValue(u);
     save();
@@ -2319,9 +3770,10 @@ async function submitGuest(e,id){
     return;
   }
   const serial=nextSerial(),guestId=uid(),prefix=(settings.eventName.replace(/[^A-Za-z]/g,'').slice(0,3)||'EVT').toUpperCase();
-  const photo=await resizeImage(file);
+  let photo='';
+  if(file && file.size) photo=await resizeImage(file);
   const code=`${prefix}-${String(serial).padStart(4,'0')}-${guestId.slice(-4)}`;
-  const u={serial,guestId,name:f.get('name'),phone:f.get('phone'),email:f.get('email'),sscBatch:f.get('sscBatch')||'',idCardPassword:f.get('idCardPassword')||'1234',personCount,profilePhoto:photo,entryType:f.get('entryType')||'Guest',guestType:f.get('guestType')||'Individual',code,checkedIn:false,checkedAt:null,scanner:null,createdAt:new Date().toISOString()};
+  const u={serial,guestId,name:f.get('name')||'Guest',phone:f.get('phone')||'—',email:f.get('email')||'',tShirtSize:f.get('tShirtSize')||'',sscBatch:f.get('sscBatch')||'',idCardPassword:f.get('idCardPassword')||'1234',personCount,profilePhoto:photo,entryType:f.get('entryType')||'Guest',guestType:f.get('guestType')||'Individual',customFields:customFieldsData,code,checkedIn:false,checkedAt:null,scanner:null,createdAt:new Date().toISOString()};
   u.qrValue=buildQrValue(u);
   users.push(u);
   save();
@@ -2339,7 +3791,15 @@ async function submitGuest(e,id){
 function openEdit(id){
   if(!isAdmin){toast('Admin access required to edit guests','bad');return}
   const u=users.find(x=>x.guestId===id);
-  if(u)openModal(`<div class="modalHead"><div><span class="eyebrow">GUEST MANAGEMENT</span><h2>Edit Guest</h2></div><button class="close" onclick="closeModal()">×</button></div>${formHTML(u)}`)
+  if(u)openModal(`
+    <div class="modalHead">
+      <div>
+        <span class="eyebrow">GUEST MANAGEMENT</span>
+        <h2>Edit Guest</h2>
+      </div>
+    </div>
+    ${formHTML(u)}
+  `);
 }
 async function hashText(v){const data=new TextEncoder().encode(v);const buf=await crypto.subtle.digest('SHA-256',data);return Array.from(new Uint8Array(buf)).map(b=>b.toString(16).padStart(2,'0')).join('')}
 function deleteUser(id){
@@ -2354,9 +3814,8 @@ function openDeleteConfirm(id){
   openModal(`
     <div class="modalHead">
       <div><span class="eyebrow">SECURITY CHECK</span><h2>Delete guest?</h2></div>
-      <button class="close" onclick="closeModal()">×</button>
     </div>
-    <p style="margin:0;color:#8b97ad">Deleting <b style="color:#fff">${esc(u.name)}</b> will permanently remove this guest from this browser. Enter the admin password to continue.</p>
+    <p style="margin:0;color:#8b97ad;line-height: 22px;">Deleting <b style="color:#fff">${esc(u.name)}</b> will permanently remove this guest from this browser. Enter the admin password to continue.</p>
     <div class="formGrid" style="margin-top:20px">
       <label class="field">
         <span>Admin password</span>
@@ -2393,7 +3852,6 @@ function openClearAllGuestsModal(){
   openModal(`
     <div class="modalHead">
       <div><span class="eyebrow" style="color:#ef4444">DANGER ZONE</span><h2>Clear All Guests? (সব গেস্ট মুছুন)</h2></div>
-      <button class="close" onclick="closeModal()">×</button>
     </div>
     <p style="margin:0;color:#fca5a5;line-height:1.5">
       <b>সতর্কবার্তা:</b> এটি ক্লাউড ডাটাবেজ এবং সকল ডিভাইস থেকে মোট <b>${users.length} জন গেস্টের</b> সমস্ত ডাটা ও কিউআর কোড স্থায়ীভাবে মুছে ফেলবে! এই কাজ রিভার্স করা যাবে না।
@@ -2432,6 +3890,7 @@ function idInitials(name){return String(name||'G').trim().split(/\s+/).slice(0,2
 function openIDCard(id){
   const u=users.find(x=>x.guestId===id);
   if(!u)return;
+  u.qrValue=buildQrValue(u);
   const institute=esc(settings.instituteName||settings.venue||defaults.instituteName);
   const eventName=esc(settings.eventName||defaults.eventName);
   const eventDateTime=esc(fmtDateTime(settings.eventDate,settings.eventTime));
@@ -2445,6 +3904,30 @@ function openIDCard(id){
   const guestType=u.guestType||'Individual';
   const personCount=Math.max(1,Number(u.personCount)||(guestType==='Couple'?2:guestType==='Family'?3:1));
   const personsText=personCount===1?'1 Person':`${personCount} Persons`;
+  const allFormFields = getFormFields();
+  const customFieldsToShow=allFormFields.filter(f=>!f.isDefault&&f.showOnIdCard&&u.customFields&&u.customFields[f.id]);
+  const isPhoneActive = allFormFields.some(x => x.id === 'phone' && x.enabled !== false);
+  const isEmailActive = allFormFields.some(x => x.id === 'email' && x.enabled !== false);
+  const isTShirtActive = allFormFields.some(x => x.id === 'tShirtSize' && x.enabled !== false);
+  const tShirtVal = getGuestTShirtSize(u);
+
+  // Dynamic top badge field
+  let topTagHTML = '';
+  const topBadgeFieldId = settings.idCardTopBadgeField || '';
+  if(topBadgeFieldId && topBadgeFieldId !== 'none'){
+    const tagField = allFormFields.find(x => x.id === topBadgeFieldId && x.enabled !== false);
+    if(tagField){
+      let tagVal = '';
+      if(tagField.isDefault){
+        tagVal = tagField.id === 'tShirtSize' ? tShirtVal : (u[tagField.id] || u[tagField.key] || '');
+      } else if(u.customFields){
+        tagVal = u.customFields[tagField.id] || u.customFields[tagField.key] || '';
+      }
+      if(String(tagVal).trim() && tagVal !== '—'){
+        topTagHTML = `<div class="idCardBatchTag"><small>${esc((tagField.label || '').toUpperCase())}</small> <b>${esc(tagVal)}</b></div>`;
+      }
+    }
+  }
 
   openModal(`
     <div class="modalHead">
@@ -2453,7 +3936,6 @@ function openIDCard(id){
         <h2>${esc(u.name)} — ID Card</h2>
         <p>Front & Back preview with instant PDF and image download.</p>
       </div>
-      <button class="close" onclick="closeModal()" title="Close">×</button>
     </div>
 
     <div class="idCardPreview">
@@ -2475,7 +3957,7 @@ function openIDCard(id){
                   </div>
                   <div class="idCardTopMeta">
                     <span class="idCardEntryBadge">${esc(entryType)}</span>
-                    <div class="idCardBatchTag"><small>SSC BATCH</small> <b>${esc(u.sscBatch||'2021')}</b></div>
+                    ${topTagHTML}
                   </div>
                 </div>
 
@@ -2526,20 +4008,22 @@ function openIDCard(id){
                   </span>
                   <span class="idCardInfoRight">${esc(u.guestId)}</span>
                 </div>
+                ${isPhoneActive ? `
                 <div class="idCardInfoRow">
                   <span class="idCardInfoLeft">
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
                     Phone Number
                   </span>
                   <span class="idCardInfoRight">${esc(u.phone||'N/A')}</span>
-                </div>
+                </div>` : ''}
+                ${isEmailActive ? `
                 <div class="idCardInfoRow">
                   <span class="idCardInfoLeft">
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
                     Email Address
                   </span>
                   <span class="idCardInfoRight" style="font-size:9.5px">${esc(u.email||'N/A')}</span>
-                </div>
+                </div>` : ''}
               </div>
             </div>
 
@@ -2612,6 +4096,25 @@ function openIDCard(id){
                     <b class="idCardBackDetailValue">${personsText} · ${esc(entryType)} (${esc(guestType)})</b>
                   </div>
                 </div>
+                ${isTShirtActive ? `
+                <div class="idCardBackDetailItem">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M20.38 3.46 16 2a4 4 0 0 1-8 0L3.62 3.46a2 2 0 0 0-1.34 2.23l.58 3.47a1 1 0 0 0 .99.84H6v10c0 1.1.9 2 2 2h8a2 2 0 0 0 2-2V10h2.15a1 1 0 0 0 .99-.84l.58-3.47a2 2 0 0 0-1.34-2.23z"/>
+                  </svg>
+                  <div class="idCardBackDetailText">
+                    <span class="idCardBackDetailLabel">T-SHIRT SIZE</span>
+                    <b class="idCardBackDetailValue">${esc((tShirtVal && tShirtVal !== '—') ? tShirtVal : 'N/A')}</b>
+                  </div>
+                </div>` : ''}
+                ${customFieldsToShow.map(cf => `
+                  <div class="idCardBackDetailItem">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+                    <div class="idCardBackDetailText">
+                      <span class="idCardBackDetailLabel">${esc(cf.label.toUpperCase())}</span>
+                      <b class="idCardBackDetailValue">${esc(u.customFields[cf.id])}</b>
+                    </div>
+                  </div>
+                `).join('')}
               </div>
 
               <div class="idCardScriptRow">
@@ -2717,7 +4220,15 @@ async function openGuest(id){
   if(!u)return;
   const count=getGuestCount(u);
   const sub=Math.max(0,count-1);
-  openModal(`<div class="modalHead"><div style="display:flex;align-items:center;gap:12px">${u.profilePhoto?`<img src="${esc(u.profilePhoto)}" style="width:48px;height:48px;border-radius:12px;object-fit:cover;border:2px solid #6366f1;flex-shrink:0" alt="${esc(u.name)}">`:''}<div><span class="eyebrow">GUEST PASS · QR GENERATED</span><h2>${esc(u.name)}</h2></div></div><button class="close" onclick="closeModal()">×</button></div><div class="passGrid"><div class="qrBox"><div id="qrCanvas" class="qrCanvas"></div><span class="serialBadge">GUEST #${String(u.serial).padStart(2,'0')}</span><code>${esc(u.guestId)}</code><small>ONE-TIME ENTRY QR</small></div><div><div class="infoRow"><span>Guest number</span><b>#${String(u.serial).padStart(2,'0')}</b></div><div class="infoRow"><span>Permanent Guest ID</span><b>${esc(u.guestId)}</b></div><div class="infoRow"><span>Entry code</span><b>${esc(u.code)}</b></div><div class="infoRow"><span>ID Card Password</span><b style="color:#f3c65b">🔑 ${esc(u.idCardPassword||'1234')}</b></div><div class="infoRow"><span>Guest Type</span><b>${esc(u.guestType||'Individual')}</b></div><div class="infoRow"><span>Persons &amp; Sub-Guests</span><b>${count} জন (${sub>0?`১ মূল + ${sub} সাব`: 'একক'})</b></div><div class="infoRow"><span>Phone</span><b>${esc(u.phone)}</b></div><div class="infoRow"><span>Email</span><b>${esc(u.email||'—')}</b></div><div class="infoRow"><span>Status</span><b class="${u.checkedIn?'greenText':''}">${u.checkedIn?'✓ Verified / Checked in':'◷ Pending'}</b></div>${u.checkedAt?`<div class="infoRow"><span>Verified</span><b>${formatBDDateTime(u.checkedAt)} · ${esc(u.scanner)}</b></div>`:''}<div class="share"><button class="primary" style="background:linear-gradient(135deg,#7d6cff,#5046e5)" onclick="openIDCard('${u.guestId}')">🪪 ID Card</button><a class="secondary" target="_blank" rel="noreferrer" href="https://wa.me/${normalizePhone(u.phone)}?text=${encodeURIComponent(inviteMessage(u))}">WhatsApp</a><button class="secondary" onclick="sendGuestEmail('${u.guestId}')">Email QR</button><button class="secondary" onclick="shareQR('${u.guestId}')">Share QR</button><button class="secondary" onclick="window.print()">Print</button><button class="primary" onclick="downloadQR('${u.guestId}')">Download QR</button></div><div class="delivery">WhatsApp opens a ready-to-send invitation. <b>Email QR</b> sends the QR image through the configured EmailJS service. <b>Share QR</b> shares the actual QR image on supported devices.</div>${isAdmin?`<div class="danger"><button onclick="openEdit('${u.guestId}')">Edit guest</button><button onclick="deleteUser('${u.guestId}')">Delete guest</button></div>`:''}</div></div>`);
+  const allFields = getFormFields();
+  const customEntries = Object.entries(u.customFields || {});
+  const customRowsHTML = customEntries.map(([cfId, cfVal]) => {
+    if(!cfVal) return '';
+    const cfDef = allFields.find(x => x.id === cfId);
+    const label = cfDef ? cfDef.label : cfId;
+    return `<div class="infoRow"><span>${esc(label)}</span><b>${esc(cfVal)}</b></div>`;
+  }).join('');
+  openModal(`<div class="modalHead"><div style="display:flex;align-items:center;gap:12px">${u.profilePhoto?`<img src="${esc(u.profilePhoto)}" style="width:48px;height:48px;border-radius:12px;object-fit:cover;border:2px solid #6366f1;flex-shrink:0" alt="${esc(u.name)}">`:''}<div><span class="eyebrow">GUEST PASS · QR GENERATED</span><h2>${esc(u.name)}</h2></div></div></div><div class="passGrid"><div class="qrBox"><div id="qrCanvas" class="qrCanvas"></div><span class="serialBadge">GUEST #${String(u.serial).padStart(2,'0')}</span><code>${esc(u.guestId)}</code><small>ONE-TIME ENTRY QR</small></div><div><div class="infoRow"><span>Guest number</span><b>#${String(u.serial).padStart(2,'0')}</b></div><div class="infoRow"><span>Permanent Guest ID</span><b>${esc(u.guestId)}</b></div><div class="infoRow"><span>Entry code</span><b>${esc(u.code)}</b></div><div class="infoRow"><span>ID Card Password</span><b style="color:#f3c65b">🔑 ${esc(u.idCardPassword||'1234')}</b></div><div class="infoRow"><span>Guest Type</span><b>${esc(u.guestType||'Individual')}</b></div><div class="infoRow"><span>Persons &amp; Sub-Guests</span><b>${count} জন (${sub>0?`১ মূল + ${sub} সাব`: 'একক'})</b></div><div class="infoRow"><span>Phone</span><b>${esc(u.phone)}</b></div><div class="infoRow"><span>Email</span><b>${esc(u.email||'—')}</b></div>${customRowsHTML}<div class="infoRow"><span>Status</span><b class="${u.checkedIn?'greenText':''}">${u.checkedIn?'✓ Verified / Checked in':'◷ Pending'}</b></div><div class="infoRow"><span>T-Shirt Distribution</span><b style="color:${u.tShirtClaimed?'#34d399':'#fbbf24'}">${u.tShirtClaimed ? `✓ Yes (Handed: ${esc(getGuestTShirtSize(u))})` : `◷ No (Pending: ${esc(getGuestTShirtSize(u))})`}</b></div>${u.checkedAt?`<div class="infoRow"><span>Verified</span><b>${formatBDDateTime(u.checkedAt)} · ${esc(u.scanner)}</b></div>`:''}<div class="share"><button class="primary" style="background:linear-gradient(135deg,#7d6cff,#5046e5)" onclick="openIDCard('${u.guestId}')">🪪 ID Card</button><a class="secondary" target="_blank" rel="noreferrer" href="https://wa.me/${normalizePhone(u.phone)}?text=${encodeURIComponent(inviteMessage(u))}">WhatsApp</a><button class="secondary" onclick="sendGuestEmail('${u.guestId}')">Email QR</button><button class="secondary" onclick="shareQR('${u.guestId}')">Share QR</button><button class="secondary" onclick="window.print()">Print</button><button class="primary" onclick="downloadQR('${u.guestId}')">Download QR</button></div><div class="delivery">WhatsApp opens a ready-to-send invitation. <b>Email QR</b> sends the QR image through the configured EmailJS service. <b>Share QR</b> shares the actual QR image on supported devices.</div>${isAdmin?`<div class="danger"><button onclick="openEdit('${u.guestId}')">Edit guest</button><button onclick="deleteUser('${u.guestId}')">Delete guest</button></div>`:''}</div></div>`);
   setTimeout(()=>{const q=document.getElementById('qrCanvas');if(window.QRCode&&q)new QRCode(q,{text:u.qrValue,width:230,height:230,colorDark:'#000',colorLight:'#fff',correctLevel:QRCode.CorrectLevel.H})},50);
 }
 function inviteMessage(u){const qr=qrImageUrl(u);return `You're invited to ${settings.eventName}.\n\nGuest: ${u.name}\nGuest number: #${String(u.serial).padStart(2,'0')}\nGuest ID: ${u.guestId}\nEntry Code: ${u.code}\nPhone: ${u.phone||'N/A'}\nEmail: ${u.email||'N/A'}\n\nEvent: ${settings.eventName}\nDate & Time: ${fmtDateTime(settings.eventDate,settings.eventTime)}\nVenue: ${settings.venue||'N/A'}\n\nQR Code: ${qr}\n\nPlease open the QR Code link above and present the QR code at check-in. This QR code is valid for ONE entry only. Do not share it with anyone else.`}
@@ -2748,7 +4259,6 @@ function openCloudModal(){
         <span class="eyebrow">REALTIME CLOUD SYNCHRONIZATION</span>
         <h2>☁️ লাইভ ক্লাউড ডাটাবেজ সেটিংস</h2>
       </div>
-      <button class="close" onclick="closeModal()">×</button>
     </div>
 
     <div class="cloudModalBox">
@@ -2873,7 +4383,206 @@ function copyFirebaseCodeForIndexHtml(){
   });
 }
 
-function settingsHTML(){return `<section class="content settingsSection"><div class="panel formPanel"><span class="eyebrow">EVENT CONFIGURATION</span><h2>Event & Owner Settings</h2><p>Set event details, published date & time, venue and security password. Changes automatically reflect on all ID cards.</p><div class="formGrid"><label class="field"><span>Event name <b style="color:#ff8a8a">*</b></span><input id="sName" value="${esc(settings.eventName)}" placeholder="হীরক জয়ন্তী ২০২৭"></label><label class="field"><span>School / College / Institute Name</span><input id="sInstitute" value="${esc(settings.instituteName||settings.venue||defaults.instituteName)}" placeholder="অলিপুর আমডাঙ্গা স্কুল এন্ড কলেজ"><small>আইডি কার্ডের ফ্রন্ট ও ব্যাক পেজের উপরে বড় করে প্রদর্শিত হবে।</small></label><label class="field"><span>Event date <b style="color:#ff8a8a">*</b></span><input type="date" id="sDate" value="${esc(settings.eventDate)}"></label><label class="field"><span>Event time <b style="color:#ff8a8a">*</b></span><input id="sTime" value="${esc(settings.eventTime||'10:00 AM')}" placeholder="e.g. 10:00 AM"></label><label class="field"><span>Venue <b style="color:#ff8a8a">*</b></span><input id="sVenue" value="${esc(settings.venue)}" placeholder="Event Venue"></label><label class="field"><span>Organized By</span><input id="sOrganizedBy" value="${esc(settings.organizedBy||'SSC Batch 2018 Alumni')}" placeholder="e.g. SSC Batch 2018 Alumni"></label><label class="field"><span>Event Slogan (Front side)</span><input id="sEventSlogan" value="${esc(settings.eventSlogan||'Reconnect · Remember · Relive')}" placeholder="e.g. Reconnect · Remember · Relive"></label><label class="field"><span>Event Quote (Back side)</span><input id="sEventQuote" value="${esc(settings.eventQuote||'Same Friends New Stories')}" placeholder="e.g. Same Friends New Stories"></label><label class="field"><span>Event Motto (Wave footer)</span><input id="sEventMotto" value="${esc(settings.eventMotto||'A GREATER TOMORROW THROUGH FRIENDSHIP')}" placeholder="Motto text"></label><label class="field"><span>Scanner name</span><input id="sScanner" value="${esc(settings.scannerName)}"></label><label class="field"><span>Owner / Client name</span><input id="sOwnerName" value="${esc(settings.ownerName||'')}" placeholder="Event Owner"></label><label class="field"><span>Owner / Client email</span><input type="email" id="sOwnerEmail" value="${esc(settings.ownerEmail||'')}" placeholder="owner@example.com"></label><label class="field"><span>Owner / Client phone</span><input id="sOwnerPhone" value="${esc(settings.ownerPhone||'')}" placeholder="+8801XXXXXXXXX"></label></div><div class="settingsBlock"><h3>Email QR delivery</h3><p>For a real email with the QR image embedded, connect EmailJS below. The email service account controls the actual sender mailbox; the owner email is used as the reply-to/contact address.</p><div class="formGrid"><label class="field"><span>EmailJS Public Key</span><input id="sEmailPublic" value="${esc(settings.emailPublicKey||'')}" placeholder="Your EmailJS public key"></label><label class="field"><span>EmailJS Service ID</span><input id="sEmailService" value="${esc(settings.emailServiceId||'')}" placeholder="service_xxxxx"></label><label class="field"><span>EmailJS Template ID</span><input id="sEmailTemplate" value="${esc(settings.emailTemplateId||'')}" placeholder="template_xxxxx"></label><label class="field"><span>QR image size</span><input id="sQrSize" value="${esc(settings.qrSize||'400')}" inputmode="numeric" placeholder="400"></label></div><div class="formActions"><button class="secondary" onclick="testEmailConfig()">Send test email</button></div></div><div class="settingsBlock"><h3>🔐 Admin Password &amp; Security</h3><p>অ্যাডমিন পাসওয়ার্ড দিয়ে কন্ট্রোল সেন্টার, সেটিংস এবং গেস্ট ডিলিট সুরক্ষিত থাকে। ডিফল্ট পাসওয়ার্ড: <b>12345</b>। নিচে বর্তমান ও নতুন পাসওয়ার্ড দিয়ে পরিবর্তন করতে পারেন।</p><div class="formGrid"><label class="field"><span>Current / Old Admin Password</span><div class="passwordWrap"><input type="password" id="sOldAdminPassword" placeholder="Enter current password (default: 12345)"><button type="button" class="toggleEyeBtn" onclick="togglePasswordVisibility('sOldAdminPassword', this)" title="Show/Hide password">${EYE_OPEN_SVG}</button></div><small>পাসওয়ার্ড পরিবর্তনের জন্য বর্তমান পাসওয়ার্ড দিতে হবে।</small></label><label class="field"><span>New Admin Password</span><div class="passwordWrap"><input type="password" id="sNewAdminPassword" placeholder="Leave blank to keep current"><button type="button" class="toggleEyeBtn" onclick="togglePasswordVisibility('sNewAdminPassword', this)" title="Show/Hide password">${EYE_OPEN_SVG}</button></div><small>পরিবর্তন করতে না চাইলে ফাঁকা রাখুন (সর্বনিম্ন ৪ অক্ষর)।</small></label></div></div><div class="formActions"><button class="primary" onclick="saveSettings()">Save settings</button></div></div><div class="panel note"><h3>One-time QR verification</h3><p>Every guest has an immutable serial number, permanent Guest ID, unique entry code and QR value. The first valid scan changes the status to Verified / Attended and stores the scanner name + time. Any later scan shows <b>Already Attended</b> and is blocked. All Guests and Checked In are separate views.</p></div></section>`}
+function settingsHTML(){
+  const fields = getFormFields();
+  const enabledCount = fields.filter(f => f.enabled !== false).length;
+
+  const formBuilderHTML = `
+    <div class="panel formPanel" style="height:100%;display:flex;flex-direction:column">
+      <div class="panelHead" style="padding:0 0 16px;border-bottom:1px solid var(--line);display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:12px">
+        <div>
+          <span class="eyebrow">FORM BUILDER · DRAG &amp; DROP REORDER</span>
+          <h2 style="margin-top:4px">📋 রেজিস্ট্রেশন ফর্ম ফিল্ডস</h2>
+          <p style="font-size:12px;color:#8996ad;margin-top:4px">
+            ড্রাগ অ্যান্ড ড্রপ করে বা ▲ / ▼ বোতাম দিয়ে ফিল্ডের ক্রম সাজান। আইডি কার্ডে কোন ডাটা যাবে তা ব্যাজ দিয়ে চিহ্নিত।
+          </p>
+        </div>
+        <button type="button" class="primary" style="font-size:12px;padding:9px 14px;white-space:nowrap;display:flex;align-items:center;gap:6px" onclick="openAddCustomFieldModal()">
+          <span>＋</span> <span>নতুন ফিল্ড যোগ</span>
+        </button>
+      </div>
+
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-top:14px;margin-bottom:8px">
+        <span style="font-size:11.5px;font-weight:800;color:#94a3b8">
+          মোট ফিল্ড: <b style="color:#fff">${fields.length}</b> টি (সক্রিয়: <b style="color:#34d399">${enabledCount}</b> টি)
+        </span>
+        <button type="button" class="secondary" style="font-size:11px;padding:4px 10px;color:#a5b4fc" onclick="openAdd()">
+          👁️ ফর্ম প্রিভিউ দেখুন
+        </button>
+      </div>
+
+      <div style="background:#131f38;border:1px solid #233554;border-radius:10px;padding:10px 14px;margin-top:10px;margin-bottom:12px">
+        <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px">
+          <div>
+            <span style="font-size:11.5px;font-weight:900;color:#60a5fa;display:flex;align-items:center;gap:6px">
+              📌 আইডি কার্ড ফ্রন্ট টপ ব্যাজ (Top Badge beside VIP)
+            </span>
+            <small style="color:#8ba0be;font-size:10px;display:block;margin-top:2px">
+              যে ফিল্ড নির্বাচন করবেন তা আইডি কার্ডে VIP ব্যাজের পাশে দেখাবে। বন্ধ রাখলে VIP একা একদম ডানে থাকবে।
+            </small>
+          </div>
+          <select style="background:#0a101d;border:1.5px solid #3b82f6;color:#fff;border-radius:7px;padding:6px 10px;font-size:11.5px;font-weight:700" onchange="setFieldAsTopBadge(this.value, this.value !== 'none')">
+            <option value="none" ${(!settings.idCardTopBadgeField || settings.idCardTopBadgeField === 'none') ? 'selected' : ''}>-- কোনো টপ ব্যাজ থাকবে না (VIP একদম ডানে) --</option>
+            ${fields.filter(f => f.enabled !== false).map(f => `<option value="${f.id}" ${settings.idCardTopBadgeField === f.id ? 'selected' : ''}>${esc(f.label)} (${f.id})</option>`).join('')}
+          </select>
+        </div>
+      </div>
+
+      <div style="display:flex;flex-direction:column;gap:12px;margin-top:8px;flex:1" id="formFieldsListWrap">
+        ${fields.map((f, idx) => {
+          const isEnabled = f.enabled !== false;
+          const isCustom = !f.isDefault;
+          const isTopBadge = (settings.idCardTopBadgeField === f.id && isEnabled);
+          const typeName = f.type ? f.type.toUpperCase() : 'TEXT';
+          const meta = getFieldIdCardMeta(f);
+          return `
+            <div class="fieldCard ${isEnabled ? '' : 'disabled'}"
+                 draggable="true"
+                 data-field-id="${f.id}"
+                 ondragstart="handleFieldDragStart(event, '${f.id}')"
+                 ondragover="handleFieldDragOver(event)"
+                 ondragenter="handleFieldDragEnter(event, '${f.id}')"
+                 ondragleave="handleFieldDragLeave(event)"
+                 ondrop="handleFieldDrop(event, '${f.id}')"
+                 ondragend="handleFieldDragEnd(event)">
+              <div class="fieldCardTop">
+                <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">
+                  <div class="dragHandle" title="মাউস চেপে ধরে উপরে বা নিচে ড্রাগ করুন (Drag to Reorder)">
+                    <span class="dragGripIcon">⠿</span>
+                    <span class="fieldOrderNum">#${idx + 1}</span>
+                  </div>
+                  <div class="fieldMoveBtns">
+                    <button type="button" class="btnMove" onclick="moveFormField('${f.id}', -1)" ${idx === 0 ? 'disabled' : ''} title="১ ধাপ উপরে নিন">▲</button>
+                    <button type="button" class="btnMove" onclick="moveFormField('${f.id}', 1)" ${idx === fields.length - 1 ? 'disabled' : ''} title="১ ধাপ নিচে নিন">▼</button>
+                  </div>
+                  <span class="fieldTypeBadge ${isCustom ? 'custom' : ''}">${isCustom ? '⭐ ' : ''}${typeName}</span>
+                  <span class="fieldIdBadge ${meta.isTop ? 'isTop' : meta.isSec ? 'secKey' : meta.onCard ? 'onCard' : 'formOnly'}">
+                    ${meta.text}
+                  </span>
+                </div>
+                <div style="display:flex;align-items:center;gap:10px">
+                  <span style="font-size:11px;font-weight:800;color:${isEnabled ? '#34d399' : '#64748b'}">${isEnabled ? '🟢 দেখাবে' : '⚪ বন্ধ'}</span>
+                  <label class="formSwitch" title="${isEnabled ? 'ফিল্ডটি বন্ধ করতে ক্লিক করুন' : 'ফিল্ডটি চালু করতে ক্লিক করুন'}">
+                    <input type="checkbox" ${isEnabled ? 'checked' : ''} onchange="toggleFieldEnabled('${f.id}', this.checked)">
+                    <span class="formSlider"></span>
+                  </label>
+                </div>
+              </div>
+
+              <div>
+                <label style="display:block;font-size:10px;color:#8996ad;margin-bottom:4px;font-weight:700">ফিল্ডের নাম / লেবেল (Label Name):</label>
+                <input class="fieldLabelInput" value="${esc(f.label)}" onchange="updateFieldLabel('${f.id}', this.value)" placeholder="লেবেলের নাম">
+              </div>
+
+              <div class="idCardLocationTag">
+                <span>📍 অবস্থান:</span>
+                <b>${meta.desc}</b>
+              </div>
+
+              ${f.type === 'select' ? `
+                <div style="margin-top:2px">
+                  <label style="display:block;font-size:10px;color:#8996ad;margin-bottom:4px;font-weight:700">ড্রপডাউন অপশনসমূহ (কমা দিয়ে আলাদা করুন):</label>
+                  <input class="fieldOptionsInput" value="${esc((f.options || []).join(', '))}" onchange="updateFieldOptions('${f.id}', this.value)" placeholder="যেমন: General, VIP, Guest অথবা S, M, L, XL">
+                </div>
+              ` : ''}
+
+              <div class="fieldCardBottom">
+                <div style="display:flex;align-items:center;gap:14px;flex-wrap:wrap">
+                  <label style="display:inline-flex;align-items:center;gap:6px;cursor:pointer">
+                    <input type="checkbox" ${f.required ? 'checked' : ''} onchange="updateFieldRequired('${f.id}', this.checked)" style="accent-color:#6366f1">
+                    <span>বাধ্যতামূলক (Required)</span>
+                  </label>
+                  <label style="display:inline-flex;align-items:center;gap:6px;cursor:pointer;color:${isTopBadge ? '#facc15' : '#94a3b8'};font-size:11px;font-weight:700" title="আইডি কার্ড ফ্রন্ট পেজের টপে VIP ব্যাজের পাশে দেখাবে">
+                    <input type="checkbox" ${isTopBadge ? 'checked' : ''} onchange="setFieldAsTopBadge('${f.id}', this.checked)" style="accent-color:#eab308">
+                    <span>📌 টপ ব্যাজ (VIP-এর পাশে)</span>
+                  </label>
+                  ${isCustom ? `
+                    <label class="idCardCustomToggle">
+                      <input type="checkbox" ${f.showOnIdCard ? 'checked' : ''} onchange="toggleFieldShowOnIdCard('${f.id}', this.checked)" style="accent-color:#3b82f6">
+                      <span>🪪 আইডি কার্ডের পেছনে দেখাবে</span>
+                    </label>
+                  ` : ''}
+                </div>
+                ${isCustom ? `
+                  <button type="button" class="fieldDeleteBtn" onclick="deleteCustomField('${f.id}')" title="ফিল্ডটি মুছে ফেলুন">🗑️ মুছে ফেলুন (Delete)</button>
+                ` : `
+                  <small style="color:#64748b;font-size:10px">সিস্টেম ফিল্ড</small>
+                `}
+              </div>
+            </div>
+          `;
+        }).join('')}
+      </div>
+
+      <div style="display:flex;justify-content:space-between;align-items:center;gap:10px;margin-top:22px;padding-top:16px;border-top:1px solid var(--line);flex-wrap:wrap">
+        <button type="button" class="secondary" style="font-size:11px" onclick="resetFormFieldsToDefault()">🔄 ডিফল্ট ফিল্ডে রিসেট</button>
+        <div style="display:flex;gap:8px">
+          <button type="button" class="secondary" style="font-size:11px;color:#a5b4fc" onclick="openAdd()">👁️ ফর্ম প্রিভিউ</button>
+          <button type="button" class="primary" style="font-size:11px" onclick="openAddCustomFieldModal()">＋ নতুন ফিল্ড যোগ</button>
+        </div>
+      </div>
+    </div>
+  `;
+
+  return `
+    <section class="content settingsSection">
+      <div class="settingsGrid">
+        <!-- Left Column: Event & Owner Settings -->
+        <div style="display:flex;flex-direction:column;gap:22px">
+          <div class="panel formPanel">
+            <span class="eyebrow">EVENT CONFIGURATION</span>
+            <h2>Event &amp; Owner Settings</h2>
+            <p>Set event details, published date &amp; time, venue and security password. Changes automatically reflect on all ID cards.</p>
+            <div class="formGrid">
+              <label class="field"><span>Event name <b style="color:#ff8a8a">*</b></span><input id="sName" value="${esc(settings.eventName)}" placeholder="WordPress Community Meetup 2026"></label>
+              <label class="field"><span>School / College / Institute Name</span><input id="sInstitute" value="${esc(settings.instituteName||settings.venue||defaults.instituteName)}" placeholder="WordPress Community Bangladesh"><small>আইডি কার্ডের ফ্রন্ট ও ব্যাক পেজের উপরে বড় করে প্রদর্শিত হবে।</small></label>
+              <label class="field"><span>Event date <b style="color:#ff8a8a">*</b></span><input type="date" id="sDate" value="${esc(settings.eventDate||'2026-11-11')}"></label>
+              <label class="field"><span>Event time <b style="color:#ff8a8a">*</b></span><input id="sTime" value="${esc(settings.eventTime||'06:00 AM')}" placeholder="06:00 AM"></label>
+              <label class="field"><span>Venue <b style="color:#ff8a8a">*</b></span><input id="sVenue" value="${esc(settings.venue||'Dhaka, Bangladesh')}" placeholder="Dhaka, Bangladesh"></label>
+              <label class="field"><span>Organized By</span><input id="sOrganizedBy" value="${esc(settings.organizedBy||'ThemeOri')}" placeholder="ThemeOri"></label>
+              <label class="field"><span>Event Slogan (Front side)</span><input id="sEventSlogan" value="${esc(settings.eventSlogan||'Learn · Connect · Contribute')}" placeholder="Learn · Connect · Contribute"></label>
+              <label class="field"><span>Event Quote (Back side)</span><input id="sEventQuote" value="${esc(settings.eventQuote||'Build Together, Grow Together')}" placeholder="Build Together, Grow Together"></label>
+              <label class="field"><span>Event Motto (Wave footer)</span><input id="sEventMotto" value="${esc(settings.eventMotto||'OPEN SOURCE · COMMUNITY · WORDPRESS')}" placeholder="OPEN SOURCE · COMMUNITY · WORDPRESS"></label>
+              <label class="field"><span>Scanner name</span><input id="sScanner" value="${esc(settings.scannerName||'Registration Desk')}" placeholder="Registration Desk"></label>
+              <label class="field"><span>Owner / Client name</span><input id="sOwnerName" value="${esc(settings.ownerName||'')}" placeholder="Event Owner"></label>
+              <label class="field"><span>Owner / Client email</span><input type="email" id="sOwnerEmail" value="${esc(settings.ownerEmail||'')}" placeholder="owner@example.com"></label>
+              <label class="field"><span>Owner / Client phone</span><input id="sOwnerPhone" value="${esc(settings.ownerPhone||'')}" placeholder="+8801XXXXXXXXX"></label>
+            </div>
+            <div class="settingsBlock">
+              <h3>Email QR delivery</h3>
+              <p>For a real email with the QR image embedded, connect EmailJS below. The email service account controls the actual sender mailbox; the owner email is used as the reply-to/contact address.</p>
+              <div class="formGrid">
+                <label class="field"><span>EmailJS Public Key</span><input id="sEmailPublic" value="${esc(settings.emailPublicKey||'')}" placeholder="Your EmailJS public key"></label>
+                <label class="field"><span>EmailJS Service ID</span><input id="sEmailService" value="${esc(settings.emailServiceId||'')}" placeholder="service_xxxxx"></label>
+                <label class="field"><span>EmailJS Template ID</span><input id="sEmailTemplate" value="${esc(settings.emailTemplateId||'')}" placeholder="template_xxxxx"></label>
+                <label class="field"><span>QR image size</span><input id="sQrSize" value="${esc(settings.qrSize||'400')}" inputmode="numeric" placeholder="400"></label>
+              </div>
+              <div class="formActions"><button class="secondary" onclick="testEmailConfig()">Send test email</button></div>
+            </div>
+            <div class="settingsBlock">
+              <h3>🔐 Admin Password &amp; Security</h3>
+              <p>অ্যাডমিন পাসওয়ার্ড দিয়ে কন্ট্রোল সেন্টার, সেটিংস এবং গেস্ট ডিলিট সুরক্ষিত থাকে। ডিফল্ট পাসওয়ার্ড: <b>12345</b>। নিচে বর্তমান ও নতুন পাসওয়ার্ড দিয়ে পরিবর্তন করতে পারেন।</p>
+              <div class="formGrid">
+                <label class="field"><span>Current / Old Admin Password</span><div class="passwordWrap"><input type="password" id="sOldAdminPassword" placeholder="Enter current password (default: 12345)"><button type="button" class="toggleEyeBtn" onclick="togglePasswordVisibility('sOldAdminPassword', this)" title="Show/Hide password">${EYE_OPEN_SVG}</button></div><small>পাসওয়ার্ড পরিবর্তনের জন্য বর্তমান পাসওয়ার্ড দিতে হবে।</small></label>
+                <label class="field"><span>New Admin Password</span><div class="passwordWrap"><input type="password" id="sNewAdminPassword" placeholder="Leave blank to keep current"><button type="button" class="toggleEyeBtn" onclick="togglePasswordVisibility('sNewAdminPassword', this)" title="Show/Hide password">${EYE_OPEN_SVG}</button></div><small>পরিবর্তন করতে না চাইলে ফাঁকা রাখুন (সর্বনিম্ন ৪ অক্ষর)।</small></label>
+              </div>
+            </div>
+            <div class="formActions"><button class="primary" onclick="saveSettings()">Save settings</button></div>
+          </div>
+          <div class="panel note">
+            <h3>One-time QR verification</h3>
+            <p>Every guest has an immutable serial number, permanent Guest ID, unique entry code and QR value. The first valid scan changes the status to Verified / Attended and stores the scanner name + time. Any later scan shows <b>Already Attended</b> and is blocked. All Guests and Checked In are separate views.</p>
+          </div>
+        </div>
+
+        <!-- Right Column: Registration Form Fields Builder -->
+        <div>
+          ${formBuilderHTML}
+        </div>
+      </div>
+    </section>
+  `;
+}
 async function saveSettings(){
   const oldPass=document.getElementById('sOldAdminPassword')?.value||'';
   const newPass=document.getElementById('sNewAdminPassword')?.value||'';
@@ -2897,7 +4606,7 @@ async function saveSettings(){
     eventSlogan:document.getElementById('sEventSlogan').value||defaults.eventSlogan,
     eventQuote:document.getElementById('sEventQuote').value||defaults.eventQuote,
     eventMotto:document.getElementById('sEventMotto').value||defaults.eventMotto,
-    scannerName:document.getElementById('sScanner').value||'Front Desk',
+    scannerName:document.getElementById('sScanner')?.value||defaults.scannerName,
     ownerName:document.getElementById('sOwnerName').value||'',
     ownerEmail:document.getElementById('sOwnerEmail').value||'',
     ownerPhone:document.getElementById('sOwnerPhone').value||'',
@@ -2915,7 +4624,15 @@ function emailParams(u){const qr=qrImageUrl(u);return {to_email:u.email,to_name:
 async function sendGuestEmail(id){const u=users.find(x=>x.guestId===id);if(!u)return;if(!settings.emailPublicKey||!settings.emailServiceId||!settings.emailTemplateId){toast('Set EmailJS Public Key, Service ID and Template ID in Settings first','bad');navigate('settings');return}try{if(window.emailjs)window.emailjs.init({publicKey:settings.emailPublicKey});await emailjs.send(settings.emailServiceId,settings.emailTemplateId,emailParams(u));toast('QR email sent to '+u.email)}catch(err){toast('Email send failed. Check EmailJS settings/template.','bad');console.error(err)}}
 async function testEmailConfig(){const email=settings.ownerEmail||prompt('Enter a test email address');if(!email)return;if(!settings.emailPublicKey||!settings.emailServiceId||!settings.emailTemplateId){toast('Fill EmailJS Public Key, Service ID and Template ID first','bad');return}const fake={name:settings.ownerName||'Event Owner',email,serial:0,guestId:'TEST-GUEST',code:'TEST-0000',qrValue:'EVENTPASS|TEST-GUEST'};try{if(window.emailjs)window.emailjs.init({publicKey:settings.emailPublicKey});await emailjs.send(settings.emailServiceId,settings.emailTemplateId,emailParams(fake));toast('Test email sent')}catch(err){toast('Test email failed. Check your EmailJS template variables.','bad');console.error(err)}}
 function exportCSV(){
-  const rows=[['Serial','Permanent Guest ID','Name','Total Persons','Primary Guest','Sub-Guests','Guest Type','Entry Type','Entry Code','ID Card Pass','Phone','Email','Status','Checked At','Scanner'],...users.sort((a,b)=>a.serial-b.serial).map(u=>{const c=getGuestCount(u);const sub=Math.max(0,c-1);return [u.serial,u.guestId,u.name,c,1,sub,u.guestType||'Individual',u.entryType||'General',u.code,u.idCardPassword||'1234',u.phone,u.email,u.checkedIn?'Checked in':'Pending',u.checkedAt?formatBDDateTime(u.checkedAt):'',u.scanner||'']})];
+  const customCols = getFormFields().filter(x => !x.isDefault);
+  const customHeaders = customCols.map(c => c.label);
+  const baseHeaders = ['Serial','Permanent Guest ID','Name','Total Persons','Primary Guest','Sub-Guests','Guest Type','Entry Type','T-Shirt Size','T-Shirt Claimed','T-Shirt Handover Time','T-Shirt Handover By','Entry Code','ID Card Pass','Phone','Email', ...customHeaders, 'Status','Checked At','Scanner'];
+  const rows = [baseHeaders, ...users.sort((a,b)=>a.serial-b.serial).map(u=>{
+    const c=getGuestCount(u);
+    const sub=Math.max(0,c-1);
+    const customValues = customCols.map(col => u.customFields?.[col.id] || '');
+    return [u.serial,u.guestId,u.name,c,1,sub,u.guestType||'Individual',u.entryType||'General',getGuestTShirtSize(u),u.tShirtClaimed?'Yes':'No',u.tShirtClaimedAt?formatBDDateTime(u.tShirtClaimedAt):'',u.tShirtClaimedBy||'',u.code,u.idCardPassword||'1234',u.phone,u.email, ...customValues, u.checkedIn?'Checked in':'Pending',u.checkedAt?formatBDDateTime(u.checkedAt):'',u.scanner||''];
+  })];
   const csv=rows.map(r=>r.map(v=>'"'+String(v).replaceAll('"','""')+'"').join(',')).join('\n');
   const a=document.createElement('a');
   a.href=URL.createObjectURL(new Blob([csv],{type:'text/csv'}));
@@ -2937,6 +4654,13 @@ function syncFromStorage(){
 }
 function refreshLiveViews(){
   if(isGateMode && currentVolunteer){
+    if(activeVolunteerTab === 'tshirt'){
+      refreshTShirtRecentList();
+      const stats = getTShirtStats();
+      const statsPill = document.querySelector('.gateStatsPill');
+      if(statsPill) statsPill.innerHTML = `🎽 Handed: <b>${stats.claimed}</b> / ${stats.total}`;
+      return;
+    }
     const v=currentVolunteer;
     const vScans=users.filter(x=>x.checkedIn && x.scanner && x.scanner.includes(v.name));
     const totalGatePersons=vScans.reduce((s,x)=>s+getGuestCount(x),0);
@@ -2975,6 +4699,10 @@ function refreshLiveViews(){
     }
   }else if(tab==='guests'){
     renderGuestsOnly();
+  }else if(tab==='tshirt'){
+    renderTShirtOnly();
+  }else if(tab==='tshirt_scanner'){
+    refreshTShirtRecentList();
   }
 }
 window.addEventListener('storage', e => {
